@@ -29,17 +29,25 @@ if [ -e "$file" ]; then
 fi
 
 # Tree state is read BEFORE the record exists, so the record never reports itself as a change.
-tree=$(git status --short)
+# "tree" is the SOURCE tree: the hook log and the run records change on every run, so they do not make it dirty.
+# The full git status is still recorded, so those excluded changes stay visible.
+status=$(git status --short)
+tree=$(git status --short -- . ':(exclude).agent-log' ':(exclude)evidence')
 
 {
   echo "# run: $label"
   echo "# started: $started"
   echo "# commit: $(git rev-parse HEAD) ($(git rev-parse --abbrev-ref HEAD))"
   if [ -z "$tree" ]; then
-    echo "# tree: clean"
+    echo "# tree: clean (excluding .agent-log/ and evidence/)"
   else
-    echo "# tree: dirty"
-    printf '%s\n' "$tree" | sed 's/^/#   /'
+    echo "# tree: dirty (excluding .agent-log/ and evidence/)"
+  fi
+  if [ -z "$status" ]; then
+    echo "# git status: nothing to report"
+  else
+    echo "# git status:"
+    printf '%s\n' "$status" | sed 's/^/#   /'
   fi
   echo "# node: $(node -v)  pnpm: $(pnpm -v)"
   echo "# command: $*"
