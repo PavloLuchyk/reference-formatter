@@ -1,0 +1,52 @@
+# run: baseline
+# started: 2026-10-04T21:46:14Z
+# commit: 0681a2245b4bcfb6b1b448677ad5670dc1398f0d (master)
+# tree: dirty
+#   ?? evidence/
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ✓ __tests__/harness.smoke.test.tsx (1 test) 60ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:46:19
+   Duration  809ms (environment 74%, import 13%, tests 9%, transform 3%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 20ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 329ms
+  Running TypeScript ...
+  Finished TypeScript in 921ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 350ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-04T21:46:24Z
+# duration_s: 9
+# exit: 0
+# result: GREEN
