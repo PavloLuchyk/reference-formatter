@@ -126,8 +126,7 @@ Agent recommendations are proposals, not approvals.
 
 Accepted behaviour should be specified before implementation.
 
-The verification harness will be introduced separately before the first
-feature implementation.
+The verification harness is `pnpm check`: typecheck, lint, tests and build.
 
 For important feature slices, the intended workflow is:
 

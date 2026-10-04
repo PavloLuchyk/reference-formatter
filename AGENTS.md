@@ -62,6 +62,17 @@ UI copy is Ukrainian; code, comments and commit messages are English.
 Prefer meaningful Conventional Commits and one logical state per commit.
 Do not commit, rewrite history or force-push unless explicitly asked.
 
+## Verification
+
+`pnpm check` runs typecheck, lint, tests and build; it must be GREEN before
+work is reported as done.
+Single stages: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`.
+Tests use Vitest in the `node` environment; a test that needs a DOM opts in
+with `// @vitest-environment jsdom`.
+Record verification runs with `bash scripts/record-run.sh <label>`; records
+in `evidence/runs/` are committed and never edited by hand.
+Do not weaken tests, ESLint or TypeScript settings to obtain GREEN.
+
 ## Agent harness
 
 Respect existing `.claude` settings and hooks.
