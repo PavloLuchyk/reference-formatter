@@ -46,19 +46,26 @@ tree=$(git status --short)
   echo "----"
 } > "$file"
 
+# The footer is written from an EXIT trap, so an interrupted run still records its exit code.
+finish() {
+  code=${code:-$?}
+  if [ "$code" -eq 0 ]; then result=GREEN; else result=RED; fi
+  {
+    echo "----"
+    echo "# finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "# duration_s: $(( $(date +%s) - start_s ))"
+    echo "# exit: $code"
+    echo "# result: $result"
+  } >> "$file"
+  echo "record-run: $result (exit $code) -> $file" >&2
+  exit "$code"
+}
+
 start_s=$(date +%s)
+trap finish EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
 NO_COLOR=1 "$@" 2>&1 | tee -a "$file"
 code=${PIPESTATUS[0]}
-
-if [ "$code" -eq 0 ]; then result=GREEN; else result=RED; fi
-
-{
-  echo "----"
-  echo "# finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  echo "# duration_s: $(( $(date +%s) - start_s ))"
-  echo "# exit: $code"
-  echo "# result: $result"
-} >> "$file"
-
-echo "record-run: $result (exit $code) -> $file" >&2
 exit "$code"
