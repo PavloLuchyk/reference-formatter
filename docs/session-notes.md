@@ -1,195 +1,151 @@
 # Session notes — handoff
 
-Updated 2026-10-05 after the second independent review of the DSTU Journal
-Article Formatter slice. Every statement below was checked against the
-repository at that time. Nothing here is reconstructed from memory.
+Updated 2026-10-05 after the `dstu-journal-formatter` change was archived.
+Every statement was checked against the repository at that time; nothing is
+reconstructed from memory. Read `AGENTS.md` and `docs/intent.md` first.
 
 ## Repository state
 
-- Branch `master`, HEAD `a188b23` (`docs(evidence): record formatter repair
-  green`). No git remote is configured.
-- Source and tests at HEAD are those of `3e341c4`; the commit after it changed
-  only `tasks.md`, one run record and the hook log.
-- Working tree when this file was written, not committed:
-  - modified: this file and
-    `openspec/changes/dstu-journal-formatter/tasks.md` (tasks 4.5 and 4.6
-    closed);
-  - modified: `.agent-log/actions.jsonl` (written by the logging hook);
-  - untracked: `evidence/reviews/dstu-journal-formatter-review-02.md` (the
-    reviewer's report, with the human's dispositions appended).
-- No source, test, spec or oracle file is modified.
+- Branch `master`, HEAD `e01d436` (`docs(spec): archive DSTU journal
+  formatter`). No git remote is configured.
+- Uncommitted when this file was written:
+  - modified: this file;
+  - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
+    committed on purpose, see `.agent-log/README.md`);
+  - untracked: `evidence/runs/20261005T205145Z_dstu-formatter-archive.log`
+    (GREEN `pnpm check` taken during the archive, tree not committed).
+- No source, test, spec or oracle file is modified. No OpenSpec change is
+  active: `openspec/changes/` holds only `archive/`.
 
 ## Slices
 
-- **DOI Resolution** — done and archived as
-  `openspec/changes/archive/2026-10-05-doi-resolution/`. Its specs are in
-  `openspec/specs/` (`doi-normalization`, `publication-model`,
-  `doi-resolution`). Its deferred findings and known limitations are in the
-  archived `design.md`, under Risks, and still hold.
-- **DSTU Journal Article Formatter** — implementation complete, reviewed, not
-  archived. Details below.
-- **Bibliography Workspace** — not started.
+| Slice | State | Archive | Main specs |
+|---|---|---|---|
+| DOI Resolution | done, archived | `openspec/changes/archive/2026-10-05-doi-resolution/` | `doi-normalization`, `publication-model`, `doi-resolution` |
+| DSTU Journal Article Formatter | done, archived | `openspec/changes/archive/2026-10-05-dstu-journal-formatter/` | `dstu-journal-formatting` |
+| Bibliography Workspace | **next, not started** | — | — |
 
-## Active OpenSpec change
+Each archived `design.md` holds that slice's decisions, readings, deferred
+findings, known limitations and Verification history. They still hold.
 
-- `dstu-journal-formatter`, schema `spec-driven`, 27 of 27 tasks done, not
-  archived.
-- Contract: `openspec/changes/dstu-journal-formatter/specs/dstu-journal-formatting/spec.md`
-  (24 requirements). It is a delta; `openspec/specs/dstu-journal-formatting/`
-  does not exist until the change is archived.
-- Technical decisions, readings RD-1 to RD-11, source limitations and the
-  Verification history: `openspec/changes/dstu-journal-formatter/design.md`.
-- The `openspec` binary is not on the shell PATH. Use `pnpm exec openspec …`
-  and `pnpm spec:check`.
+What the workspace can build on (all pure, under `lib/`; `app/` is still the
+`create-next-app` shell and imports nothing from `lib/`):
 
-## The two human-approved oracles
+- `lib/doi/normalize-doi.ts` — `normalizeDoi`, canonical DOI as identity.
+- `lib/metadata/resolve-doi.ts` — `resolveDoi(input, options)` returns a
+  `Publication` or a typed failure; `fetch` and configuration are passed in.
+- `lib/publication/publication.ts` — `Publication`, `createPublication`,
+  `missingFields`, `isSamePublication`.
+- `lib/dstu/format-journal-article.ts` — `formatJournalArticle(publication)`
+  returns `{ kind: "formatted", text, warnings }` or
+  `{ kind: "cannot-format", blockedBy }`. Warnings:
+  `subtitle-capitalisation`, `incomplete-personal-name`,
+  `full-stop-collision`. Blocking fields: `title`, `journalTitle`, `year`.
+  Their Ukrainian wording was left to the workspace.
 
-`AGENTS.md` forbids changing either to make a test pass; any change needs the
-human's approval first.
+## Human-approved oracles (protected)
 
 - `docs/dstu/rules.md` — the DSTU 8302:2015 journal-article profile,
   HUMAN-APPROVED FOR MVP on 2026-10-05 with documented source limitations.
-  Product-profile decisions D1–D16 and O1–O21 are closed.
-- `tests/golden/dstu-journal.ts` — fixtures GF01 to GF08 with their approved
+  Product-profile decisions D1–D16 and O1–O21 are closed; the human asked for
+  no new micro-decisions unless new source evidence exposes a concrete
+  unresolved behaviour.
+- `tests/golden/dstu-journal.ts` — fixtures GF01 to GF08 with approved
   outcomes; the sole human-approved golden formatter oracle.
 
-Both are unchanged since the baseline of the slice:
-`git diff --stat dc76a2e -- docs/dstu/rules.md tests/golden/` printed nothing
-when this file was written.
+Rule from `AGENTS.md`, Verification: never modify either to make tests pass;
+propose any change and get explicit human approval first. Formatter tests
+consume the approved oracle and never derive expected values from the
+formatter. Documented provisional or source limitations stay limitations and
+are not silently "resolved" in code.
 
-## Completed formatter work (all in HEAD)
+## Source limitations that must not be silently resolved
 
-- `lib/dstu/format-journal-article.ts` — the entry point
-  `formatJournalArticle(publication)` and its outcome types: formatted text
-  with warnings, or cannot-format with the blocking fields `title`,
-  `journalTitle`, `year`.
-- `lib/dstu/serial-number.ts` — Roman numerals and pairs in volume and issue.
-- `lib/dstu/authors.ts` — heading, statement of responsibility, terminal
-  initial.
-- `lib/dstu/boundary.ts` — every full-stop decision between parts.
-- `lib/dstu/golden.test.ts` — conformance with the golden oracle.
-- `lib/dstu/format-journal-article.test.ts` — targeted verification tests,
-  written by hand from the spec; they are not an oracle.
-- Nothing outside `lib/dstu/` imports it, and `app/` does not use it yet.
+Accepted by the human with the profile. Approved is not verified.
 
-Commit sequence, oldest first: `a961c20` profile approved, `a928230` golden
-oracle, `0945a68` oracle rule in `AGENTS.md`, `b5a6008` spec, `dc76a2e`
-reviewer agent, `6de412c` implementation and tests, `2d6183b` clean GREEN,
-`8ff913e` regression tests after the first review, `82ce571` reviewer may
-write its report, `3e341c4` repair of the terminal initial, `a188b23` clean
-GREEN after the repair.
-
-## Reviews and dispositions
-
-The maker session and the checker were different sessions in every review.
-The checker was the read-only `feature-reviewer` agent
-(`.claude/agents/feature-reviewer.md`); every disposition is the human's.
-
-- First review at `2d6183b`, `evidence/reviews/dstu-journal-formatter-review.md`,
-  verdict READY, findings F1–F4:
-  - F1 rejected as a formatter defect: a person without any name part is
-    outside the normalized `Publication` the formatter accepts.
-  - F2 accepted: three regression tests added in `8ff913e`.
-  - F3 accepted as an evidence limitation, recorded in `design.md`,
-    Verification history.
-  - F4 acknowledged, no repair.
-- Feature review 01 at `82ce571`,
-  `evidence/reviews/dstu-journal-formatter-review-01.md`, verdict READY,
-  findings R01-1 to R01-4:
-  - R01-1 accepted and repaired: a terminal initial is judged on the person's
-    name as rendered in the heading, as O18 and O21 say. Spec and RD-6
-    clarified, one regression test recorded RED against the unchanged code,
-    then `lib/dstu/authors.ts` repaired, all in `3e341c4`.
-  - R01-2 accepted: a fresh clean-tree GREEN was recorded after the repair.
-  - R01-3 accepted as pending process work; closed with this file.
-  - R01-4 dismissed as a defect: the human requested the reviewer change.
-- Feature review 02 at `a188b23`,
-  `evidence/reviews/dstu-journal-formatter-review-02.md`: `Findings: none`,
-  verdict READY TO COMPLETE REVIEW. Its three observations A, B and C were
-  acknowledged by the human with no action.
-
-## Source limitations and known limits
-
-Accepted by the human with the profile. They stay limitations; none is
-resolved in code, and none may be presented as a verified normative fact.
-
-- **Six provisional heading rows** still used by the formatter: P21 and P22
-  (entry under its title for four or more authors), P23 (comma after the
-  family name), P25 (one uniform name form), P26 (full stop after the
-  heading), P43 (entry under its title without authors). They rest on
-  ДСТУ ГОСТ 7.80:2007, whose text was not verified (G1).
-- Heading authors are separated by `; ` by human convention, although the
-  examples of S1 use commas (C12).
+- Six provisional heading rows still used by the formatter: P21, P22 (entry
+  under its title for four or more authors), P23 (comma after the family
+  name), P25 (one uniform name form), P26 (full stop after the heading), P43
+  (entry under its title without authors). The text of ДСТУ ГОСТ 7.80:2007
+  was not verified (G1).
+- Heading authors are separated by `; ` by human convention; the examples of
+  S1 use commas (C12).
 - The official corrections to S1 are not available (G11); the em dash of a
-  page range is taken from the uncorrected printing by human decision (O8).
-- No place of publication for same-named journals (G10).
-- Names are rendered from the `family` and `given` fields only (C9).
+  page range comes from the uncorrected printing by human decision (O8).
+- No place of publication for same-named journals (G10). Names are rendered
+  from `family` and `given` only (C9).
 - Approved behaviour that can look wrong: a full stop is doubled after a
   supplied value ending in `.` that is not a terminal initial, with a
-  `full-stop-collision` warning (O17, O18).
-- Evidence limits of the slice, per `design.md`, Verification history: the
-  first RED state was never a commit, and several early checks left no run
-  record.
+  `full-stop-collision` warning (O17, O18). The workspace should show the
+  warning, not hide the full stop.
+- `references/` (the source PDFs) is not in git.
 
-## Open tasks
+## Maker ≠ Checker workflow
 
-None in `openspec/changes/dstu-journal-formatter/tasks.md`.
+- The slice is built in the maker session. A separate fresh session runs the
+  `feature-reviewer` agent (`.claude/agents/feature-reviewer.md`): read-only
+  for everything it reviews, it writes one new report per run under
+  `evidence/reviews/` and nothing else.
+- The human disposes of every finding. The maker session then appends a
+  "Human dispositions" section below the report and never alters the report
+  body. An accepted defect gets a repair cycle: clarify the spec, add a
+  regression test, record it RED, repair, record GREEN.
+- Review evidence: `evidence/reviews/doi-resolution-final.md`,
+  `dstu-journal-formatter-review.md`, `…-review-01.md`, `…-review-02.md`.
+  Review 02 of the formatter: `Findings: none`, READY TO COMPLETE REVIEW.
+- Run evidence: `evidence/runs/`, written only by
+  `bash scripts/record-run.sh <label>`, committed and never edited by hand.
 
-## Last verified commands
+## Final formatter verification state
 
-| Command | Result |
-|---|---|
-| `pnpm check` | recorded GREEN on a clean tree at `3e341c4`: 7 test files, 355 tests passed; typecheck, lint and build passed (`20261005T201600Z_dstu-formatter-final-green.log`). Not run again for `a188b23` or for this file; only `tasks.md`, evidence and this file changed since |
-| `pnpm spec:check` | exit 0 when this file was written — 4 passed, 0 failed; not recorded with `scripts/record-run.sh` |
+- `pnpm check` GREEN on a clean tree at `3e341c4`, the last commit that
+  changed source or tests: 7 test files, 355 tests, typecheck, lint and build
+  (`evidence/runs/20261005T201600Z_dstu-formatter-final-green.log`).
+- `pnpm check` GREEN again during the archive at `6b63b16`, tree not
+  committed, 355 tests (the untracked record named above).
+- `pnpm spec:check` exits 0 with four main specs. It prints one informational
+  hint that a requirement of `dstu-journal-formatting` is longer than 500
+  characters; that is not an error.
+- Evidence limits of the formatter slice are listed in its archived
+  `design.md`, Verification history.
 
-## Evidence (`evidence/runs/`)
+Known stale references, left as they are: the header comments of
+`lib/dstu/golden.test.ts` and `lib/dstu/format-journal-article.test.ts` name
+the spec at its path before the archive.
 
-Records of the formatter slice, all tracked in git.
+## Next slice: Bibliography Workspace MVP
 
-| Record | Commit | Tree | Result |
-|---|---|---|---|
-| `20261005T155205Z_dstu-profile-approved.log` | `4ad64d5` | dirty | GREEN, 176 passed |
-| `20261005T174601Z_golden-inputs.log` | `a961c20` | dirty | GREEN, 176 passed |
-| `20261005T175351Z_golden-oracle-approved.log` | `a961c20` | dirty | GREEN, 176 passed |
-| `20261005T185848Z_dstu-formatter-baseline.log` | `dc76a2e` | clean | GREEN, 176 passed |
-| `20261005T190147Z_dstu-formatter-red.log` | `dc76a2e` | dirty | RED, 172 failed, 179 passed |
-| `20261005T190516Z_dstu-formatter-check.log` | `dc76a2e` | dirty | GREEN, 351 passed |
-| `20261005T192011Z_dstu-formatter-green.log` | `6de412c` | clean | GREEN, 351 passed (closes 4.4; stale for the final state) |
-| `20261005T194353Z_dstu-formatter-review-followup.log` | `2d6183b` | dirty | GREEN, 354 passed |
-| `20261005T200927Z_dstu-formatter-r01-red.log` | `82ce571` | dirty | RED, 1 failed, 354 passed |
-| `20261005T201010Z_dstu-formatter-r01-repair.log` | `82ce571` | dirty | GREEN, 355 passed |
-| `20261005T201600Z_dstu-formatter-final-green.log` | `3e341c4` | clean | GREEN, 355 passed (closes 6.4; the evidence for the final state) |
+Recommended next command: `/opsx:propose bibliography-workspace`
 
-The final record names `3e341c4`, the commit of the repair. The commit after
-it, `a188b23`, holds only that record, the note of task 6.4 and the hook log;
-no run was made against `a188b23`.
+Agreed MVP scope:
 
-## Next exact action
+- add one DOI at a time;
+- duplicate prevention (same canonical DOI);
+- manual metadata correction, with the reference recomputed from the
+  corrected `Publication`;
+- remove an entry;
+- reorder entries;
+- copy one reference, and copy the whole bibliography.
 
-The human reviews and commits the uncommitted files listed above. Then archive
-the change with `/opsx:archive dstu-journal-formatter`, which syncs the spec
-to `openspec/specs/dstu-journal-formatting/`. Nothing has been archived by the
-agent.
+Explicitly after the MVP, not in this slice:
 
-## Do not change casually
+- batch paste of several DOIs;
+- partial failures inside a batch;
+- a clipboard fallback;
+- other advanced cases.
 
-- `docs/dstu/rules.md` and `tests/golden/`: human-approved oracles. Propose a
-  change and get approval first; never edit them to get GREEN.
-- The spec of the change and the readings in `design.md`: accepted by the
-  human. Change the spec first, then tests, then code.
-- Existing tests: never weaken an assertion to get GREEN. Formatter tests
-  consume the approved oracle and never take expected values from the
-  formatter.
-- `evidence/runs/` and `evidence/reviews/`: run records are never edited by
-  hand; a reviewer's report body is never altered, only a dispositions
-  section is appended.
-- `lib/metadata/crossref/__fixtures__/`: recorded answers and
-  `provenance.json` are never edited; `expected.ts` was approved by the human.
-- `.claude/settings.json`, `.claude/hooks/`, `.claude/agents/`, `package.json`
-  dependencies and scripts, `.github/workflows/ci.yml`: ask the human first
-  (`AGENTS.md`).
-- Out of the formatter change: the bibliography workspace, any entry point in
-  `app/`, wording of warnings in Ukrainian, rich text, other publication
-  types or styles, any change to `Publication`.
-- Standing rules from `AGENTS.md`: pnpm only; no commit unless asked; DSTU
-  8302:2015 rules never from model memory.
+Constraints already fixed elsewhere: UI copy is Ukrainian; the bibliography
+may live in browser memory only (`docs/intent.md`); no auth, database,
+scraping, other providers, other publication types or styles (`AGENTS.md`);
+read `node_modules/next/dist/docs/` before writing Next.js code; UI, route
+and action layers stay thin over `lib/`.
+
+## Working rules worth repeating
+
+- pnpm only. Use `pnpm exec openspec …`; the binary is not on PATH.
+- `pnpm check` must be GREEN before work is reported as done.
+- Do not commit unless asked. The human has written every commit message.
+- Ask before changing scope, dependencies, tooling, hooks, agent settings,
+  CI, or anything under `.claude/`.
+- Never invent a value for missing metadata. DSTU rules never from model
+  memory.
