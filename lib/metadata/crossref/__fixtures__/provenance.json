@@ -1,0 +1,77 @@
+{
+  "note": "Answers of the public Crossref REST API, recorded once and stored unmodified. They are dated evidence, not a claim about today's records. Never edit a recorded file; record a new one instead.",
+  "fixtures": [
+    {
+      "file": "nature12373.json",
+      "doi": "10.1038/nature12373",
+      "url": "https://api.crossref.org/works/10.1038/nature12373",
+      "retrievedAt": "2026-10-05T08:43:12Z",
+      "status": 200,
+      "contentType": "application/json",
+      "purpose": "Journal article named in the spec scenarios; print and online dates differ"
+    },
+    {
+      "file": "pone-0000308.json",
+      "doi": "10.1371/journal.pone.0000308",
+      "url": "https://api.crossref.org/works/10.1371/journal.pone.0000308",
+      "retrievedAt": "2026-10-05T08:43:13Z",
+      "status": 200,
+      "contentType": "application/json",
+      "purpose": "Journal article with an article identifier in the page field and no print date"
+    },
+    {
+      "file": "book.json",
+      "doi": "10.1007/978-3-319-24277-4",
+      "url": "https://api.crossref.org/works/10.1007/978-3-319-24277-4",
+      "retrievedAt": "2026-10-05T08:43:13Z",
+      "status": 200,
+      "contentType": "application/json",
+      "purpose": "Record of type book, for the unsupported-type failure"
+    },
+    {
+      "file": "not-found-datacite.txt",
+      "doi": "10.5281/zenodo.3233118",
+      "url": "https://api.crossref.org/works/10.5281/zenodo.3233118",
+      "retrievedAt": "2026-10-05T08:43:14Z",
+      "status": 404,
+      "contentType": "text/plain",
+      "purpose": "DOI registered with DataCite, for the not-found failure"
+    },
+    {
+      "file": "not-found-unknown.txt",
+      "doi": "10.1234/this-doi-does-not-exist-xyz",
+      "url": "https://api.crossref.org/works/10.1234/this-doi-does-not-exist-xyz",
+      "retrievedAt": "2026-10-05T08:43:14Z",
+      "status": 404,
+      "contentType": "text/plain",
+      "purpose": "DOI that does not exist, for the not-found failure"
+    },
+    {
+      "file": "title-markup.json",
+      "doi": "10.1542/pir.27.3.114",
+      "url": "https://api.crossref.org/works/10.1542/pir.27.3.114",
+      "retrievedAt": "2026-10-05T08:43:15Z",
+      "status": 200,
+      "contentType": "application/json",
+      "purpose": "Assumption check: markup inside a title"
+    },
+    {
+      "file": "group-author-article-number.json",
+      "doi": "10.1140/epjp/s13360-021-01214-4",
+      "url": "https://api.crossref.org/works/10.1140/epjp/s13360-021-01214-4",
+      "retrievedAt": "2026-10-05T08:43:16Z",
+      "status": 200,
+      "contentType": "application/json",
+      "purpose": "Assumption check: group authors given as name, and the article-number field"
+    },
+    {
+      "file": "no-volume-issue.json",
+      "doi": "10.5705/ss.202024.0145",
+      "url": "https://api.crossref.org/works/10.5705/ss.202024.0145",
+      "retrievedAt": "2026-10-05T08:43:16Z",
+      "status": 200,
+      "contentType": "application/json",
+      "purpose": "Assumption check: journal article without volume, issue or page"
+    }
+  ]
+}

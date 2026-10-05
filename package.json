@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "spec:check": "openspec validate --all --strict --no-interactive",
     "agent:log": "node scripts/agent-log-summary.mjs",
     "hooks:selftest": "node scripts/hooks-selftest.mjs",
     "skills:sync": "node scripts/skills-sync.mjs"
@@ -20,6 +21,7 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@fission-ai/openspec": "1.14.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",

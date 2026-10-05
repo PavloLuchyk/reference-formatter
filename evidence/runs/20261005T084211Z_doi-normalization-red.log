@@ -1,0 +1,369 @@
+# run: doi-normalization-red
+# started: 2026-10-05T08:42:11Z
+# commit: 50ecad3ee581ea6ff5b9888fadf067429e3e2788 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M package.json
+#    M pnpm-lock.yaml
+#   ?? .claude/commands/
+#   ?? .claude/skills/openspec-apply-change/
+#   ?? .claude/skills/openspec-archive-change/
+#   ?? .claude/skills/openspec-explore/
+#   ?? .claude/skills/openspec-propose/
+#   ?? .claude/skills/openspec-sync-specs/
+#   ?? .claude/skills/openspec-update-change/
+#   ?? lib/
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm test
+----
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ❯ lib/doi/normalize-doi.test.ts (23 tests | 23 failed) 8ms
+   ❯ Accepted DOI input forms (3)
+     × Bare DOI 2ms
+     × DOI with prefix 0ms
+     × DOI as resolver URL 0ms
+   ❯ Surrounding whitespace and prefix letter case (4)
+     × Surrounding whitespace 0ms
+     × Space after the prefix 0ms
+     × Upper-case prefix 0ms
+     × Upper-case resolver URL 1ms
+   ❯ Canonical DOI is the identity (3)
+     × Mixed-case input 0ms
+     × Same DOI in two forms 0ms
+     × Letters outside Basic Latin 0ms
+   ❯ Rejection of input that is not a DOI (6)
+     × Empty input 0ms
+     × Text that is not a DOI 0ms
+     × Missing suffix 0ms
+     × Whitespace inside the DOI 0ms
+     × URL of another site 0ms
+     × Unusual but structurally valid suffix 0ms
+   ❯ Other input forms are rejected (3)
+     × Insecure scheme 0ms
+     × Legacy resolver host 0ms
+     × Resolver URL without a scheme 0ms
+   ❯ No repair of the DOI (2)
+     × Trailing full stop is kept 0ms
+     × Percent-encoding is kept as written 0ms
+   ❯ Normalization is deterministic and offline (2)
+     × No network use 0ms
+     × Canonical DOI is stable 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Accepted DOI input forms > Bare DOI
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:10:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Accepted DOI input forms > DOI with prefix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:14:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Accepted DOI input forms > DOI as resolver URL
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:18:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Surrounding whitespace
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:24:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Space after the prefix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:28:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Upper-case prefix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:32:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Upper-case resolver URL
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:36:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Canonical DOI is the identity > Mixed-case input
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:42:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Canonical DOI is the identity > Same DOI in two forms
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:46:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Canonical DOI is the identity > Letters outside Basic Latin
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:54:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Empty input
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:60:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Text that is not a DOI
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:65:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Missing suffix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:69:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Whitespace inside the DOI
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:73:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > URL of another site
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:77:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Unusual but structurally valid suffix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:83:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Other input forms are rejected > Insecure scheme
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:89:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Other input forms are rejected > Legacy resolver host
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:93:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Other input forms are rejected > Resolver URL without a scheme
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:97:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > No repair of the DOI > Trailing full stop is kept
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:103:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > No repair of the DOI > Percent-encoding is kept as written
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:107:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Normalization is deterministic and offline > No network use
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:123:7
+ ❯ lib/doi/normalize-doi.test.ts:122:97
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/23]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Normalization is deterministic and offline > Canonical DOI is stable
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:133:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/23]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  23 failed | 1 passed (24)
+   Start at  11:42:13
+   Duration  763ms (environment 72%, import 13%, tests 10%, transform 4%, worker 1%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+----
+# finished: 2026-10-05T08:42:13Z
+# duration_s: 1
+# exit: 1
+# result: RED
