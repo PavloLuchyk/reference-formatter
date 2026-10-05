@@ -394,10 +394,11 @@ R7, O20]
 ### Requirement: Full stop after the heading
 The heading SHALL be followed by a full stop and a space. That full stop SHALL
 be omitted when the heading ends in a terminal personal-name initial: its last
-author is a person whose given value ends in a letter followed by `.`, where
-the letter starts the given value or follows a space, a full stop or a hyphen.
-In every other case the rule for the full stop before a zone SHALL apply to
-the heading as well. [O18, O21; provisional P26]
+author is a person whose name as rendered in the heading ends in a letter
+followed by `.`, where the letter starts the name or follows a space, a full
+stop or a hyphen. This holds wherever the initials are stored, in the given
+value or in the family name. In every other case the rule for the full stop
+before a zone SHALL apply to the heading as well. [O18, O21; provisional P26]
 
 #### Scenario: Full given name
 - **WHEN** the heading is `Коваленко, Олена` (fixture GF01)
@@ -407,6 +408,12 @@ the heading as well. [O18, O21; provisional P26]
 - **WHEN** the heading is `Smith, K.`, `Smith, K. J.`, `Smith, K.J.` or `Durand, J.-P.`
 - **THEN** it is followed by a space and the title, with no second full stop
 - **AND** this raises no warning
+
+#### Scenario: Initials stored in the family name
+- **WHEN** the last author of the heading is a person with the family name `Petrenko O. V.` and no given value
+- **THEN** the heading `Petrenko O. V.` is followed by a space and the title, with no second full stop
+- **AND** the outcome carries the incomplete-personal-name warning
+- **AND** this raises no full-stop-collision warning
 
 #### Scenario: Given value abbreviated to several letters
 - **WHEN** the last author of the heading is a person with the given value `Yu.`

@@ -113,7 +113,7 @@ into the spec, and accepting this change accepts them. None reopens a decision.
 | RD-3 | After an ellipsis the zone full stop is omitted and the space stays | O20 |
 | RD-4 | Each warning kind is carried at most once, without a location | The approved oracle records kinds only |
 | RD-5 | Cannot-format names every missing critical field and carries no warnings | D16; GF06 names one |
-| RD-6 | A terminal initial is a letter followed by `.` at the end of the last person's given value, where the letter starts the value or follows a space, a full stop or a hyphen | The agent's reading recorded as O21, which the human answered "Yes" |
+| RD-6 | A terminal initial is a letter followed by `.` at the end of the last person's name as rendered in the heading, where the letter starts the name or follows a space, a full stop or a hyphen. Clarified on 2026-10-05 after feature review 01 (finding R01-1, accepted by the human): the first wording said "given value" and so left out a person whose initials stand in the family name, such as `Petrenko O. V.` without a given value | O18 and O21 speak of the final rendered author name. The human confirmed that this is their intended rule; the clarification restates the approved profile and is not a new decision |
 | RD-7 | "Canonical" Roman numeral means standard subtractive notation, 2 to 3999: `IIII` and `VX` do not qualify | O15 says canonical, upper case, at least two characters, valid |
 | RD-8 | A person with only a given value is printed as that value alone | The approved reading of GF07 covers the family-only case; D5 prints what is present |
 | RD-9 | "Ordinary spaces" around a separator are U+0020 only; digits are `0`–`9` | O8, O20 |
@@ -215,6 +215,30 @@ The run labelled `dstu-formatter-review-followup` in `evidence/runs/` records
 that state. Finding F1 was rejected as a formatter defect: a person without
 any name part is outside the normalized `Publication` that the formatter
 accepts, and the formatter was not changed.
+
+After feature review 01 (`evidence/reviews/dstu-journal-formatter-review-01.md`,
+at `82ce571`, dispositions given by the human on 2026-10-05):
+
+- **R01-1, accepted.** The requirement Full stop after the heading and reading
+  RD-6 said that a terminal initial ends the person's given value. O18 and O21
+  speak of the final rendered author name, and the human confirmed that this
+  is their intended rule. The spec and RD-6 were clarified; this restates the
+  approved profile and is not a new decision. One regression test was added
+  for a person with the family name `Petrenko O. V.` and no given value. It
+  failed against the unchanged implementation, by an assertion on the text:
+  `20261005T200927Z_dstu-formatter-r01-red.log`, 1 failed and 354 passed, and
+  the git status in that record lists no implementation file as changed. Only
+  the terminal-initial detection in `lib/dstu/authors.ts` was repaired. GREEN
+  after the repair: `20261005T201010Z_dstu-formatter-r01-repair.log`, 355
+  tests, tree not committed.
+- **R01-2, accepted.** `20261005T192011Z_dstu-formatter-green.log` is the last
+  record on a clean tree and predates the tests added after it, so it is
+  stale as evidence for the final state. A fresh record on the committed clean
+  state replaces it for that purpose once the repair is committed (task 6.4).
+  The older record stays as history and is not rewritten.
+- **R01-3, accepted as pending process work.** Tasks 4.5 and 4.6 stay open.
+- **R01-4, dismissed as a defect.** The human explicitly requested and
+  approved the change of the reviewer's definition.
 
 ## Open Questions
 

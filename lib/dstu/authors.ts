@@ -26,8 +26,9 @@ const directName = (author: Author): string => {
   return family !== null && given !== null ? `${given} ${family}` : (family ?? given ?? "");
 };
 
-// O18, O21: a terminal personal-name initial is a letter and a full stop at the end of the last person's given
-// value, the letter standing at its start or after a space, a full stop or a hyphen: `K.`, `K. J.`, `K.J.`, `J.-P.`.
+// O18, O21: a terminal personal-name initial is a letter and a full stop at the end of the last person's name as
+// rendered in the heading, the letter standing at its start or after a space, a full stop or a hyphen: `K.`, `K. J.`,
+// `K.J.`, `J.-P.`. The rendered name decides, so initials stored in the family name count as well (`Petrenko O. V.`).
 // Not generalised: an organisation name or a longer abbreviation such as `Yu.` is not one.
 const TERMINAL_INITIAL = /(?:^|[ .\-])\p{L}\.$/u;
 
@@ -38,7 +39,7 @@ export function renderHeading(authors: readonly Author[]): Heading {
   const last = authors[authors.length - 1];
   return {
     text: authors.map(headingName).join("; "),
-    endsInInitial: last?.kind === "person" && last.given !== null && TERMINAL_INITIAL.test(last.given),
+    endsInInitial: last?.kind === "person" && TERMINAL_INITIAL.test(headingName(last)),
   };
 }
 

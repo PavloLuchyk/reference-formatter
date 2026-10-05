@@ -564,6 +564,12 @@ describe("Full stop after the heading", () => {
     expect(warningsOf(publication)).toEqual([]);
   });
 
+  test("initials stored in the family name of a person without a given value are a terminal initial", () => {
+    const publication = withAuthors(person("Petrenko O. V.", null));
+    expect(textOf(publication)).toBe("Petrenko O. V. " + AFTER_HEADING);
+    expect(warningsOf(publication)).toEqual(warnings("incomplete-personal-name"));
+  });
+
   test("a given value abbreviated to several letters keeps the heading full stop and warns", () => {
     const publication = withAuthors(person("Petrenko", "Yu."));
     expect(textOf(publication)).toBe("Petrenko, Yu.. " + AFTER_HEADING);

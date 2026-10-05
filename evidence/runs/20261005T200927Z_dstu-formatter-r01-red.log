@@ -1,0 +1,51 @@
+# run: dstu-formatter-r01-red
+# started: 2026-10-05T20:09:27Z
+# commit: 82ce571d6e037d0c52b5a60d9d7440bae434bc61 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M lib/dstu/format-journal-article.test.ts
+#    M openspec/changes/dstu-journal-formatter/design.md
+#    M openspec/changes/dstu-journal-formatter/specs/dstu-journal-formatting/spec.md
+#   ?? evidence/reviews/dstu-journal-formatter-review-01.md
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm test
+----
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ❯ lib/dstu/format-journal-article.test.ts (170 tests | 1 failed) 28ms
+   ❯ Full stop after the heading (14)
+     × initials stored in the family name of a person without a given value are a terminal initial 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > initials stored in the family name of a person without a given value are a terminal initial
+AssertionError: expected 'Petrenko O. V.. Base title // Test Jo…' to be 'Petrenko O. V. Base title // Test Jou…' // Object.is equality
+
+Expected: "Petrenko O. V. Base title // Test Journal. 2020. Т. 5, № 2. С. 10—20. DOI: 10.0000/test.base."
+Received: "Petrenko O. V.. Base title // Test Journal. 2020. Т. 5, № 2. С. 10—20. DOI: 10.0000/test.base."
+
+ ❯ lib/dstu/format-journal-article.test.ts:569:33
+    567|   test("initials stored in the family name of a person without a given…
+    568|     const publication = withAuthors(person("Petrenko O. V.", null));
+    569|     expect(textOf(publication)).toBe("Petrenko O. V. " + AFTER_HEADING…
+       |                                 ^
+    570|     expect(warningsOf(publication)).toEqual(warnings("incomplete-perso…
+    571|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 354 passed (355)
+   Start at  23:09:29
+   Duration  1.45s (environment 53%, import 18%, transform 16%, tests 10%, worker 2%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+----
+# finished: 2026-10-05T20:09:30Z
+# duration_s: 3
+# exit: 1
+# result: RED
