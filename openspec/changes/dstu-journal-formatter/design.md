@@ -157,6 +157,65 @@ approved behaviour and does not claim more.
   end with a check that both oracle files are byte-identical to their state
   before the change.
 
+## Verification history
+
+Written on 2026-10-05 after the independent review
+(`evidence/reviews/dstu-journal-formatter-review.md`). The human accepted its
+finding F3 as an evidence limitation. This section says what is durably
+recorded and what is not. No evidence was created afterwards to fill a gap: a
+check repeated now proves only the current state.
+
+Durably recorded in `evidence/runs/`:
+
+- baseline GREEN at `dc76a2e`: `20261005T185848Z_dstu-formatter-baseline.log`;
+- RED: `20261005T190147Z_dstu-formatter-red.log`, 172 tests failed and 179
+  passed, exit 1, tree not committed;
+- GREEN before the first commit: `20261005T190516Z_dstu-formatter-check.log`,
+  tree not committed;
+- GREEN on a clean tree at `6de412c`:
+  `20261005T192011Z_dstu-formatter-green.log`.
+
+Not durably recorded:
+
+- **The RED state was never a commit.** Tests and implementation were first
+  committed together in `6de412c`. Task 3.6 claims that no test file and no
+  oracle changed between the RED run and GREEN. That claim rests on SHA-256
+  hashes which the maker session took at the RED run and kept only in a
+  session scratch file outside the repository; no committed record holds
+  them. The review found corroboration, which is not a substitute: the test
+  line positions in the RED record match the committed test files, and the
+  hook log shows the targeted test file written once, before the first
+  implementation write.
+- **The stub.** The stub of task 2.1 was overwritten by the implementation
+  and is in no commit. Its type check and lint run were not recorded.
+- **Tasks 1.1, 4.1, 4.2 and 4.3.** `pnpm spec:check`, the boundary searches,
+  `git diff --stat` against the baseline and the search for the provisional
+  rows were run interactively by the maker session. Their output was shown
+  in that session and was not kept in `evidence/runs/`.
+- **Task 2.3.** The task says it notes which tests pass against the stub;
+  the note was not written at the time. They were the two invariant tests of
+  the requirement Formatting outcome and the test that the oracle holds its
+  eight fixture IDs. The RED record shows them only by their absence from
+  the failures.
+- **Tasks 3.1 to 3.4.** Their step-by-step verification did not hold as
+  written, as their task notes say: the targeted tests assert whole
+  references and passed together after 3.5.
+
+About the RED run (finding F4, acknowledged by the human, no repair): it was
+a genuine assertion-level RED, with no import or module error. The stub
+returned a cannot-format outcome, so nearly all of the 164 targeted failures
+stopped at the helper's assertion on the outcome kind, before any comparison
+of text. The RED run therefore does not show each expected string failing on
+its own.
+
+After the review (finding F2, accepted): three targeted regression tests were
+added for a missing title alone, a missing journal title alone, and a page
+range with no-break spaces. They passed without any change to the formatter.
+The run labelled `dstu-formatter-review-followup` in `evidence/runs/` records
+that state. Finding F1 was rejected as a formatter defect: a person without
+any name part is outside the normalized `Publication` that the formatter
+accepts, and the formatter was not changed.
+
 ## Open Questions
 
 None that affects the specs or the tasks. How the workspace words and shows

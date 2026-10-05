@@ -84,6 +84,14 @@ describe("Blocking fields", () => {
     expect(sorted(blocked({ ...base, dates: NO_DATES }).blockedBy)).toEqual(["year"]);
   });
 
+  test("a missing title alone is named alone (requirement text)", () => {
+    expect(blocked({ ...base, title: null }).blockedBy).toEqual(["title"]);
+  });
+
+  test("a missing journal title alone is named alone (requirement text)", () => {
+    expect(blocked({ ...base, journalTitle: null }).blockedBy).toEqual(["journalTitle"]);
+  });
+
   test("a missing title and journal title are both named", () => {
     expect(sorted(blocked({ ...base, title: null, journalTitle: null }).blockedBy)).toEqual(["journalTitle", "title"]);
   });
@@ -332,6 +340,15 @@ describe("Pages", () => {
       expect(locator(pages)).toBe(BEFORE_LOCATOR + "С. " + pages + AFTER_LOCATOR);
     },
   );
+
+  test("no-break spaces around the separator do not make a plain range (requirement text)", () => {
+    // U+00A0 is written by its code point because the character cannot be told from a space on screen.
+    const noBreakSpace = String.fromCharCode(0x00a0);
+    const pages = "12" + noBreakSpace + "-" + noBreakSpace + "18";
+    const text = locator(pages);
+    expect(text).toBe(BEFORE_LOCATOR + "С. " + pages + AFTER_LOCATOR);
+    expect(text).not.toContain("12—18");
+  });
 });
 
 describe("Article number", () => {
