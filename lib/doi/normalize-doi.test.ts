@@ -84,6 +84,25 @@ describe("Rejection of input that is not a DOI", () => {
   });
 });
 
+// Checker finding F2: these three parts of the DOI shape had no test.
+describe("Rejection of input that is not a DOI: shape of the registrant code and suffix", () => {
+  test("Registrant code too short", () => {
+    expect(normalizeDoi("10.123/abc")).toEqual(rejected);
+  });
+
+  test("Registrant code too long", () => {
+    expect(normalizeDoi("10.1234567890/abc")).toEqual(rejected);
+  });
+
+  test("Control character in the suffix", () => {
+    expect(normalizeDoi("10.1000/ab\u0007c")).toEqual(rejected);
+  });
+
+  test("Registrant code with a further digit group", () => {
+    expect(normalizeDoi("10.1000.10/abc")).toEqual(accepted("10.1000.10/abc"));
+  });
+});
+
 describe("Other input forms are rejected", () => {
   test("Insecure scheme", () => {
     expect(normalizeDoi("http://doi.org/10.1038/nature12373")).toEqual(rejected);

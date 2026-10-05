@@ -269,6 +269,89 @@ describe("Entities decoded in title text", () => {
   });
 });
 
+// Checker finding F2: decoding before markup removal would turn escaped text into markup and delete it.
+describe("Entities decoded in title text: order of cleaning", () => {
+  test("Escaped markup is not markup", () => {
+    expect(titleFrom("&lt;i&gt;Escherichia coli&lt;/i&gt;")).toBe("<i>Escherichia coli</i>");
+  });
+});
+
+// Checker finding F3.
+describe("Only matched markup is removed", () => {
+  test("Tag-shaped text without a closing tag", () => {
+    expect(titleFrom("Role of <y> in <N>-body systems")).toBe("Role of <y> in <N>-body systems");
+  });
+
+  test("Unclosed tag", () => {
+    expect(titleFrom("Bold <b>move")).toBe("Bold <b>move");
+  });
+
+  test("Closing tag without an opening tag", () => {
+    expect(titleFrom("End of </i> an era")).toBe("End of </i> an era");
+  });
+
+  test("Matched tags are removed", () => {
+    expect(titleFrom("H<sub>2</sub>O and <i>E. coli</i>")).toBe("H2O and E. coli");
+  });
+
+  test("Empty-element tag is removed", () => {
+    expect(titleFrom("Scattering of x rays<br/>")).toBe("Scattering of x rays");
+  });
+
+  test("A closing tag before its opening tag is not a match", () => {
+    expect(titleFrom("From </i> to <i> and back")).toBe("From </i> to <i> and back");
+  });
+
+  test("The same rule applies to the subtitle and the journal title", () => {
+    const publication = mapArticle({ subtitle: ["The <N>-body problem"], "container-title": ["Journal of <i>Botany</i>"] });
+
+    expect(publication.subtitle).toBe("The <N>-body problem");
+    expect(publication.journalTitle).toBe("Journal of Botany");
+  });
+});
+
+// Checker finding F4.
+describe("Numeric references to unusable characters are kept", () => {
+  test("Surrogate", () => {
+    expect(titleFrom("A&#xD800;B")).toBe("A&#xD800;B");
+  });
+
+  test("Control character", () => {
+    expect(titleFrom("A&#7;B")).toBe("A&#7;B");
+  });
+
+  test("Null character and value beyond Unicode", () => {
+    expect(titleFrom("A&#0;B and C&#x110000;D")).toBe("A&#0;B and C&#x110000;D");
+  });
+
+  test("Usable characters next to them are still decoded", () => {
+    expect(titleFrom("Caf&#233; &#x7;&#xDFFF; &#x1F600;")).toBe("Café &#x7;&#xDFFF; \u{1F600}");
+  });
+});
+
+// Checker finding F5.
+describe("Whitespace produced by decoding is collapsed", () => {
+  test("Decoded space between spaces", () => {
+    expect(titleFrom("A &#32; B")).toBe("A B");
+  });
+
+  test("Decoded line break", () => {
+    expect(titleFrom("A&#10;B")).toBe("A B");
+  });
+
+  test("Decoded tab next to a decoded space", () => {
+    expect(titleFrom("A&#9;&#32;B")).toBe("A B");
+  });
+
+  test("Decoded no-break space", () => {
+    expect(titleFrom("5&#160;km")).toBe("5 km");
+  });
+
+  test("Whitespace that touches no decoded character stays as supplied", () => {
+    expect(titleFrom("Law  and &#32; order")).toBe("Law  and order");
+  });
+});
+
 describe("Author mapping", () => {
   test("Authors of a real record", () => {
     const { authors } = mapFixture("nature12373.json");

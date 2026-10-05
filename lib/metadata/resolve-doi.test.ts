@@ -218,6 +218,14 @@ describe("Provider unavailability", () => {
     expect(await resolve(NATURE, fetchFake)).toEqual(failure("provider-unavailable"));
     expect(fetchFake).toHaveBeenCalledTimes(1);
   });
+
+  // Checker finding F2: only 503 was tested, so narrowing "any 5xx" went unnoticed.
+  test.each([500, 502, 504])("Other server errors: HTTP %i", async (status) => {
+    const fetchFake = answering(status, "Server error", "text/plain");
+
+    expect(await resolve(NATURE, fetchFake)).toEqual(failure("provider-unavailable"));
+    expect(fetchFake).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("Unusable response", () => {
@@ -254,23 +262,115 @@ describe("Publication DOI is the normalized requested DOI", () => {
     expect(outcome).toHaveProperty("publication.doi", "10.1038/nature12373");
   });
 
-  test("Record states a different DOI", async () => {
-    const fetchFake = withMessage("nature12373.json", (message) => {
-      message.DOI = "10.9999/another-doi";
-    });
-
-    const outcome = await resolve("10.1038/NATURE12373", fetchFake);
-
-    expect(outcome).toHaveProperty("publication.doi", "10.1038/nature12373");
-    expect(JSON.stringify(outcome)).not.toContain("10.9999/another-doi");
-  });
-
   test("The typed text is not kept in the Publication", async () => {
     const outcome = await resolve(" DOI:10.1038/NATURE12373 ", answeringFixture("nature12373.json"));
 
     expect(outcome).toHaveProperty("publication.doi", "10.1038/nature12373");
     expect(JSON.stringify(outcome)).not.toContain("NATURE12373");
     expect(JSON.stringify(outcome)).not.toContain("DOI:");
+  });
+});
+
+// Checker finding F1. The scenario "Record states a different DOI" used to expect the requested DOI to be kept;
+// the human reversed that on 2026-10-05: a record for another DOI is never used.
+describe("Record must be for the requested DOI", () => {
+  test("Record states the DOI in another letter case", async () => {
+    const fetchFake = withMessage("nature12373.json", (message) => {
+      message.DOI = "10.1038/NATURE12373";
+    });
+
+    const outcome = await resolve(NATURE, fetchFake);
+
+    expect(outcome).toHaveProperty("publication.doi", "10.1038/nature12373");
+    expect(outcome).toHaveProperty("publication.title", "Nanometre-scale thermometry in a living cell");
+  });
+
+  test("Record states a different DOI", async () => {
+    const fetchFake = withMessage("nature12373.json", (message) => {
+      message.DOI = "10.9999/another-doi";
+    });
+
+    const outcome = await resolve(NATURE, fetchFake);
+
+    expect(outcome).toEqual(failure("invalid-response"));
+    expect(JSON.stringify(outcome)).not.toContain("Nanometre");
+    expect(JSON.stringify(outcome)).not.toContain("10.9999/another-doi");
+  });
+
+  test("Record of another work answered for a trailing slash", async () => {
+    // What Crossref was observed to do: the record of 10.1038/nature12373 for a request with a trailing slash.
+    const outcome = await resolve("10.1038/nature12373/", answeringFixture("nature12373.json"));
+
+    expect(outcome).toEqual(failure("invalid-response"));
+  });
+
+  test("Record states no DOI", async () => {
+    const fetchFake = withMessage("nature12373.json", (message) => {
+      delete message.DOI;
+    });
+
+    expect(await resolve(NATURE, fetchFake)).toEqual(failure("invalid-response"));
+  });
+});
+
+// Checker finding F1, second half: nothing inside a DOI may reshape the request.
+describe("DOI cannot alter the request URL", () => {
+  // Answers like Crossref and, like a real fetch, only ever sees the URL after it has been normalized.
+  const crossrefHoldingOnlyNature = () =>
+    vi.fn(async (...[input, init]: FetchArgs) => {
+      const asked = decodeURIComponent(new URL(new Request(input, init).url).pathname);
+      return asked === "/works/10.1038/nature12373"
+        ? new Response(fixtureText("nature12373.json"), { status: 200 })
+        : new Response("Resource not found.", { status: 404 });
+    });
+
+  const urlOfOnlyRequest = (fetchFake: FakeFetch) => {
+    const requests = requestsTo(fetchFake);
+    expect(requests).toHaveLength(1);
+    return new URL(requests[0].url);
+  };
+
+  test("Slash in the DOI", async () => {
+    const fetchFake = crossrefHoldingOnlyNature();
+
+    const outcome = await resolve(NATURE, fetchFake);
+
+    const url = urlOfOnlyRequest(fetchFake);
+    expect(url.host).toBe("api.crossref.org");
+    expect(url.pathname).toBe("/works/10.1038%2Fnature12373");
+    expect(outcome).toHaveProperty("publication.doi", "10.1038/nature12373");
+  });
+
+  test("Dot segments in the DOI", async () => {
+    const fetchFake = crossrefHoldingOnlyNature();
+
+    const outcome = await resolve("10.1234/../10.1038/nature12373", fetchFake);
+
+    const url = urlOfOnlyRequest(fetchFake);
+    expect(url.host).toBe("api.crossref.org");
+    expect(url.pathname).toBe("/works/10.1234%2F..%2F10.1038%2Fnature12373");
+    expect(outcome).toEqual(failure("not-found"));
+    expect(JSON.stringify(outcome)).not.toContain("Nanometre");
+  });
+
+  test("Query and fragment characters in the DOI", async () => {
+    const fetchFake = crossrefHoldingOnlyNature();
+
+    await resolve("10.1000/a?b#c", fetchFake);
+
+    const url = urlOfOnlyRequest(fetchFake);
+    expect(url.host).toBe("api.crossref.org");
+    expect(url.pathname).toBe("/works/10.1000%2Fa%3Fb%23c");
+    expect(url.search).toBe("");
+    expect(url.hash).toBe("");
+  });
+
+  test("Percent sign in the DOI", async () => {
+    const fetchFake = crossrefHoldingOnlyNature();
+
+    await resolve("10.1002/%28sici%29x", fetchFake);
+
+    expect(urlOfOnlyRequest(fetchFake).pathname).toBe("/works/10.1002%2F%2528sici%2529x");
   });
 });
 
