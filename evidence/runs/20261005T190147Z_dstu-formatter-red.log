@@ -1,0 +1,2347 @@
+# run: dstu-formatter-red
+# started: 2026-10-05T19:01:47Z
+# commit: dc76a2e9508e5914e865f87d045315882679190e (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M openspec/changes/dstu-journal-formatter/tasks.md
+#   ?? evidence/runs/20261005T185848Z_dstu-formatter-baseline.log
+#   ?? lib/dstu/
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm test
+----
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ❯ lib/dstu/golden.test.ts (9 tests | 8 failed) 11ms
+   ❯ approved golden oracle (9)
+     × GF01 one-author-complete yields its approved outcome 4ms
+     × GF02 three-authors-initials-subtitle yields its approved outcome 1ms
+     × GF03 four-authors-title-first yields its approved outcome 1ms
+     × GF04 organisation-in-heading-article-number yields its approved outcome 0ms
+     × GF05 no-authors-minimal yields its approved outcome 1ms
+     × GF06 no-year-cannot-format yields its approved outcome 1ms
+     × GF07 pages-over-article-number-incomplete-name yields its approved outcome 0ms
+     × GF08 full-stop-collisions yields its approved outcome 0ms
+ ❯ lib/dstu/format-journal-article.test.ts (166 tests | 164 failed) 63ms
+   ❯ Formatting outcome (3)
+     × a formatted reference is plain text 6ms
+   ❯ Blocking fields (4)
+     × no date of any kind blocks on the year only 1ms
+     × a missing title and journal title are both named 1ms
+     × all three critical fields are named when all are missing (requirement text) 0ms
+     × missing optional fields do not block 0ms
+   ❯ Missing optional elements are omitted (1)
+     × a record with only a title, a journal title, a date and a DOI 0ms
+   ❯ Order of the reference (2)
+     × a complete record with one author 0ms
+     × with four authors the statement of responsibility stands between the subtitle and the journal (requirement text) 3ms
+   ❯ Year selection (5)
+     × the print year wins although the other dates are earlier 0ms
+     × without a print date the issued year is used 0ms
+     × without print and issued dates the published year is used 0ms
+     × the online year is the last source 0ms
+     × month and day are not printed (requirement text) 0ms
+   ❯ DOI note and end of the reference (3)
+     × an ordinary DOI is followed by one full stop 0ms
+     × a DOI that ends in a full stop gets no second one and raises no warning 0ms
+     × no address, date of access or material designation is printed 0ms
+   ❯ Qualifying Roman numeral and numbers in volume and issue (62)
+     × volume "II" 0ms
+     × volume "IV" 0ms
+     × volume "XII" 0ms
+     × volume "XX" 0ms
+     × volume "XL" 0ms
+     × volume "MCMXCIV" 0ms
+     × volume "C" 0ms
+     × volume "V" 0ms
+     × volume "X" 0ms
+     × volume "iv" 0ms
+     × volume "IIII" 0ms
+     × volume "VX" 0ms
+     × volume "IC" 0ms
+     × volume "XXXX" 0ms
+     × volume "IIV" 0ms
+     × volume "12" 0ms
+     × volume "1-3" 0ms
+     × volume "1–3" 0ms
+     × volume "1—3" 0ms
+     × volume "1/3" 0ms
+     × volume "12 - 13" 0ms
+     × volume "1 / 3" 0ms
+     × volume "II-3" 0ms
+     × volume "3 – IV" 0ms
+     × volume "II/IV" 0ms
+     × volume "Suppl IV" 0ms
+     × volume "Suppl 1" 0ms
+     × volume "1-2-3" 0ms
+     × volume "I-II" 0ms
+     × volume "12 - 13" 0ms
+     × volume "12-" 0ms
+     × issue "II" 0ms
+     × issue "IV" 0ms
+     × issue "XII" 0ms
+     × issue "XX" 3ms
+     × issue "XL" 0ms
+     × issue "MCMXCIV" 0ms
+     × issue "C" 0ms
+     × issue "V" 0ms
+     × issue "X" 0ms
+     × issue "iv" 0ms
+     × issue "IIII" 0ms
+     × issue "VX" 0ms
+     × issue "IC" 0ms
+     × issue "XXXX" 0ms
+     × issue "IIV" 0ms
+     × issue "12" 0ms
+     × issue "1-3" 0ms
+     × issue "1–3" 0ms
+     × issue "1—3" 0ms
+     × issue "1/3" 0ms
+     × issue "12 - 13" 0ms
+     × issue "1 / 3" 0ms
+     × issue "II-3" 0ms
+     × issue "3 – IV" 0ms
+     × issue "II/IV" 0ms
+     × issue "Suppl IV" 0ms
+     × issue "Suppl 1" 0ms
+     × issue "1-2-3" 0ms
+     × issue "I-II" 0ms
+     × issue "12 - 13" 0ms
+     × issue "12-" 0ms
+   ❯ Volume (5)
+     × the combined volume "12-13" 0ms
+     × the combined volume "12–13" 0ms
+     × the combined volume "12—13" 0ms
+     × the combined volume "12/13" 0ms
+     × a value that is not normalised still takes the designation 0ms
+   ❯ Issue (7)
+     × the combined issue "1 - 3" 0ms
+     × the combined issue "1–3" 0ms
+     × the combined issue "1—3" 0ms
+     × the combined issue "1/3" 0ms
+     × a Roman-numeral issue is converted and takes the designation 0ms
+     × an arbitrary issue value is printed without the designation 0ms
+     × a single-letter issue is printed without the designation 1ms
+   ❯ Volume and issue zone (5)
+     × volume and issue 0ms
+     × volume and an arbitrary issue value 0ms
+     × volume only 0ms
+     × issue only 0ms
+     × neither: the zone is omitted 0ms
+   ❯ Pages (13)
+     × the plain range "12-18" takes an em dash 0ms
+     × the plain range "12–18" takes an em dash 0ms
+     × the plain range "12—18" takes an em dash 0ms
+     × spaces around the separator of "5 - 12" are dropped 0ms
+     × spaces around the separator of "5 – 12" are dropped 0ms
+     × spaces around the separator of "5— 12" are dropped 0ms
+     × a range with prefixes keeps its en dash 0ms
+     × an electronic locator in the pages is printed as supplied 0ms
+     × "7" is not a plain range and is printed as supplied (requirement text) 0ms
+     × "12-18, 20" is not a plain range and is printed as supplied (requirement text) 0ms
+     × "iv-ix" is not a plain range and is printed as supplied (requirement text) 0ms
+     × "12--18" is not a plain range and is printed as supplied (requirement text) 0ms
+     × "12-18-24" is not a plain range and is printed as supplied (requirement text) 0ms
+   ❯ Article number (3)
+     × pages win over the article number 0ms
+     × without pages the article number is the locator, bare 0ms
+     × without pages and article number the locator zone is omitted 0ms
+   ❯ Heading for one to three authors (4)
+     × one person 0ms
+     × three persons with initials, and nothing after the title 0ms
+     × organisation and person, in source order 0ms
+     × the spacing of initials is kept as supplied 0ms
+   ❯ Incomplete personal name (3)
+     × a family name only is printed without a comma 0ms
+     × a given value only is printed alone 0ms
+     × the same holds after the slash (requirement text) 0ms
+   ❯ Statement of responsibility for four or more authors (3)
+     × four authors, one of them an organisation 0ms
+     × an organisation counts toward the limit of three 0ms
+     × no author is dropped (requirement text) 0ms
+   ❯ Reference without authors (1)
+     × begins with the title and has no statement of responsibility 0ms
+   ❯ Title and subtitle (3)
+     × a subtitle in lower case follows the title after a spaced colon 0ms
+     × a subtitle beginning with a capital letter keeps it 0ms
+     × the title is printed exactly as supplied (requirement text) 0ms
+   ❯ Journal title (1)
+     × a title supplied in an abbreviated form is printed as supplied 0ms
+   ❯ Designations do not depend on language (4)
+     × language "en" 0ms
+     × language "uk" 0ms
+     × language "de" 0ms
+     × language null 2ms
+   ❯ Full stop before a zone (8)
+     × a journal title ending in a full stop keeps the zone full stop and warns 1ms
+     × after "Quo vadis?" the zone full stop follows without a warning 0ms
+     × after "Hooray!" the zone full stop follows without a warning 0ms
+     × after the ellipsis of "And so on…" no zone full stop is added 0ms
+     × after the ellipsis of "And so on..." no zone full stop is added 0ms
+     × the run of full stops in "Odd.." is not an ellipsis 0ms
+     × the run of full stops in "Odd...." is not an ellipsis 0ms
+     × the rule holds at the other zone boundaries (requirement text) 0ms
+   ❯ Full stop after the heading (13)
+     × a full given name is followed by a full stop 0ms
+     × the terminal initial of Smith, K. gets no second full stop 0ms
+     × the terminal initial of Smith, K. J. gets no second full stop 0ms
+     × the terminal initial of Smith, K.J. gets no second full stop 0ms
+     × the terminal initial of Durand, J.-P. gets no second full stop 0ms
+     × the terminal initial of Smith, John K. gets no second full stop 0ms
+     × the terminal initial of Коваленко, О. П. gets no second full stop 0ms
+     × a given value abbreviated to several letters keeps the heading full stop and warns 0ms
+     × an organisation name ending in a full stop keeps the heading full stop and warns 0ms
+     × an organisation name that looks like an initial is not a personal-name initial (requirement text) 0ms
+     × only the last author of the heading decides (requirement text) 0ms
+     × a heading ending in ? or ! keeps the full stop without a warning (requirement text) 0ms
+     × a heading ending in an ellipsis gets no full stop (requirement text) 0ms
+   ❯ Warnings (13)
+     × a subtitle beginning with a capital letter 0ms
+     × a subtitle beginning with a lower-case letter 0ms
+     × the first letter of "2020 Results" is upper case 0ms
+     × the first letter of "«Open» data" is upper case 0ms
+     × the first letter of "Досвід трьох бібліотек" is upper case 0ms
+     × the first letter of "2nd edition" is lower case 0ms
+     × the first letter of "досвід трьох бібліотек" is lower case 0ms
+     × a subtitle without letters 0ms
+     × several collisions give the warning once 0ms
+     × several incomplete names give the warning once (requirement text) 0ms
+     × the three kinds can be raised together (requirement text) 0ms
+     × no condition holds 0ms
+     × a cannot-format outcome carries no warnings 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 172 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Formatting outcome > a formatted reference is plain text
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:76:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Blocking fields > no date of any kind blocks on the year only
+AssertionError: expected [] to deeply equal [ 'year' ]
+
+- Expected
++ Received
+
+- [
+-   "year",
+- ]
++ []
+
+ ❯ lib/dstu/format-journal-article.test.ts:84:69
+     82| describe("Blocking fields", () => {
+     83|   test("no date of any kind blocks on the year only", () => {
+     84|     expect(sorted(blocked({ ...base, dates: NO_DATES }).blockedBy)).to…
+       |                                                                     ^
+     85|   });
+     86|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Blocking fields > a missing title and journal title are both named
+AssertionError: expected [] to deeply equal [ 'journalTitle', 'title' ]
+
+- Expected
++ Received
+
+- [
+-   "journalTitle",
+-   "title",
+- ]
++ []
+
+ ❯ lib/dstu/format-journal-article.test.ts:88:85
+     86|
+     87|   test("a missing title and journal title are both named", () => {
+     88|     expect(sorted(blocked({ ...base, title: null, journalTitle: null }…
+       |                                                                                     ^
+     89|   });
+     90|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Blocking fields > all three critical fields are named when all are missing (requirement text)
+AssertionError: expected [] to deeply equal [ 'journalTitle', 'title', 'year' ]
+
+- Expected
++ Received
+
+- [
+-   "journalTitle",
+-   "title",
+-   "year",
+- ]
++ []
+
+ ❯ lib/dstu/format-journal-article.test.ts:92:102
+     90|
+     91|   test("all three critical fields are named when all are missing (requ…
+     92|     expect(sorted(blocked({ ...base, title: null, journalTitle: null, …
+       |                                                                                                      ^
+     93|       "journalTitle",
+     94|       "title",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Blocking fields > missing optional fields do not block
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/format-journal-article.test.ts:108:47
+    106|       articleNumber: null,
+    107|     };
+    108|     expect(formatJournalArticle(publication)).toMatchObject({ kind: "f…
+       |                                               ^
+    109|   });
+    110| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Missing optional elements are omitted > a record with only a title, a journal title, a date and a DOI
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:124:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Order of the reference > a complete record with one author
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:130:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Order of the reference > with four authors the statement of responsibility stands between the subtitle and the journal (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:139:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Year selection > the print year wins although the other dates are earlier
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ year lib/dstu/format-journal-article.test.ts:146:45
+ ❯ lib/dstu/format-journal-article.test.ts:150:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Year selection > without a print date the issued year is used
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ year lib/dstu/format-journal-article.test.ts:146:45
+ ❯ lib/dstu/format-journal-article.test.ts:161:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Year selection > without print and issued dates the published year is used
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ year lib/dstu/format-journal-article.test.ts:146:45
+ ❯ lib/dstu/format-journal-article.test.ts:172:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Year selection > the online year is the last source
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ year lib/dstu/format-journal-article.test.ts:146:45
+ ❯ lib/dstu/format-journal-article.test.ts:182:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Year selection > month and day are not printed (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ year lib/dstu/format-journal-article.test.ts:146:45
+ ❯ lib/dstu/format-journal-article.test.ts:186:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > DOI note and end of the reference > an ordinary DOI is followed by one full stop
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:192:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > DOI note and end of the reference > a DOI that ends in a full stop gets no second one and raises no warning
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:197:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > DOI note and end of the reference > no address, date of access or material designation is printed
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:202:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "II"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "XII"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "XX"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "XL"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "MCMXCIV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "C"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "V"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "X"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "iv"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "IIII"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "VX"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "IC"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "XXXX"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "IIV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "12"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "1-3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "1–3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "1—3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "1/3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "12 - 13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "1 / 3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "II-3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "3 – IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "II/IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "Suppl IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "Suppl 1"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "1-2-3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "I-II"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "12 - 13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > volume "12-"
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:245:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "II"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "XII"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "XX"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "XL"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "MCMXCIV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "C"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "V"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "X"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "iv"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "IIII"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "VX"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "IC"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "XXXX"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "IIV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "12"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "1-3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "1–3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "1—3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "1/3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "12 - 13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "1 / 3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "II-3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "3 – IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "II/IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "Suppl IV"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "Suppl 1"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "1-2-3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "I-II"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "12 - 13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Qualifying Roman numeral and numbers in volume and issue > issue "12-"
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:252:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume > the combined volume "12-13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume > the combined volume "12–13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume > the combined volume "12—13"
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume > the combined volume "12/13"
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:258:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume > a value that is not normalised still takes the designation
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:262:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > the combined issue "1 - 3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > the combined issue "1–3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > the combined issue "1—3"
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > the combined issue "1/3"
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:268:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > a Roman-numeral issue is converted and takes the designation
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:272:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > an arbitrary issue value is printed without the designation
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:276:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Issue > a single-letter issue is printed without the designation
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:280:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume and issue zone > volume and issue
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:286:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume and issue zone > volume and an arbitrary issue value
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:290:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume and issue zone > volume only
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:296:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume and issue zone > issue only
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:300:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Volume and issue zone > neither: the zone is omitted
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:304:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > the plain range "12-18" takes an em dash
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > the plain range "12–18" takes an em dash
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > the plain range "12—18" takes an em dash
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ locator lib/dstu/format-journal-article.test.ts:311:38
+ ❯ lib/dstu/format-journal-article.test.ts:314:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > spaces around the separator of "5 - 12" are dropped
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > spaces around the separator of "5 – 12" are dropped
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > spaces around the separator of "5— 12" are dropped
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ locator lib/dstu/format-journal-article.test.ts:311:38
+ ❯ lib/dstu/format-journal-article.test.ts:318:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > a range with prefixes keeps its en dash
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ locator lib/dstu/format-journal-article.test.ts:311:38
+ ❯ lib/dstu/format-journal-article.test.ts:322:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > an electronic locator in the pages is printed as supplied
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ locator lib/dstu/format-journal-article.test.ts:311:38
+ ❯ lib/dstu/format-journal-article.test.ts:326:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > "7" is not a plain range and is printed as supplied (requirement text)
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > "12-18, 20" is not a plain range and is printed as supplied (requirement text)
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > "iv-ix" is not a plain range and is printed as supplied (requirement text)
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > "12--18" is not a plain range and is printed as supplied (requirement text)
+ FAIL  lib/dstu/format-journal-article.test.ts > Pages > "12-18-24" is not a plain range and is printed as supplied (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ locator lib/dstu/format-journal-article.test.ts:311:38
+ ❯ lib/dstu/format-journal-article.test.ts:332:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Article number > pages win over the article number
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:339:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Article number > without pages the article number is the locator, bare
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:345:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Article number > without pages and article number the locator zone is omitted
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:349:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Heading for one to three authors > one person
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ heading lib/dstu/format-journal-article.test.ts:356:45
+ ❯ lib/dstu/format-journal-article.test.ts:359:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Heading for one to three authors > three persons with initials, and nothing after the title
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ heading lib/dstu/format-journal-article.test.ts:356:45
+ ❯ lib/dstu/format-journal-article.test.ts:363:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Heading for one to three authors > organisation and person, in source order
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ heading lib/dstu/format-journal-article.test.ts:356:45
+ ❯ lib/dstu/format-journal-article.test.ts:369:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Heading for one to three authors > the spacing of initials is kept as supplied
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ heading lib/dstu/format-journal-article.test.ts:356:45
+ ❯ lib/dstu/format-journal-article.test.ts:375:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Incomplete personal name > a family name only is printed without a comma
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:384:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Incomplete personal name > a given value only is printed alone
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:390:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Incomplete personal name > the same holds after the slash (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:399:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Statement of responsibility for four or more authors > four authors, one of them an organisation
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:415:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Statement of responsibility for four or more authors > an organisation counts toward the limit of three
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:425:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Statement of responsibility for four or more authors > no author is dropped (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:442:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Reference without authors > begins with the title and has no statement of responsibility
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:451:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Title and subtitle > a subtitle in lower case follows the title after a spaced colon
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:462:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Title and subtitle > a subtitle beginning with a capital letter keeps it
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:468:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Title and subtitle > the title is printed exactly as supplied (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:474:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Journal title > a title supplied in an abbreviated form is printed as supplied
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:482:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Designations do not depend on language > language "en"
+ FAIL  lib/dstu/format-journal-article.test.ts > Designations do not depend on language > language "uk"
+ FAIL  lib/dstu/format-journal-article.test.ts > Designations do not depend on language > language "de"
+ FAIL  lib/dstu/format-journal-article.test.ts > Designations do not depend on language > language null
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:488:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > a journal title ending in a full stop keeps the zone full stop and warns
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:497:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > after "Quo vadis?" the zone full stop follows without a warning
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > after "Hooray!" the zone full stop follows without a warning
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:503:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > after the ellipsis of "And so on…" no zone full stop is added
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > after the ellipsis of "And so on..." no zone full stop is added
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:509:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > the run of full stops in "Odd.." is not an ellipsis
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > the run of full stops in "Odd...." is not an ellipsis
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:515:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop before a zone > the rule holds at the other zone boundaries (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:521:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > a full given name is followed by a full stop
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:533:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > the terminal initial of Smith, K. gets no second full stop
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > the terminal initial of Smith, K. J. gets no second full stop
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > the terminal initial of Smith, K.J. gets no second full stop
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > the terminal initial of Durand, J.-P. gets no second full stop
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > the terminal initial of Smith, John K. gets no second full stop
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > the terminal initial of Коваленко, О. П. gets no second full stop
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:546:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > a given value abbreviated to several letters keeps the heading full stop and warns
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:552:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > an organisation name ending in a full stop keeps the heading full stop and warns
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:558:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > an organisation name that looks like an initial is not a personal-name initial (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:564:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > only the last author of the heading decides (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:570:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > a heading ending in ? or ! keeps the full stop without a warning (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:576:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Full stop after the heading > a heading ending in an ellipsis gets no full stop (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ textOf lib/dstu/format-journal-article.test.ts:51:46
+ ❯ lib/dstu/format-journal-article.test.ts:582:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > a subtitle beginning with a capital letter
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ subtitle lib/dstu/format-journal-article.test.ts:588:39
+ ❯ lib/dstu/format-journal-article.test.ts:591:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > a subtitle beginning with a lower-case letter
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ subtitle lib/dstu/format-journal-article.test.ts:588:39
+ ❯ lib/dstu/format-journal-article.test.ts:595:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > the first letter of "2020 Results" is upper case
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > the first letter of "«Open» data" is upper case
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > the first letter of "Досвід трьох бібліотек" is upper case
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ subtitle lib/dstu/format-journal-article.test.ts:588:39
+ ❯ lib/dstu/format-journal-article.test.ts:601:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > the first letter of "2nd edition" is lower case
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > the first letter of "досвід трьох бібліотек" is lower case
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ subtitle lib/dstu/format-journal-article.test.ts:588:39
+ ❯ lib/dstu/format-journal-article.test.ts:606:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > a subtitle without letters
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ subtitle lib/dstu/format-journal-article.test.ts:588:39
+ ❯ lib/dstu/format-journal-article.test.ts:610:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > several collisions give the warning once
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ lib/dstu/format-journal-article.test.ts:619:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > several incomplete names give the warning once (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ lib/dstu/format-journal-article.test.ts:624:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > the three kinds can be raised together (requirement text)
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ lib/dstu/format-journal-article.test.ts:634:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > no condition holds
+AssertionError: expected { Object (kind, blockedBy) } to match object { kind: 'formatted' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
++   "kind": "cannot-format",
+  }
+
+ ❯ formatted lib/dstu/format-journal-article.test.ts:48:19
+     46| function formatted(publication: Publication) {
+     47|   const outcome = formatJournalArticle(publication);
+     48|   expect(outcome).toMatchObject({ kind: "formatted" });
+       |                   ^
+     49|   return outcome as Extract<typeof outcome, { kind: "formatted" }>;
+     50| }
+ ❯ warningsOf lib/dstu/format-journal-article.test.ts:52:57
+ ❯ lib/dstu/format-journal-article.test.ts:640:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/172]⎯
+
+ FAIL  lib/dstu/format-journal-article.test.ts > Warnings > a cannot-format outcome carries no warnings
+AssertionError: expected { Object (kind, blockedBy) } to strictly equal { kind: 'cannot-format', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "blockedBy": [
+-     "year",
+-   ],
++   "blockedBy": [],
+    "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/format-journal-article.test.ts:651:47
+    649|       dates: NO_DATES,
+    650|     };
+    651|     expect(formatJournalArticle(publication)).toStrictEqual({ kind: "c…
+       |                                               ^
+    652|   });
+    653| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF01 one-author-complete yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. Т. 12, № 3. С. 45—67. DOI: 10.0000/golden.gf01.",
+-   "warnings": [],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF02 three-authors-initials-subtitle yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Miller, K. J.; Novak, M.; Durand, J.-P. Measuring reuse of open research data : a survey of three repositories // Example Journal of Information Studies. 2022. Т. 7, № 1/2. С. 101—118. DOI: 10.0000/golden.gf02.",
+-   "warnings": [],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF03 four-authors-title-first yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Persistent identifiers in practice : Lessons from a national pilot / Alice Brown, L. M. Garcia, Open Metadata Working Group, Petro Ivanenko // Example Review of Scholarly Communication. 2019. Т. 12, Suppl 1. С. 5—12. DOI: 10.0000/golden.gf03.",
+-   "warnings": [
+-     "subtitle-capitalisation",
+-   ],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF04 organisation-in-heading-article-number yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Regional Library Consortium; Shevchuk, Iryna. Shared cataloguing after migration // Example Notes on Library Systems. 2023. Т. 45. e0457. DOI: 10.0000/golden.gf04.",
+-   "warnings": [],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF05 no-authors-minimal yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Editorial note on data availability statements // Example Bulletin of Research Practice. 2024. DOI: 10.0000/golden.gf05.",
+-   "warnings": [],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF06 no-year-cannot-format yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'cannot-format', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "blockedBy": [
+-     "year",
+-   ],
++   "blockedBy": [],
+    "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF07 pages-over-article-number-incomplete-name yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Okafor. Supplementary tables for the regional reading survey // Example Annals of Reading Research. 2020. № 4. С. S12–S19. DOI: 10.0000/golden.gf07.",
+-   "warnings": [
+-     "incomplete-personal-name",
+-   ],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/172]⎯
+
+ FAIL  lib/dstu/golden.test.ts > approved golden oracle > GF08 full-stop-collisions yields its approved outcome
+AssertionError: expected { Object (kind, blockedBy) } to deeply equal { kind: 'formatted', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "formatted",
+-   "text": "Bondarenko, Maria. Abbreviated journal names in reference lists // Ex. J. Bibliogr. Stud.. 2021. Т. 30, № 6. С. 300—315. DOI: 10.0000/golden.gf08.",
+-   "warnings": [
+-     "full-stop-collision",
+-   ],
++   "blockedBy": [],
++   "kind": "cannot-format",
+  }
+
+ ❯ lib/dstu/golden.test.ts:31:69
+     29|     "%s %s yields its approved outcome",
+     30|     (_id, _name, fixture) => {
+     31|       expect(comparable(formatJournalArticle(fixture.publication))).to…
+       |                                                                     ^
+     32|     },
+     33|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/172]⎯
+
+
+ Test Files  2 failed | 5 passed (7)
+      Tests  172 failed | 179 passed (351)
+   Start at  22:01:48
+   Duration  864ms (environment 42%, transform 23%, import 17%, tests 16%, worker 2%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+----
+# finished: 2026-10-05T19:01:49Z
+# duration_s: 1
+# exit: 1
+# result: RED
