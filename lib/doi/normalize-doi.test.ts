@@ -103,6 +103,24 @@ describe("Rejection of input that is not a DOI: shape of the registrant code and
   });
 });
 
+// Re-review finding R3: such text cannot be put into a request URL, so it is not a DOI.
+describe("Rejection of input that is not a DOI: unpaired surrogates", () => {
+  test.each([
+    ["a high surrogate with no low surrogate after it", "10.1000/ab\ud800cd"],
+    ["a low surrogate with no high surrogate before it", "10.1000/ab\udc00cd"],
+    ["a low surrogate followed by a high one", "10.1000/ab\udc00\ud800cd"],
+    ["a high surrogate at the very end", "10.1000/abcd\ud83d"],
+  ])("Unpaired surrogate in the suffix: %s", (_description, input) => {
+    expect(normalizeDoi(input)).toEqual(rejected);
+  });
+
+  test("Character outside the Basic Multilingual Plane", () => {
+    const doi = "10.1000/ab\u{1F600}cd";
+
+    expect(normalizeDoi(doi)).toEqual(accepted(doi));
+  });
+});
+
 describe("Other input forms are rejected", () => {
   test("Insecure scheme", () => {
     expect(normalizeDoi("http://doi.org/10.1038/nature12373")).toEqual(rejected);

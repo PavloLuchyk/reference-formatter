@@ -104,6 +104,14 @@ describe("Invalid input is rejected before lookup", () => {
     expect(await resolve("http://dx.doi.org/10.1038/nature12373", fetchFake)).toEqual(failure("invalid-input"));
     expect(fetchFake).not.toHaveBeenCalled();
   });
+
+  // Re-review finding R3: this used to be reported as a provider outage.
+  test("Input with an unpaired surrogate", async () => {
+    const fetchFake = answeringFixture("nature12373.json");
+
+    expect(await resolve("10.1000/ab\ud800cd", fetchFake)).toEqual(failure("invalid-input"));
+    expect(fetchFake).not.toHaveBeenCalled();
+  });
 });
 
 describe("Crossref is the only metadata source", () => {
