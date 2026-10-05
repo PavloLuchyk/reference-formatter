@@ -40,14 +40,14 @@
 
 - [x] 7.1 Resolve `10.1038/nature12373` once against the live Crossref API through the real provider, from a throwaway script that is not committed, and run it through `bash scripts/record-run.sh doi-live-check -- <command>` so that its output is kept; verify the record shows one request and an outcome equal to the approved `Publication` for that fixture, and report any difference instead of adjusting the fixture (reopened on 2026-10-05: the first run passed but left no evidence, and the request construction changes in 8.3; closed on 2026-10-05 at `efe01ac` by `evidence/runs/20261005T105814Z_doi-live-check.log`, after `…T105752Z_doi-live-check.log` passed without showing the request or the outcome)
 - [x] 7.2 On a clean tree, run `bash scripts/record-run.sh doi-resolution-green`; verify the record says `# exit: 0` and `GREEN` (closed by `evidence/runs/20261005T104614Z_doi-resolution-green.log`: clean tree at `efe01ac`, exit 0, GREEN)
-- [ ] 7.3 Request an independent review of the slice against the three specs; verify every finding has a disposition recorded by the human (kept open by the human on 2026-10-05: the read-only review after the R repair has its dispositions in `design.md`, but a genuinely fresh independent review is still required)
+- [x] 7.3 Request an independent review of the slice against the three specs; verify every finding has a disposition recorded by the human (kept open by the human on 2026-10-05 after the read-only review, because a genuinely fresh independent review was still required; closed on 2026-10-05 by the final independent review at `1f87b50`: no blocking findings, four findings with human dispositions in `design.md`, verdict READY TO ARCHIVE)
 
 ## 8. Repair after the checker review of 2026-10-05
 
 - [x] 8.1 Update the specs and `design.md` for the human's F1 clarification (record accepted only for a canonically equivalent DOI; DOI cannot alter the request URL) and for the cleaning rules that close F3, F4 and F5, and correct the documentation and evidence drift of F7; verify `pnpm spec:check` exits 0 and `design.md` has a "Verification history" section that describes the first RED as stub-error-driven
 - [x] 8.2 Add regression tests for the accepted findings F1 to F5 without changing the implementation, changing an existing test only where the F1 clarification reverses its expectation; verify `pnpm test` fails only in new or reversed tests, that the failures are assertion failures, and record the run with `bash scripts/record-run.sh doi-checker-findings-red -- pnpm test`
 - [x] 8.3 Repair the implementation until the tests from 8.2 pass unchanged; verify `pnpm check` exits 0 and that no test, fixture or expected value changed
-- [x] 8.4 Repeat the single-line mutation check on the repaired code for the six changes that survived in finding F2; verify each is now caught by a test
+- [x] 8.4 Repeat the single-line mutation check on the repaired code for the six changes that survived in finding F2; verify each is now caught by a test (performed on 2026-10-05, but its result was not kept; by the human's disposition of finding 2 of the final review this is an evidence limitation and is not claimed as formal mutation evidence)
 
 ## 9. Repair after the re-review of 2026-10-05
 

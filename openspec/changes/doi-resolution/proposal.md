@@ -55,14 +55,19 @@ None. `openspec/specs/` is empty; these are the project's first specs.
 - **Code**: new pure domain modules under `lib/` (which does not exist yet), with
   no dependency on React, Next.js or, outside the Crossref provider, the network.
   No change to `app/`.
-- **Dependencies**: none added. The lookup uses the platform `fetch`.
+- **Dependencies**: no runtime product dependency added; the lookup uses the
+  platform `fetch`. OpenSpec (`@fission-ai/openspec`, a devDependency) was added
+  as development and tooling infrastructure for this spec workflow, with its
+  `.claude/commands/opsx/` commands and `.claude/skills/openspec-*` skills
+  (commit `1fd61a4`).
 - **External system**: the public Crossref REST API (`api.crossref.org`), read
   only, one request per resolution.
 - **Configuration**: possibly one optional contact address for Crossref, supplied
   by the human (HD-9). The agent does not create or edit `.env*`.
 - **Verification**: new Vitest tests in the `node` environment and recorded
-  Crossref fixtures with provenance. `pnpm check` stays the gate; no change to
-  scripts, CI or hooks.
+  Crossref fixtures with provenance. `pnpm check` stays the gate. The script
+  `spec:check` was introduced to validate the specs with OpenSpec. No change to
+  CI or hooks.
 - **Later slices**: the formatter and the workspace depend on `Publication` and
   on the canonical DOI as identity; the field set may need extending once the
   DSTU journal-article profile is approved (HD-5).

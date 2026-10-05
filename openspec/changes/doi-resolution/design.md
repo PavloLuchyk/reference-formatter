@@ -228,6 +228,35 @@ slice (findings 1–5):
 - Task 7.2 is closed by the existing clean GREEN record at `efe01ac`. Task 7.3
   stays open: it still requires a genuinely fresh independent review.
 
+Final independent review of 2026-10-05 (findings 1–4, numbered separately from
+the read-only review above). Reviewed HEAD: `1f87b50`, whose code, tests and
+fixtures are identical to `efe01ac`. Reviewer verdict: no blocking findings;
+READY TO ARCHIVE once the human has recorded dispositions and closed task 7.3.
+Decisions by the human on 2026-10-05:
+
+- 1, deferred. Four behaviours stated in the specs are correct at `1f87b50`
+  but no test pins them: a stacked prefix such as
+  `doi:https://doi.org/10.1038/x` is rejected; a matched tag pair after an
+  empty-element tag adds no space (`A<br/>B<sub>2</sub>O` gives `A B2O`);
+  numeric references to U+007F–U+009F are kept as supplied; and
+  `createPublication` itself trims author names and drops a nameless person,
+  which the tests reach only through the Crossref mapper. Accepted as a
+  test-hardening gap; no tests are added in this slice.
+- 2, accepted as an evidence limitation. Task 8.4 was performed, but no
+  durable record of its result exists, so it is not claimed as formal mutation
+  evidence.
+- 3, accepted. `proposal.md` said that no dependency was added and no script
+  changed. It is corrected: OpenSpec was added as development and tooling
+  infrastructure and `spec:check` was introduced; no runtime product dependency
+  was added.
+- 4, accepted. `docs/session-notes.md` was stale and is brought up to the
+  current verified state.
+- Still deferred from the earlier reviews, unchanged: F6 (a malformed contact
+  address is reported as `provider-unavailable`) and finding 5 of the read-only
+  review (a literal no-break space lost next to removed markup). Both are under
+  Risks.
+- Task 7.3 is closed by this review. Verdict: READY TO ARCHIVE.
+
 ### Crossref field → Publication field mapping (approved by the human on 2026-10-05, task 1.6)
 
 This table is the authority for the mapping. Fixtures and their expected values
@@ -318,6 +347,13 @@ not usable and counts as not supplied.
   as a known low-severity limitation: product code is not changed in this
   slice, no test covers the case, and the user can correct the title manually
   in the workspace slice.
+- [Four spec-stated behaviours are implemented but not pinned by a test:
+  rejection of stacked prefixes, no space added by a matched tag pair after an
+  empty-element tag, numeric references to U+007F–U+009F kept as supplied, and
+  the author rules of `createPublication` when it is called directly] →
+  Finding 1 of the final independent review of 2026-10-05, deferred by the
+  human as a test-hardening gap: a later change to that code could break these
+  behaviours without a failing test.
 
 ## Verification history
 
@@ -388,6 +424,24 @@ What the recorded evidence does and does not prove, stated plainly.
   ran in a copy outside the repository and are not recorded in
   `evidence/runs/`. The human keeps task 7.3 open: a genuinely fresh
   independent review is still required.
+- **Repeat mutation check of task 8.4.** The agent log shows a mutation script
+  written and run on 2026-10-05 after the F1–F5 repair, seconds before the
+  task was ticked. Its output was not kept and no run record exists, so it is
+  not formal mutation evidence (finding 2 of the final review).
+- **Final gate** is recorded in `…T110119Z_doi-final-gate.log`: `pnpm check`,
+  exit 0, 176 passed at `008616a`. The record says the tree is dirty only
+  because `docs/session-notes.md` was untracked.
+- **Final independent review (2026-10-05)** at `1f87b50`, in a fresh agent
+  session that had written none of the tests, code, specs or evidence. It
+  returned no blocking findings and four non-blocking ones; their dispositions
+  are under Decisions, and it closes task 7.3. What it ran, none of it recorded
+  in `evidence/runs/`: `pnpm check` (exit 0, 176 passed) and `pnpm spec:check`
+  (exit 0) in the repository; the R1/R3/R4 reconstruction again, with the same
+  result of 14 failed and 161 passed; and 78 single-line changes applied to
+  copies of the source files outside the repository, of which the tests caught
+  69 and missed 9. Four of the nine are finding 1; the other five are
+  equivalent changes or lie outside the specs. Like the earlier mutation
+  checks, that run is a reviewer's probe, not formal mutation evidence.
 
 ## Open Questions
 
