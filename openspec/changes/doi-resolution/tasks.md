@@ -36,8 +36,15 @@
 - [x] 6.2 Implement the Crossref provider and the resolve operation with `fetch` and configuration injected (design TD-4, TD-7); verify the tests from 6.1 pass unchanged and `pnpm check` exits 0
 - [x] 6.3 Check the boundary: verify by search that nothing outside `lib/metadata/` imports `lib/metadata/crossref/`, and that nothing under `lib/` imports `react`, `next` or reads `process.env`
 
-## 7. Integration checks
+## 7. Integration checks (run after group 8)
 
-- [x] 7.1 Resolve `10.1038/nature12373` once against the live Crossref API through the real provider, from a throwaway script that is not committed; verify the outcome equals the approved `Publication` for that fixture and report any difference instead of adjusting the fixture
+- [ ] 7.1 Resolve `10.1038/nature12373` once against the live Crossref API through the real provider, from a throwaway script that is not committed, and run it through `bash scripts/record-run.sh doi-live-check -- <command>` so that its output is kept; verify the record shows one request and an outcome equal to the approved `Publication` for that fixture, and report any difference instead of adjusting the fixture (reopened on 2026-10-05: the first run passed but left no evidence, and the request construction changes in 8.3)
 - [ ] 7.2 On a clean tree, run `bash scripts/record-run.sh doi-resolution-green`; verify the record says `# exit: 0` and `GREEN`
 - [ ] 7.3 Request an independent review of the slice against the three specs; verify every finding has a disposition recorded by the human
+
+## 8. Repair after the checker review of 2026-10-05
+
+- [x] 8.1 Update the specs and `design.md` for the human's F1 clarification (record accepted only for a canonically equivalent DOI; DOI cannot alter the request URL) and for the cleaning rules that close F3, F4 and F5, and correct the documentation and evidence drift of F7; verify `pnpm spec:check` exits 0 and `design.md` has a "Verification history" section that describes the first RED as stub-error-driven
+- [x] 8.2 Add regression tests for the accepted findings F1 to F5 without changing the implementation, changing an existing test only where the F1 clarification reverses its expectation; verify `pnpm test` fails only in new or reversed tests, that the failures are assertion failures, and record the run with `bash scripts/record-run.sh doi-checker-findings-red -- pnpm test`
+- [ ] 8.3 Repair the implementation until the tests from 8.2 pass unchanged; verify `pnpm check` exits 0 and that no test, fixture or expected value changed
+- [ ] 8.4 Repeat the single-line mutation check on the repaired code for the six changes that survived in finding F2; verify each is now caught by a test

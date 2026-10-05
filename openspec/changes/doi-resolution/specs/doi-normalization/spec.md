@@ -93,6 +93,22 @@ structural only.
 - **WHEN** the input is `10.1002/(sici)1097-4571(199205)43:4<284::aid-asi3>3.0.co;2-0`
 - **THEN** the input is accepted and the canonical DOI equals the input
 
+#### Scenario: Registrant code too short
+- **WHEN** the input is `10.123/abc`
+- **THEN** the input is rejected as an invalid DOI
+
+#### Scenario: Registrant code too long
+- **WHEN** the input is `10.1234567890/abc`
+- **THEN** the input is rejected as an invalid DOI
+
+#### Scenario: Control character in the suffix
+- **WHEN** the input is `10.1000/ab`, the control character U+0007, `c`
+- **THEN** the input is rejected as an invalid DOI
+
+#### Scenario: Registrant code with a further digit group
+- **WHEN** the input is `10.1000.10/abc`
+- **THEN** the input is accepted and the canonical DOI is `10.1000.10/abc`
+
 ### Requirement: Other input forms are rejected
 The system SHALL reject, as an invalid DOI, a DOI written in any form other than
 the three accepted ones, including the `http://` scheme, the `dx.doi.org` host

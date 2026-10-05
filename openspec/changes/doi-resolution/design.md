@@ -30,11 +30,27 @@ be absent; `author` entries have `given`, `family`, `sequence`; dates are
 `date-parts` lists with one to three numbers, and print and online dates can
 differ (`2013-08` versus `2013-07-31` for the Nature article).
 
-Not observed, and therefore assumptions to confirm with a fixture before the
-matching code is written: markup inside titles, group authors given only as
-`name`, the `article-number` field, a record whose `DOI` differs from the
-requested one, the HTTP 429 and 5xx answers, and how a DOI with reserved URL
-characters must be encoded in the request path.
+Not observed at that time, and therefore listed as assumptions: markup inside
+titles, group authors given only as `name`, the `article-number` field, a record
+whose `DOI` differs from the requested one, the HTTP 429 and 5xx answers, and how
+a DOI with reserved URL characters must be encoded in the request path.
+
+State of those assumptions on 2026-10-05, after the fixtures and the checker
+review:
+
+- Confirmed by recorded fixtures: title markup, group authors as `name`,
+  `article-number`, and an article without volume, issue or page
+  (`lib/metadata/crossref/__fixtures__/provenance.json`).
+- Observed live during the review, not recorded as fixtures: Crossref answers
+  `GET /works/10.1038/nature12373/` (trailing slash) with the record for
+  `10.1038/nature12373`, so a record's DOI can differ from the requested one;
+  Crossref accepts the whole DOI as one percent-encoded path segment
+  (`/works/10.1038%2Fnature12373` and a DOI containing `:`, `<`, `>` and `;`
+  both answered 200 with the matching record), and answers 404 for
+  `10.1038%2Fnature12373%2F` and for DOIs containing `%2F..%2F`.
+- Still not observed, tested only with constructed input: the HTTP 429 and 5xx
+  answers, an author entry with both a personal name and `name`, and a date
+  without a year.
 
 ## Goals / Non-Goals
 
@@ -76,10 +92,11 @@ never an empty string. Alternative: omit absent keys. Rejected because "missing"
 must be enumerable for the later correction UI.
 
 **TD-4 Network is injected.** The Crossref provider receives the `fetch`
-function and its configuration (application name, optional contact address, time
-limit) as arguments. Tests pass a fake `fetch`. Alternative: call the global
-`fetch` and read `process.env` in place. Rejected by the project rules and
-because it would make the provider untestable offline.
+function and its configuration (application name, optional contact address) as
+arguments. The 10-second limit is fixed by the spec and is a constant of the
+provider, not configuration. Tests pass a fake `fetch`. Alternative: call the
+global `fetch` and read `process.env` in place. Rejected by the project rules
+and because it would make the provider untestable offline.
 
 **TD-5 Hand-written response narrowing.** The Crossref body is treated as
 unknown and narrowed field by field. Alternative: a schema library. Rejected for
@@ -93,10 +110,22 @@ network. Fixtures are test inputs, not the authority for the mapping: their
 expected `Publication` values are derived from the approved mapping table below.
 
 **TD-7 One request, server-side identification.** The request is
-`GET https://api.crossref.org/works/{DOI}` with the DOI percent-encoded, an
-application-identifying `User-Agent`, and the contact address added only when
-configured. A browser cannot set `User-Agent`, so this design expects the later
-entry point to run on the server.
+`GET https://api.crossref.org/works/{DOI}`, where the whole canonical DOI is
+percent-encoded as a single path segment (its slashes become `%2F`), so that no
+DOI content can change the URL. The first implementation kept the slashes as
+path separators; the checker review showed that this lets `.`/`..` segments and
+a trailing slash reach another work's record (finding F1), so the repair in
+task 8.3 replaces it.
+The request carries an application-identifying `User-Agent`, and the contact
+address is added only when configured. A browser cannot set `User-Agent`, so
+this design expects the later entry point to run on the server.
+
+**TD-8 A record is trusted only for its own DOI.** Before any mapping, the
+provider compares the DOI stated by the record with the requested canonical DOI,
+ignoring Basic Latin letter case. A different or absent DOI is an
+`invalid-response`; the record is discarded whole. The check lives in the
+provider, so the mapping function still receives the requested DOI and never
+reads the record's.
 
 ### Human decisions (decided 2026-10-05)
 
@@ -121,7 +150,8 @@ Follow-up decisions by the human on the details the first answers left open
 
 - HD-1: confirmed. The canonical form has Basic Latin letters in lower case and
   other characters unchanged; when the Crossref record states a different DOI,
-  the Publication keeps the normalized requested DOI.
+  the Publication keeps the normalized requested DOI. (The second half is
+  superseded by the clarification of 2026-10-05 below.)
 - HD-2: both `doi:10.…` and `doi: 10.…` are accepted. Percent-encoding is not
   decoded and no other URL forms are added.
 - HD-4: the failure kind name `invalid-input` is accepted.
@@ -142,6 +172,32 @@ Follow-up decisions by the human on the details the first answers left open
   an organisation is kept if it has a usable group name; only fully nameless
   entries are omitted.
 
+Decisions by the human on 2026-10-05 after the checker review (findings F1–F7):
+
+- Accepted: F1, F2, F3, F4, F5, F7. Deferred: F6, because application
+  configuration is trusted input for this MVP and no new failure kind is to be
+  introduced.
+- HD-1, clarified for F1: Crossref metadata may be accepted only when the DOI
+  returned by Crossref is canonically equivalent to the requested DOI. A
+  different DOI must produce an invalid provider response; metadata from another
+  identity is never adopted. The Crossref request is constructed so that DOI
+  contents cannot alter the URL path structure.
+- The human wrote the failure as `invalid-provider-response`. It is recorded
+  here as the existing kind `invalid-response` (HD-4's "invalid provider
+  response"), so that no failure kind is added or renamed. To be corrected if a
+  rename was intended.
+
+Cleaning rules written by the agent to close the accepted findings F3–F5. They
+are in the specs for the human's review and are not separate human decisions:
+
+- F3: text is markup only as an empty-element tag or as an opening tag with a
+  later closing tag of the same name; unmatched tag-shaped text is kept.
+- F4: a numeric reference is decoded only when it denotes a Unicode character
+  that is neither a surrogate nor a control character other than tab, line feed
+  and carriage return.
+- F5: a run of spaces, tabs and line breaks that contains a decoded character
+  collapses to one space; a decoded no-break space is kept.
+
 ### Crossref field → Publication field mapping (approved by the human on 2026-10-05, task 1.6)
 
 This table is the authority for the mapping. Fixtures and their expected values
@@ -151,7 +207,7 @@ where marked "not observed".
 
 | Crossref field | Publication field | Rule |
 |---|---|---|
-| — (the requested DOI, normalized) | DOI | Not taken from the record's `DOI` (HD-1). |
+| — (the requested DOI, normalized) | DOI | Not taken from the record's `DOI`. The record's `DOI` must be canonically equivalent to the requested DOI, otherwise the whole record is rejected as `invalid-response` (HD-1 as clarified on 2026-10-05). |
 | `type` | — | Must be `journal-article`; otherwise `unsupported-type` (HD-4). Not stored. |
 | `title[0]` | title | Cleaned per HD-7. |
 | `subtitle[0]` | subtitle | Cleaned per HD-7; kept separate. |
@@ -215,6 +271,41 @@ not usable and counts as not supplied.
 - [Recorded fixtures go stale as Crossref metadata changes] → Fixtures are
   evidence of a dated answer, not a claim about today's record; provenance is
   stored with each.
+- [A malformed contact address, for example one containing a line break, makes
+  the request fail and is reported as `provider-unavailable`] → Finding F6,
+  deferred by the human on 2026-10-05: application configuration is trusted
+  input for this MVP and no new failure kind is introduced.
+- [Matched-tag detection keeps malformed markup, such as an unclosed `<i>`, in
+  the title] → Accepted consequence of the F3 rule: visible leftover markup is
+  preferred to silently deleted text, and the user can correct it manually in
+  the workspace slice.
+
+## Verification history
+
+What the recorded evidence does and does not prove, stated plainly.
+
+- **First RED was stub-error-driven, not assertion-level.** The three recorded
+  RED runs (`evidence/runs/20261005T084211Z_doi-normalization-red.log`,
+  `…T084623Z_doi-resolution-red.log`, and the clean-tree
+  `…T090742Z_doi-red.log`) contain no assertion failure at all. Every failing
+  test failed because a stub threw `Error: Not implemented: <function>`. Those
+  runs prove that the tests loaded, ran and reached unimplemented code; they do
+  not prove that any of those 109 assertions can fail for a wrong result.
+- **First assertion-level RED was not recorded.** Three angle-bracket regression
+  tests failed on assertions before the markup rule was tightened. That run
+  happened in the working session and was never written to `evidence/runs/`.
+- **GREEN** is recorded in `…T093221Z_doi-resolution-green.log` (121 passed, clean
+  tree at `299a132`).
+- **Checker review (2026-10-05).** It was carried out by the same agent that
+  wrote the tests and the code, so it is not the independent review of task 7.3.
+  It applied 54 single-line changes to a copy of the code outside the repository:
+  the tests caught 48 and missed 6 (finding F2). That check and the live Crossref
+  probes it used are not recorded in `evidence/runs/`.
+- **Live check of task 7.1.** It was run once from a throwaway file and passed,
+  but its output was not kept, so the repository holds no evidence of it. The
+  task is reopened and must be recorded when it is repeated after the repair.
+- **Second RED (tasks 8.1–8.2)** is assertion-level and is recorded with
+  `bash scripts/record-run.sh doi-checker-findings-red -- pnpm test`.
 
 ## Open Questions
 

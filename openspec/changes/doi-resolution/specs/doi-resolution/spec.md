@@ -94,6 +94,10 @@ It SHALL send one request per resolution and SHALL NOT retry automatically.
 - **WHEN** Crossref answers HTTP 503
 - **THEN** the outcome is a `provider-unavailable` failure
 
+#### Scenario: Other server errors
+- **WHEN** Crossref answers HTTP 500, 502 or 504
+- **THEN** the outcome is a `provider-unavailable` failure and no second request is sent
+
 ### Requirement: Unusable response
 The system SHALL return an `invalid-response` failure when Crossref answers
 successfully but the answer is not a usable work record, or when Crossref
@@ -113,16 +117,55 @@ answers with an HTTP status this capability does not otherwise define.
 
 ### Requirement: Publication DOI is the normalized requested DOI
 The DOI of a resolved Publication SHALL be the canonical form of the DOI that was
-requested, including when the Crossref record states a DOI that differs from it.
-The text the user typed SHALL NOT be kept in the Publication.
+requested. The text the user typed SHALL NOT be kept in the Publication.
 
 #### Scenario: Record states the same DOI
 - **WHEN** `10.1038/NATURE12373` is resolved and the record states `10.1038/nature12373`
 - **THEN** the Publication DOI is `10.1038/nature12373`
 
+### Requirement: Record must be for the requested DOI
+The system SHALL accept a Crossref record only when the DOI it states is
+canonically equivalent to the requested DOI, that is, identical once Basic Latin
+letter case is ignored. For a record that states a different DOI, or no DOI, the
+system SHALL return an `invalid-response` failure and SHALL NOT use any metadata
+of that record.
+
+#### Scenario: Record states the DOI in another letter case
+- **WHEN** `10.1038/nature12373` is resolved and the record states `10.1038/NATURE12373`
+- **THEN** the outcome is a Publication whose DOI is `10.1038/nature12373`
+
 #### Scenario: Record states a different DOI
-- **WHEN** a DOI is resolved and the record states a different DOI
-- **THEN** the Publication DOI is the canonical form of the requested DOI
+- **WHEN** `10.1038/nature12373` is resolved and the record states `10.9999/another-doi`
+- **THEN** the outcome is an `invalid-response` failure
+- **AND** no value of that record appears in the outcome
+
+#### Scenario: Record of another work answered for a trailing slash
+- **WHEN** `10.1038/nature12373/` is resolved and Crossref answers with the record that states `10.1038/nature12373`
+- **THEN** the outcome is an `invalid-response` failure
+
+#### Scenario: Record states no DOI
+- **WHEN** the record of a journal article states no DOI
+- **THEN** the outcome is an `invalid-response` failure
+
+### Requirement: DOI cannot alter the request URL
+The system SHALL place the canonical DOI in the request URL as exactly one path
+segment after `/works/`, with every character that has a meaning in a URL,
+including `/`, `?`, `#` and `%`, percent-encoded. No content of a DOI SHALL
+change the host, the path structure, the query or the fragment of the request.
+
+#### Scenario: Slash in the DOI
+- **WHEN** `10.1038/nature12373` is resolved
+- **THEN** the request is sent to host `api.crossref.org` with path `/works/10.1038%2Fnature12373`
+
+#### Scenario: Dot segments in the DOI
+- **WHEN** `10.1234/../10.1038/nature12373` is resolved
+- **THEN** the request path is `/works/10.1234%2F..%2F10.1038%2Fnature12373`
+- **AND** Crossref is not asked for `10.1038/nature12373`
+
+#### Scenario: Query and fragment characters in the DOI
+- **WHEN** `10.1000/a?b#c` is resolved
+- **THEN** the request path is `/works/10.1000%2Fa%3Fb%23c`
+- **AND** the request has no query and no fragment
 
 ### Requirement: Field mapping from the Crossref record
 The system SHALL fill the Publication from the Crossref record as follows: title
@@ -229,6 +272,76 @@ every other named entity exactly as supplied.
 #### Scenario: Other named entity is preserved
 - **WHEN** the record title is `Caf&eacute; society&nbsp;today`
 - **THEN** the Publication title is `Caf&eacute; society&nbsp;today`
+
+#### Scenario: Escaped markup is not markup
+- **WHEN** the record title is `&lt;i&gt;Escherichia coli&lt;/i&gt;`
+- **THEN** the Publication title is `<i>Escherichia coli</i>`
+
+### Requirement: Only matched markup is removed
+The system SHALL treat text as markup only when it is an empty-element tag, or
+an opening tag together with a later closing tag of the same name. Text that
+merely has the shape of a tag, such as an opening tag that is never closed or a
+closing tag that was never opened, SHALL be kept as supplied.
+
+#### Scenario: Tag-shaped text without a closing tag
+- **WHEN** the record title is `Role of <y> in <N>-body systems`
+- **THEN** the Publication title is `Role of <y> in <N>-body systems`
+
+#### Scenario: Unclosed tag
+- **WHEN** the record title is `Bold <b>move`
+- **THEN** the Publication title is `Bold <b>move`
+
+#### Scenario: Closing tag without an opening tag
+- **WHEN** the record title is `End of </i> an era`
+- **THEN** the Publication title is `End of </i> an era`
+
+#### Scenario: Matched tags are removed
+- **WHEN** the record title is `H<sub>2</sub>O and <i>E. coli</i>`
+- **THEN** the Publication title is `H2O and E. coli`
+
+#### Scenario: Empty-element tag is removed
+- **WHEN** the record title is `Scattering of x rays<br/>`
+- **THEN** the Publication title is `Scattering of x rays`
+
+### Requirement: Numeric references to unusable characters are kept
+The system SHALL decode a numeric character reference only when it denotes a
+Unicode character that is not a surrogate and not a control character other than
+tab, line feed and carriage return. Any other numeric reference SHALL be left
+exactly as supplied.
+
+#### Scenario: Surrogate
+- **WHEN** the record title is `A&#xD800;B`
+- **THEN** the Publication title is `A&#xD800;B`
+
+#### Scenario: Control character
+- **WHEN** the record title is `A&#7;B`
+- **THEN** the Publication title is `A&#7;B`
+
+#### Scenario: Null character and value beyond Unicode
+- **WHEN** the record title is `A&#0;B and C&#x110000;D`
+- **THEN** the Publication title is `A&#0;B and C&#x110000;D`
+
+### Requirement: Whitespace produced by decoding is collapsed
+A run of spaces, tabs and line breaks that contains at least one character
+produced by decoding an entity SHALL be collapsed to one space. A decoded
+no-break space SHALL be kept as it is, and whitespace that was already in the
+text and touches no decoded character SHALL stay as supplied.
+
+#### Scenario: Decoded space between spaces
+- **WHEN** the record title is `A &#32; B`
+- **THEN** the Publication title is `A B`
+
+#### Scenario: Decoded line break
+- **WHEN** the record title is `A&#10;B`
+- **THEN** the Publication title is `A B`
+
+#### Scenario: Decoded tab next to a decoded space
+- **WHEN** the record title is `A&#9;&#32;B`
+- **THEN** the Publication title is `A B`
+
+#### Scenario: Decoded no-break space
+- **WHEN** the record title is `5&#160;km`
+- **THEN** the Publication title is `5`, one no-break space (U+00A0), `km`
 
 ### Requirement: Author mapping
 The system SHALL map each Crossref author entry, in the order given, to a person
