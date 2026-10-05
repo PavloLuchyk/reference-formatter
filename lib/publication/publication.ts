@@ -69,18 +69,77 @@ export type PublicationInput = {
   readonly language?: string | null;
 };
 
+const DATE_KINDS = ["print", "online", "published", "issued"] as const;
+
+// A blank value is a missing value. A value that is not blank is kept exactly as supplied.
+const valueOrMissing = (value: string | null | undefined): string | null =>
+  value == null || value.trim() === "" ? null : value;
+
+// Names keep their content but lose surrounding whitespace; a blank name is a missing name.
+const nameOrMissing = (name: string | null | undefined): string | null => name?.trim() || null;
+
+const toDate = (date: PublicationDateInput | null | undefined): PublicationDate | null => {
+  if (date == null) return null;
+  const month = date.month ?? null;
+  return { year: date.year, month, day: month === null ? null : (date.day ?? null) };
+};
+
+// An entry that supplies no name at all cannot be represented without inventing one, so it is left out.
+const toAuthor = (author: AuthorInput): Author | null => {
+  if (author.kind === "organisation") {
+    const name = nameOrMissing(author.name);
+    return name === null ? null : { kind: "organisation", name };
+  }
+  const family = nameOrMissing(author.family);
+  const given = nameOrMissing(author.given);
+  return family === null && given === null ? null : { kind: "person", family, given };
+};
+
+// Builds the record field by field, so nothing beyond the defined fields can travel with it.
 export function createPublication(input: PublicationInput): Publication {
-  void input;
-  throw new Error("Not implemented: createPublication");
+  return {
+    doi: input.doi,
+    title: valueOrMissing(input.title),
+    subtitle: valueOrMissing(input.subtitle),
+    authors: (input.authors ?? []).map(toAuthor).filter((author) => author !== null),
+    journalTitle: valueOrMissing(input.journalTitle),
+    dates: {
+      print: toDate(input.dates?.print),
+      online: toDate(input.dates?.online),
+      published: toDate(input.dates?.published),
+      issued: toDate(input.dates?.issued),
+    },
+    volume: valueOrMissing(input.volume),
+    issue: valueOrMissing(input.issue),
+    pages: valueOrMissing(input.pages),
+    articleNumber: valueOrMissing(input.articleNumber),
+    language: valueOrMissing(input.language),
+  };
 }
 
+const isMissing = (publication: Publication, field: PublicationField): boolean => {
+  if (field === "authors") return publication.authors.length === 0;
+  if (field === "dates") return DATE_KINDS.every((kind) => publication.dates[kind] === null);
+  return publication[field] === null;
+};
+
+const OPTIONAL_FIELDS: readonly PublicationField[] = [
+  "title",
+  "subtitle",
+  "authors",
+  "journalTitle",
+  "dates",
+  "volume",
+  "issue",
+  "pages",
+  "articleNumber",
+  "language",
+];
+
 export function missingFields(publication: Publication): PublicationField[] {
-  void publication;
-  throw new Error("Not implemented: missingFields");
+  return OPTIONAL_FIELDS.filter((field) => isMissing(publication, field));
 }
 
 export function isSamePublication(a: Publication, b: Publication): boolean {
-  void a;
-  void b;
-  throw new Error("Not implemented: isSamePublication");
+  return a.doi === b.doi;
 }

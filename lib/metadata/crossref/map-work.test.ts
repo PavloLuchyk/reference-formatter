@@ -204,6 +204,26 @@ describe("Title text", () => {
     expect(publication.subtitle).toBe("A critical appraisal");
   });
 
+  // Regression: only text with the syntax of a markup tag is removed; other angle-bracket text stays.
+  test.each([
+    "Survival when p < 0.05 and n > 30",
+    "Slip along the <111> direction",
+    "Orderings where a<b and c>d",
+    "Bounds 1<x and y>2 revisited",
+  ])("Angle-bracket text that is not markup is kept: %s", (title) => {
+    expect(titleFrom(title)).toBe(title);
+  });
+
+  test("Markup is removed next to angle-bracket text that is not markup", () => {
+    expect(titleFrom("Effect of <i>x</i> when x < 3 and a<b and c>d")).toBe("Effect of x when x < 3 and a<b and c>d");
+  });
+
+  test("Markup with attributes is still removed", () => {
+    const math = '<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>x</mml:mi></mml:math>';
+
+    expect(titleFrom(`Scattering of ${math} rays<br/>`)).toBe("Scattering of x rays");
+  });
+
   test("Markup in a real recorded title", () => {
     expect(mapFixture("title-markup.json").title).toBe("Escherichia coli");
   });
@@ -216,6 +236,36 @@ describe("Title text", () => {
 
     expect(publication.subtitle).toBe("The E. coli case & beyond");
     expect(publication.journalTitle).toBe("Annals of Botany");
+  });
+});
+
+describe("Entities decoded in title text", () => {
+  test("Predefined XML entities", () => {
+    expect(titleFrom("&quot;Smart&quot; cities &lt; 1 km &amp; &gt; 1 km: Hobson&apos;s choice")).toBe(
+      "\"Smart\" cities < 1 km & > 1 km: Hobson's choice",
+    );
+  });
+
+  test("Decimal character reference", () => {
+    expect(titleFrom("Caf&#233; society")).toBe("Café society");
+  });
+
+  test("Hexadecimal character reference", () => {
+    expect(titleFrom("Caf&#xE9; society")).toBe("Café society");
+  });
+
+  test("Other named entity is preserved", () => {
+    expect(titleFrom("Caf&eacute; society&nbsp;today")).toBe("Caf&eacute; society&nbsp;today");
+  });
+
+  test("The same rules apply to the subtitle and the journal title", () => {
+    const publication = mapArticle({
+      subtitle: ["Caf&#233; &amp; caf&eacute;"],
+      "container-title": ["Caf&#xE9; &amp; caf&eacute;"],
+    });
+
+    expect(publication.subtitle).toBe("Café & caf&eacute;");
+    expect(publication.journalTitle).toBe("Café & caf&eacute;");
   });
 });
 
