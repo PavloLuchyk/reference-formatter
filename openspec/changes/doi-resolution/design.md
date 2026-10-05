@@ -133,6 +133,11 @@ Follow-up decisions by the human on the details the first answers left open
 - HD-7: title case is preserved; markup is removed and entities are decoded;
   surrounding whitespace is trimmed; whitespace introduced by the cleaning is
   collapsed.
+- HD-7, clarified by the human on 2026-10-05 during implementation: entity
+  decoding for this slice is limited to the five predefined XML entities and
+  numeric character references; other named HTML entities are preserved as
+  supplied. Markup removal is kept, and text in angle brackets that is not
+  markup must not be stripped.
 - HD-8: a person is kept if at least a family name or given names are present;
   an organisation is kept if it has a usable group name; only fully nameless
   entries are omitted.

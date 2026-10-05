@@ -208,6 +208,28 @@ supplied. Title and subtitle SHALL stay separate fields.
 - **WHEN** the record has title `Deep learning` and subtitle `A critical appraisal`
 - **THEN** the Publication has that title and that subtitle as two separate fields
 
+### Requirement: Entities decoded in title text
+In the title, the subtitle and the journal title the system SHALL decode only
+the five predefined XML entities (`&amp;`, `&lt;`, `&gt;`, `&quot;`, `&apos;`)
+and numeric character references in decimal or hexadecimal form. It SHALL leave
+every other named entity exactly as supplied.
+
+#### Scenario: Predefined XML entities
+- **WHEN** the record title is `&quot;Smart&quot; cities &lt; 1 km &amp; &gt; 1 km: Hobson&apos;s choice`
+- **THEN** the Publication title is `"Smart" cities < 1 km & > 1 km: Hobson's choice`
+
+#### Scenario: Decimal character reference
+- **WHEN** the record title is `Caf&#233; society`
+- **THEN** the Publication title is `Café society`
+
+#### Scenario: Hexadecimal character reference
+- **WHEN** the record title is `Caf&#xE9; society`
+- **THEN** the Publication title is `Café society`
+
+#### Scenario: Other named entity is preserved
+- **WHEN** the record title is `Caf&eacute; society&nbsp;today`
+- **THEN** the Publication title is `Caf&eacute; society&nbsp;today`
+
 ### Requirement: Author mapping
 The system SHALL map each Crossref author entry, in the order given, to a person
 when it has a family name or given names, ignoring any group name on that entry,
