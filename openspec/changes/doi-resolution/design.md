@@ -215,6 +215,19 @@ empty-element tags standing between two stretches of text with no whitespace on
 either side leave exactly one space; matched opening and closing tags still add
 none, so `H<sub>2</sub>O` stays `H2O`.
 
+Decisions by the human on 2026-10-05 after the read-only review of the repaired
+slice (findings 1–5):
+
+- Accepted: 1 (no recorded live check for task 7.1), 2 (run records not in
+  git), 3 (tasks 7.2 and 7.3 open) and 4 (the verification history stopped at
+  the F1–F7 cycle). All four are process and evidence items; none changes
+  code, tests, fixtures or spec behaviour.
+- Deferred: 5, a literal no-break space lost when markup is removed next to it.
+  It is recorded under Risks as a known low-severity limitation, and product
+  code is not changed for it in this slice.
+- Task 7.2 is closed by the existing clean GREEN record at `efe01ac`. Task 7.3
+  stays open: it still requires a genuinely fresh independent review.
+
 ### Crossref field → Publication field mapping (approved by the human on 2026-10-05, task 1.6)
 
 This table is the authority for the mapping. Fixtures and their expected values
@@ -296,6 +309,15 @@ not usable and counts as not supplied.
   the title] → Accepted consequence of the F3 rule: visible leftover markup is
   preferred to silently deleted text, and the user can correct it manually in
   the workspace slice.
+- [A literal no-break space is lost when removed markup leaves whitespace on
+  both sides of the gap: `5`, U+00A0, `<i></i> km` becomes `5 km` with an
+  ordinary space. Joining the text around removed markup treats every
+  whitespace character as collapsible, while entity decoding keeps a decoded
+  no-break space, and the specs do not say what happens to a literal one in
+  such a run] → Finding 5 of the review of 2026-10-05, deferred by the human
+  as a known low-severity limitation: product code is not changed in this
+  slice, no test covers the case, and the user can correct the title manually
+  in the workspace slice.
 
 ## Verification history
 
@@ -323,6 +345,49 @@ What the recorded evidence does and does not prove, stated plainly.
   task is reopened and must be recorded when it is repeated after the repair.
 - **Second RED (tasks 8.1–8.2)** is assertion-level and is recorded with
   `bash scripts/record-run.sh doi-checker-findings-red -- pnpm test`.
+  The records are `…T101201Z_doi-checker-findings-red.log` (dirty tree at
+  `299a132`, before the spec and tests were committed) and
+  `…T101726Z_doi-checker-findings-red.log` (clean tree at `3bb01b0`). Each
+  shows 19 failed and 133 passed, and every failure is an assertion failure.
+- **GREEN after the F1–F5 repair** is recorded in
+  `…T102608Z_doi-resolution-green.log` (152 passed at `69b2006`). Its tree was
+  dirty: `tasks.md` was modified and not yet committed.
+- **Re-review (findings R1–R5, 2026-10-05).** Spec `251e890`, regression tests
+  `1a23700` (normalization and resolution) and `721257e` (title cleaning),
+  repair `efe01ac`. The agent log shows the re-review in the same agent
+  session that wrote the tests and the code, so it is not the independent
+  review of task 7.3 either.
+- **The R1/R3/R4 assertion RED was not recorded at the time.** No run was
+  written to `evidence/runs/` between adding those tests and repairing the
+  code, and the title-cleaning tests were committed seconds before the repair,
+  although the agent log shows the test files edited before the implementation.
+  The RED was reconstructed later, after the repair, during the read-only
+  review of 2026-10-05: in a copy outside the repository, the tests of
+  `efe01ac` were run against `map-work.ts` and `normalize-doi.ts` of `69b2006`
+  and gave 14 failed and 161 passed (the `lib/` tests only), every failure an
+  assertion failure in a test added for R1, R3 or R4. That reconstruction
+  shows that the tests can fail for the old behaviour. It is not a record that
+  the RED was observed before the repair, and no run record was created for it.
+- **GREEN after the R1/R3/R4 repair** is recorded in
+  `…T104614Z_doi-resolution-green.log`: `pnpm check`, exit 0, 176 passed, clean
+  tree at `efe01ac`. This record closes task 7.2.
+- **Live check of task 7.1, repeated and recorded on 2026-10-05** at `efe01ac`,
+  from a throwaway test file that was deleted after each run. There are two
+  records. `…T105752Z_doi-live-check.log` passed, but it shows only the pass
+  count, because the default reporter printed no test output; on its own it
+  does not show the request or the outcome. `…T105814Z_doi-live-check.log`
+  repeats the run with the verbose reporter and prints the throwaway source:
+  one request, `GET https://api.crossref.org/works/10.1038%2Fnature12373`,
+  answered HTTP 200, and an outcome equal to the approved `Publication` for
+  `nature12373.json`. No contact address was sent. Both records report a dirty
+  tree only because of two untracked files, the throwaway test and
+  `docs/session-notes.md`; no tracked file differed from `efe01ac`.
+- **Read-only review after the R repair (2026-10-05).** It was done in a
+  separate agent session that had not written the tests or the code, and it
+  returned five findings; their dispositions are under Decisions. Its probes
+  ran in a copy outside the repository and are not recorded in
+  `evidence/runs/`. The human keeps task 7.3 open: a genuinely fresh
+  independent review is still required.
 
 ## Open Questions
 

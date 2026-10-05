@@ -1,0 +1,1625 @@
+# run: doi-red
+# started: 2026-10-05T09:07:42Z
+# commit: 1fd61a41ab4377c8da1521a2abaf38a42e3a7aa3 (master)
+# tree: clean (excluding .agent-log/ and evidence/)
+# git status: nothing to report
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm test
+----
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ❯ lib/doi/normalize-doi.test.ts (23 tests | 23 failed) 8ms
+   ❯ Accepted DOI input forms (3)
+     × Bare DOI 2ms
+     × DOI with prefix 0ms
+     × DOI as resolver URL 0ms
+   ❯ Surrounding whitespace and prefix letter case (4)
+     × Surrounding whitespace 0ms
+     × Space after the prefix 0ms
+     × Upper-case prefix 0ms
+     × Upper-case resolver URL 0ms
+   ❯ Canonical DOI is the identity (3)
+     × Mixed-case input 0ms
+     × Same DOI in two forms 0ms
+     × Letters outside Basic Latin 0ms
+   ❯ Rejection of input that is not a DOI (6)
+     × Empty input 0ms
+     × Text that is not a DOI 0ms
+     × Missing suffix 0ms
+     × Whitespace inside the DOI 0ms
+     × URL of another site 0ms
+     × Unusual but structurally valid suffix 0ms
+   ❯ Other input forms are rejected (3)
+     × Insecure scheme 0ms
+     × Legacy resolver host 0ms
+     × Resolver URL without a scheme 0ms
+   ❯ No repair of the DOI (2)
+     × Trailing full stop is kept 0ms
+     × Percent-encoding is kept as written 0ms
+   ❯ Normalization is deterministic and offline (2)
+     × No network use 0ms
+     × Canonical DOI is stable 1ms
+ ❯ lib/publication/publication.test.ts (16 tests | 16 failed) 6ms
+   ❯ Publication is provider-independent and style-neutral (1)
+     × Record produced from Crossref: only the defined fields are exposed 3ms
+   ❯ Publication fields (2)
+     × Complete record 0ms
+     × Only the DOI is known 0ms
+   ❯ Canonical DOI is the Publication identity (2)
+     × Input in a different form and case 0ms
+     × Same publication from two inputs 0ms
+   ❯ Source publication dates are preserved (3)
+     × Dates of different precision 0ms
+     × Year only 0ms
+     × A date kind is not supplied 0ms
+   ❯ Missing metadata is explicit (3)
+     × Missing volume 0ms
+     × Blank value 0ms
+     × No authors 0ms
+   ❯ Author representation (5)
+     × Person with given names 0ms
+     × Person without given names 0ms
+     × Person with only given names 0ms
+     × Organisation 0ms
+     × Order 0ms
+ ❯ lib/metadata/resolve-doi.test.ts (24 tests | 24 failed) 14ms
+   ❯ Resolution has exactly one outcome (2)
+     × Journal article is resolved 3ms
+     × Failure carries no publication 0ms
+   ❯ Invalid input is rejected before lookup (2)
+     × Input is not a DOI 0ms
+     × Input form that is not accepted 0ms
+   ❯ Crossref is the only metadata source (2)
+     × Lookup uses the canonical DOI 0ms
+     × No fallback 0ms
+   ❯ Unknown DOI (2)
+     × DOI that does not exist 0ms
+     × DOI registered with another agency 0ms
+   ❯ Only journal articles are resolved (2)
+     × Book 0ms
+     × Record without a type 1ms
+   ❯ Provider unavailability (4)
+     × Network error 0ms
+     × Timeout 1ms
+     × Rate limited 0ms
+     × Server error 0ms
+   ❯ Unusable response (3)
+     × Body is not JSON 0ms
+     × Body is not a work record 1ms
+     × Unexpected status 0ms
+   ❯ Publication DOI is the normalized requested DOI (3)
+     × Record states the same DOI 0ms
+     × Record states a different DOI 0ms
+     × The typed text is not kept in the Publication 0ms
+   ❯ Absent metadata does not fail resolution (2)
+     × Article not yet assigned to an issue 0ms
+     × No title 0ms
+   ❯ Identification to Crossref (2)
+     × No contact address configured 0ms
+     × Contact address configured 0ms
+ ❯ lib/metadata/crossref/map-work.test.ts (46 tests | 46 failed) 13ms
+   ❯ Publication is provider-independent and style-neutral (1)
+     × Record produced from Crossref 3ms
+   ❯ Field mapping from the Crossref record (12)
+     × Surrounding whitespace in a field 0ms
+     × Fully described article 0ms
+     × Article identifier supplied as the page 0ms
+     × Several container titles 0ms
+     × Surrounding whitespace in every trimmed field (mapping table) 0ms
+     × Internal content of a field is preserved (mapping table) 0ms
+     × The DOI is the requested one, not the record's (mapping table) 0ms
+     × Recorded fixture nature12373.json maps to its expected Publication 0ms
+     × Recorded fixture pone-0000308.json maps to its expected Publication 0ms
+     × Recorded fixture title-markup.json maps to its expected Publication 0ms
+     × Recorded fixture group-author-article-number.json maps to its expected Publication 0ms
+     × Recorded fixture no-volume-issue.json maps to its expected Publication 0ms
+   ❯ Publication dates are preserved from the record (5)
+     × Print and online dates differ 0ms
+     × No print date 1ms
+     × No date 0ms
+     × Each date goes to the date of the same kind (mapping table) 0ms
+     × A date without a year counts as missing (mapping table; constructed defensive case) 0ms
+   ❯ Title text (11)
+     × Markup in the title 0ms
+     × Entity in the title 0ms
+     × Surrounding whitespace 0ms
+     × Whitespace introduced by cleaning 0ms
+     × Whitespace that was already in the text 0ms
+     × Entity in the journal title 0ms
+     × Plain title is unchanged 0ms
+     × Letter case is kept 0ms
+     × Subtitle is supplied 0ms
+     × Markup in a real recorded title 0ms
+     × Subtitle and journal title are cleaned like the title (mapping table) 0ms
+   ❯ Author mapping (7)
+     × Authors of a real record 0ms
+     × Group author 0ms
+     × Personal name and group name on one entry (constructed defensive case) 0ms
+     × Given names only 0ms
+     × Family name only 0ms
+     × Entry without any name 0ms
+     × Group and personal authors of a real record keep their order 0ms
+   ❯ Author name whitespace (5)
+     × Surrounding whitespace in a name 0ms
+     × Blank family name 0ms
+     × Blank personal names with a group name 0ms
+     × Every name is blank 0ms
+     × Content inside a name is kept as supplied 0ms
+   ❯ Absent metadata does not fail resolution (5)
+     × Article not yet assigned to an issue 0ms
+     × Empty subtitle list 0ms
+     × No title 0ms
+     × Blank values are missing (mapping table) 0ms
+     × A record with only a type maps to a Publication with every field missing 0ms
+ ✓ __tests__/harness.smoke.test.tsx (1 test) 60ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 109 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Accepted DOI input forms > Bare DOI
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:10:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Accepted DOI input forms > DOI with prefix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:14:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Accepted DOI input forms > DOI as resolver URL
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:18:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Surrounding whitespace
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:24:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Space after the prefix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:28:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Upper-case prefix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:32:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Surrounding whitespace and prefix letter case > Upper-case resolver URL
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:36:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Canonical DOI is the identity > Mixed-case input
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:42:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Canonical DOI is the identity > Same DOI in two forms
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:46:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Canonical DOI is the identity > Letters outside Basic Latin
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:54:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Empty input
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:60:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Text that is not a DOI
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:65:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Missing suffix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:69:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Whitespace inside the DOI
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:73:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > URL of another site
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:77:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Rejection of input that is not a DOI > Unusual but structurally valid suffix
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:83:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Other input forms are rejected > Insecure scheme
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:89:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Other input forms are rejected > Legacy resolver host
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:93:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Other input forms are rejected > Resolver URL without a scheme
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:97:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > No repair of the DOI > Trailing full stop is kept
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:103:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > No repair of the DOI > Percent-encoding is kept as written
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:107:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Normalization is deterministic and offline > No network use
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:123:7
+ ❯ lib/doi/normalize-doi.test.ts:122:97
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/109]⎯
+
+ FAIL  lib/doi/normalize-doi.test.ts > Normalization is deterministic and offline > Canonical DOI is stable
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ lib/doi/normalize-doi.test.ts:133:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Resolution has exactly one outcome > Journal article is resolved
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:64:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Resolution has exactly one outcome > Failure carries no publication
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:73:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Invalid input is rejected before lookup > Input is not a DOI
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:97:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Invalid input is rejected before lookup > Input form that is not accepted
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:104:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Crossref is the only metadata source > Lookup uses the canonical DOI
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:113:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Crossref is the only metadata source > No fallback
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:125:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Unknown DOI > DOI that does not exist
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:135:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Unknown DOI > DOI registered with another agency
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:141:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Only journal articles are resolved > Book
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:149:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Only journal articles are resolved > Record without a type
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:159:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Provider unavailability > Network error
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:170:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Provider unavailability > Timeout
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:186:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Provider unavailability > Rate limited
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:211:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Provider unavailability > Server error
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:218:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Unusable response > Body is not JSON
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:225:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Unusable response > Body is not a work record
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:239:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Unusable response > Unexpected status
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:244:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Publication DOI is the normalized requested DOI > Record states the same DOI
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:252:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Publication DOI is the normalized requested DOI > Record states a different DOI
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:262:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Publication DOI is the normalized requested DOI > The typed text is not kept in the Publication
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:269:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Absent metadata does not fail resolution > Article not yet assigned to an issue
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:279:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Absent metadata does not fail resolution > No title
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:289:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Identification to Crossref > No contact address configured
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:299:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/109]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Identification to Crossref > Contact address configured
+Error: Not implemented: resolveDoi
+ ❯ resolveDoi lib/metadata/resolve-doi.ts:13:9
+     11|   void input;
+     12|   void options;
+     13|   throw new Error("Not implemented: resolveDoi");
+       |         ^
+     14| }
+     15|
+ ❯ resolve lib/metadata/resolve-doi.test.ts:36:3
+ ❯ lib/metadata/resolve-doi.test.ts:311:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Publication is provider-independent and style-neutral > Record produced from Crossref: only the defined fields are exposed
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:68:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Publication fields > Complete record
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:79:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Publication fields > Only the DOI is known
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:106:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Canonical DOI is the Publication identity > Input in a different form and case
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ produceFor lib/publication/publication.test.ts:54:22
+ ❯ lib/publication/publication.test.ts:127:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Canonical DOI is the Publication identity > Same publication from two inputs
+Error: Not implemented: normalizeDoi
+ ❯ normalizeDoi lib/doi/normalize-doi.ts:10:9
+      8| export function normalizeDoi(input: string): DoiNormalization {
+      9|   void input;
+     10|   throw new Error("Not implemented: normalizeDoi");
+       |         ^
+     11| }
+     12|
+ ❯ produceFor lib/publication/publication.test.ts:54:22
+ ❯ lib/publication/publication.test.ts:136:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Source publication dates are preserved > Dates of different precision
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:147:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Source publication dates are preserved > Year only
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:158:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Source publication dates are preserved > A date kind is not supplied
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:164:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Missing metadata is explicit > Missing volume
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:185:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Missing metadata is explicit > Blank value
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:192:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Missing metadata is explicit > No authors
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:201:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Author representation > Person with given names
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:210:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Author representation > Person without given names
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:219:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Author representation > Person with only given names
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:225:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Author representation > Organisation
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:231:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/109]⎯
+
+ FAIL  lib/publication/publication.test.ts > Author representation > Order
+Error: Not implemented: createPublication
+ ❯ createPublication lib/publication/publication.ts:74:9
+     72| export function createPublication(input: PublicationInput): Publicatio…
+     73|   void input;
+     74|   throw new Error("Not implemented: createPublication");
+       |         ^
+     75| }
+     76|
+ ❯ lib/publication/publication.test.ts:240:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Publication is provider-independent and style-neutral > Record produced from Crossref
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:39:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Surrounding whitespace in a field
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:51:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Fully described article
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:55:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Article identifier supplied as the page
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:66:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Several container titles
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:73:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Surrounding whitespace in every trimmed field (mapping table)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:79:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Internal content of a field is preserved (mapping table)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:95:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > The DOI is the requested one, not the record's (mapping table)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ lib/metadata/crossref/map-work.test.ts:99:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Recorded fixture nature12373.json maps to its expected Publication
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Recorded fixture pone-0000308.json maps to its expected Publication
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Recorded fixture title-markup.json maps to its expected Publication
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Recorded fixture group-author-article-number.json maps to its expected Publication
+ FAIL  lib/metadata/crossref/map-work.test.ts > Field mapping from the Crossref record > Recorded fixture no-volume-issue.json maps to its expected Publication
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:105:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Publication dates are preserved from the record > Print and online dates differ
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:111:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Publication dates are preserved from the record > No print date
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:120:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Publication dates are preserved from the record > No date
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:131:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Publication dates are preserved from the record > Each date goes to the date of the same kind (mapping table)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:138:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Publication dates are preserved from the record > A date without a year counts as missing (mapping table; constructed defensive case)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:156:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Markup in the title
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:165:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Entity in the title
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:171:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Surrounding whitespace
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:175:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Whitespace introduced by cleaning
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:179:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Whitespace that was already in the text
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:183:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Entity in the journal title
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:187:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Plain title is unchanged
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:193:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Letter case is kept
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ titleFrom lib/metadata/crossref/map-work.test.ts:33:38
+ ❯ lib/metadata/crossref/map-work.test.ts:197:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[85/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Subtitle is supplied
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:201:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[86/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Markup in a real recorded title
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:208:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[87/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Title text > Subtitle and journal title are cleaned like the title (mapping table)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:212:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[88/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Authors of a real record
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:224:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[89/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Group author
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:232:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[90/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Personal name and group name on one entry (constructed defensive case)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:240:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[91/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Given names only
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:246:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[92/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Family name only
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:250:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[93/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Entry without any name
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:255:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[94/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author mapping > Group and personal authors of a real record keep their order
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:260:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[95/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author name whitespace > Surrounding whitespace in a name
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:270:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[96/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author name whitespace > Blank family name
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:276:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[97/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author name whitespace > Blank personal names with a group name
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:282:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[98/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author name whitespace > Every name is blank
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:288:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[99/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Author name whitespace > Content inside a name is kept as supplied
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ authorsFrom lib/metadata/crossref/map-work.test.ts:34:44
+ ❯ lib/metadata/crossref/map-work.test.ts:292:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[100/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Absent metadata does not fail resolution > Article not yet assigned to an issue
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapFixture lib/metadata/crossref/map-work.test.ts:31:38
+ ❯ lib/metadata/crossref/map-work.test.ts:300:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[101/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Absent metadata does not fail resolution > Empty subtitle list
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:308:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[102/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Absent metadata does not fail resolution > No title
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:312:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[103/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Absent metadata does not fail resolution > Blank values are missing (mapping table)
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:319:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[104/109]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Absent metadata does not fail resolution > A record with only a type maps to a Publication with every field missing
+Error: Not implemented: mapCrossrefWork
+ ❯ mapCrossrefWork lib/metadata/crossref/map-work.ts:9:9
+      7|   void doi;
+      8|   void work;
+      9|   throw new Error("Not implemented: mapCrossrefWork");
+       |         ^
+     10| }
+     11|
+ ❯ mapArticle lib/metadata/crossref/map-work.test.ts:29:3
+ ❯ lib/metadata/crossref/map-work.test.ts:339:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[105/109]⎯
+
+
+ Test Files  4 failed | 1 passed (5)
+      Tests  109 failed | 1 passed (110)
+   Start at  12:07:43
+   Duration  818ms (environment 56%, transform 18%, import 14%, tests 11%, worker 2%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+----
+# finished: 2026-10-05T09:07:44Z
+# duration_s: 2
+# exit: 1
+# result: RED

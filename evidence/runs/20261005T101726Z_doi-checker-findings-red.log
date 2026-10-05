@@ -1,0 +1,722 @@
+# run: doi-checker-findings-red
+# started: 2026-10-05T10:17:26Z
+# commit: 3bb01b00ff2d820c4205adc523c08232fe218120 (master)
+# tree: clean (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#   ?? evidence/runs/20261005T090742Z_doi-red.log
+#   ?? evidence/runs/20261005T093221Z_doi-resolution-green.log
+#   ?? evidence/runs/20261005T101201Z_doi-checker-findings-red.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm test
+----
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ✓ lib/doi/normalize-doi.test.ts (27 tests) 6ms
+ ✓ lib/publication/publication.test.ts (16 tests) 6ms
+ ❯ lib/metadata/crossref/map-work.test.ts (74 tests | 12 failed) 24ms
+   ✓ Publication is provider-independent and style-neutral (1)
+     ✓ Record produced from Crossref 2ms
+   ✓ Field mapping from the Crossref record (12)
+     ✓ Surrounding whitespace in a field 0ms
+     ✓ Fully described article 0ms
+     ✓ Article identifier supplied as the page 0ms
+     ✓ Several container titles 0ms
+     ✓ Surrounding whitespace in every trimmed field (mapping table) 0ms
+     ✓ Internal content of a field is preserved (mapping table) 0ms
+     ✓ The DOI is the requested one, not the record's (mapping table) 0ms
+     ✓ Recorded fixture nature12373.json maps to its expected Publication 0ms
+     ✓ Recorded fixture pone-0000308.json maps to its expected Publication 0ms
+     ✓ Recorded fixture title-markup.json maps to its expected Publication 0ms
+     ✓ Recorded fixture group-author-article-number.json maps to its expected Publication 2ms
+     ✓ Recorded fixture no-volume-issue.json maps to its expected Publication 0ms
+   ✓ Publication dates are preserved from the record (5)
+     ✓ Print and online dates differ 0ms
+     ✓ No print date 0ms
+     ✓ No date 1ms
+     ✓ Each date goes to the date of the same kind (mapping table) 0ms
+     ✓ A date without a year counts as missing (mapping table; constructed defensive case) 0ms
+   ✓ Title text (17)
+     ✓ Markup in the title 0ms
+     ✓ Entity in the title 0ms
+     ✓ Surrounding whitespace 0ms
+     ✓ Whitespace introduced by cleaning 0ms
+     ✓ Whitespace that was already in the text 0ms
+     ✓ Entity in the journal title 0ms
+     ✓ Plain title is unchanged 0ms
+     ✓ Letter case is kept 0ms
+     ✓ Subtitle is supplied 0ms
+     ✓ Angle-bracket text that is not markup is kept: Survival when p < 0.05 and n > 30 0ms
+     ✓ Angle-bracket text that is not markup is kept: Slip along the <111> direction 0ms
+     ✓ Angle-bracket text that is not markup is kept: Orderings where a<b and c>d 0ms
+     ✓ Angle-bracket text that is not markup is kept: Bounds 1<x and y>2 revisited 0ms
+     ✓ Markup is removed next to angle-bracket text that is not markup 1ms
+     ✓ Markup with attributes is still removed 0ms
+     ✓ Markup in a real recorded title 0ms
+     ✓ Subtitle and journal title are cleaned like the title (mapping table) 0ms
+   ✓ Entities decoded in title text (5)
+     ✓ Predefined XML entities 0ms
+     ✓ Decimal character reference 0ms
+     ✓ Hexadecimal character reference 0ms
+     ✓ Other named entity is preserved 0ms
+     ✓ The same rules apply to the subtitle and the journal title 0ms
+   ✓ Entities decoded in title text: order of cleaning (1)
+     ✓ Escaped markup is not markup 0ms
+   ❯ Only matched markup is removed (7)
+     × Tag-shaped text without a closing tag 5ms
+     × Unclosed tag 1ms
+     × Closing tag without an opening tag 0ms
+     ✓ Matched tags are removed 0ms
+     ✓ Empty-element tag is removed 0ms
+     × A closing tag before its opening tag is not a match 0ms
+     × The same rule applies to the subtitle and the journal title 0ms
+   ❯ Numeric references to unusable characters are kept (4)
+     × Surrogate 0ms
+     × Control character 0ms
+     ✓ Null character and value beyond Unicode 0ms
+     × Usable characters next to them are still decoded 0ms
+   ❯ Whitespace produced by decoding is collapsed (5)
+     × Decoded space between spaces 0ms
+     × Decoded line break 1ms
+     × Decoded tab next to a decoded space 0ms
+     ✓ Decoded no-break space 0ms
+     × Whitespace that touches no decoded character stays as supplied 0ms
+   ✓ Author mapping (7)
+     ✓ Authors of a real record 1ms
+     ✓ Group author 0ms
+     ✓ Personal name and group name on one entry (constructed defensive case) 0ms
+     ✓ Given names only 0ms
+     ✓ Family name only 0ms
+     ✓ Entry without any name 0ms
+     ✓ Group and personal authors of a real record keep their order 0ms
+   ✓ Author name whitespace (5)
+     ✓ Surrounding whitespace in a name 0ms
+     ✓ Blank family name 0ms
+     ✓ Blank personal names with a group name 0ms
+     ✓ Every name is blank 0ms
+     ✓ Content inside a name is kept as supplied 0ms
+   ✓ Absent metadata does not fail resolution (5)
+     ✓ Article not yet assigned to an issue 0ms
+     ✓ Empty subtitle list 0ms
+     ✓ No title 0ms
+     ✓ Blank values are missing (mapping table) 0ms
+     ✓ A record with only a type maps to a Publication with every field missing 0ms
+ ❯ lib/metadata/resolve-doi.test.ts (34 tests | 7 failed) 50ms
+   ✓ Resolution has exactly one outcome (2)
+     ✓ Journal article is resolved 18ms
+     ✓ Failure carries no publication 2ms
+   ✓ Invalid input is rejected before lookup (2)
+     ✓ Input is not a DOI 1ms
+     ✓ Input form that is not accepted 0ms
+   ✓ Crossref is the only metadata source (2)
+     ✓ Lookup uses the canonical DOI 1ms
+     ✓ No fallback 1ms
+   ✓ Unknown DOI (2)
+     ✓ DOI that does not exist 0ms
+     ✓ DOI registered with another agency 0ms
+   ✓ Only journal articles are resolved (2)
+     ✓ Book 1ms
+     ✓ Record without a type 1ms
+   ✓ Provider unavailability (7)
+     ✓ Network error 0ms
+     ✓ Timeout 2ms
+     ✓ Rate limited 0ms
+     ✓ Server error 0ms
+     ✓ Other server errors: HTTP 500 0ms
+     ✓ Other server errors: HTTP 502 0ms
+     ✓ Other server errors: HTTP 504 0ms
+   ✓ Unusable response (3)
+     ✓ Body is not JSON 0ms
+     ✓ Body is not a work record 1ms
+     ✓ Unexpected status 0ms
+   ✓ Publication DOI is the normalized requested DOI (2)
+     ✓ Record states the same DOI 0ms
+     ✓ The typed text is not kept in the Publication 0ms
+   ❯ Record must be for the requested DOI (4)
+     ✓ Record states the DOI in another letter case 1ms
+     × Record states a different DOI 6ms
+     × Record of another work answered for a trailing slash 2ms
+     × Record states no DOI 2ms
+   ❯ DOI cannot alter the request URL (4)
+     × Slash in the DOI 2ms
+     × Dot segments in the DOI 1ms
+     × Query and fragment characters in the DOI 1ms
+     × Percent sign in the DOI 1ms
+   ✓ Absent metadata does not fail resolution (2)
+     ✓ Article not yet assigned to an issue 0ms
+     ✓ No title 1ms
+   ✓ Identification to Crossref (2)
+     ✓ No contact address configured 1ms
+     ✓ Contact address configured 1ms
+ ✓ __tests__/harness.smoke.test.tsx (1 test) 73ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Record must be for the requested DOI > Record states a different DOI
+AssertionError: expected { ok: true, publication: { …(11) } } to deeply equal { ok: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "kind": "invalid-response",
++   "ok": true,
++   "publication": {
++     "articleNumber": null,
++     "authors": [
++       {
++         "family": "Kucsko",
++         "given": "G.",
++         "kind": "person",
++       },
++       {
++         "family": "Maurer",
++         "given": "P. C.",
++         "kind": "person",
++       },
++       {
++         "family": "Yao",
++         "given": "N. Y.",
++         "kind": "person",
++       },
++       {
++         "family": "Kubo",
++         "given": "M.",
++         "kind": "person",
++       },
++       {
++         "family": "Noh",
++         "given": "H. J.",
++         "kind": "person",
++       },
++       {
++         "family": "Lo",
++         "given": "P. K.",
++         "kind": "person",
+        },
+-   "ok": false,
++       {
++         "family": "Park",
++         "given": "H.",
++         "kind": "person",
++       },
++       {
++         "family": "Lukin",
++         "given": "M. D.",
++         "kind": "person",
++       },
++     ],
++     "dates": {
++       "issued": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++       "online": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++       "print": {
++         "day": null,
++         "month": 8,
++         "year": 2013,
++       },
++       "published": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++     },
++     "doi": "10.1038/nature12373",
++     "issue": "7460",
++     "journalTitle": "Nature",
++     "language": "en",
++     "pages": "54-58",
++     "subtitle": null,
++     "title": "Nanometre-scale thermometry in a living cell",
++     "volume": "500",
++   },
+  }
+
+ ❯ lib/metadata/resolve-doi.test.ts:295:21
+    293|     const outcome = await resolve(NATURE, fetchFake);
+    294|
+    295|     expect(outcome).toEqual(failure("invalid-response"));
+       |                     ^
+    296|     expect(JSON.stringify(outcome)).not.toContain("Nanometre");
+    297|     expect(JSON.stringify(outcome)).not.toContain("10.9999/another-doi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Record must be for the requested DOI > Record of another work answered for a trailing slash
+AssertionError: expected { ok: true, publication: { …(11) } } to deeply equal { ok: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "kind": "invalid-response",
++   "ok": true,
++   "publication": {
++     "articleNumber": null,
++     "authors": [
++       {
++         "family": "Kucsko",
++         "given": "G.",
++         "kind": "person",
++       },
++       {
++         "family": "Maurer",
++         "given": "P. C.",
++         "kind": "person",
++       },
++       {
++         "family": "Yao",
++         "given": "N. Y.",
++         "kind": "person",
++       },
++       {
++         "family": "Kubo",
++         "given": "M.",
++         "kind": "person",
++       },
++       {
++         "family": "Noh",
++         "given": "H. J.",
++         "kind": "person",
++       },
++       {
++         "family": "Lo",
++         "given": "P. K.",
++         "kind": "person",
+        },
+-   "ok": false,
++       {
++         "family": "Park",
++         "given": "H.",
++         "kind": "person",
++       },
++       {
++         "family": "Lukin",
++         "given": "M. D.",
++         "kind": "person",
++       },
++     ],
++     "dates": {
++       "issued": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++       "online": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++       "print": {
++         "day": null,
++         "month": 8,
++         "year": 2013,
++       },
++       "published": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++     },
++     "doi": "10.1038/nature12373/",
++     "issue": "7460",
++     "journalTitle": "Nature",
++     "language": "en",
++     "pages": "54-58",
++     "subtitle": null,
++     "title": "Nanometre-scale thermometry in a living cell",
++     "volume": "500",
++   },
+  }
+
+ ❯ lib/metadata/resolve-doi.test.ts:304:21
+    302|     const outcome = await resolve("10.1038/nature12373/", answeringFix…
+    303|
+    304|     expect(outcome).toEqual(failure("invalid-response"));
+       |                     ^
+    305|   });
+    306|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > Record must be for the requested DOI > Record states no DOI
+AssertionError: expected { ok: true, publication: { …(11) } } to deeply equal { ok: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "kind": "invalid-response",
++   "ok": true,
++   "publication": {
++     "articleNumber": null,
++     "authors": [
++       {
++         "family": "Kucsko",
++         "given": "G.",
++         "kind": "person",
++       },
++       {
++         "family": "Maurer",
++         "given": "P. C.",
++         "kind": "person",
++       },
++       {
++         "family": "Yao",
++         "given": "N. Y.",
++         "kind": "person",
++       },
++       {
++         "family": "Kubo",
++         "given": "M.",
++         "kind": "person",
++       },
++       {
++         "family": "Noh",
++         "given": "H. J.",
++         "kind": "person",
++       },
++       {
++         "family": "Lo",
++         "given": "P. K.",
++         "kind": "person",
+        },
+-   "ok": false,
++       {
++         "family": "Park",
++         "given": "H.",
++         "kind": "person",
++       },
++       {
++         "family": "Lukin",
++         "given": "M. D.",
++         "kind": "person",
++       },
++     ],
++     "dates": {
++       "issued": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++       "online": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++       "print": {
++         "day": null,
++         "month": 8,
++         "year": 2013,
++       },
++       "published": {
++         "day": 31,
++         "month": 7,
++         "year": 2013,
++       },
++     },
++     "doi": "10.1038/nature12373",
++     "issue": "7460",
++     "journalTitle": "Nature",
++     "language": "en",
++     "pages": "54-58",
++     "subtitle": null,
++     "title": "Nanometre-scale thermometry in a living cell",
++     "volume": "500",
++   },
+  }
+
+ ❯ lib/metadata/resolve-doi.test.ts:312:46
+    310|     });
+    311|
+    312|     expect(await resolve(NATURE, fetchFake)).toEqual(failure("invalid-…
+       |                                              ^
+    313|   });
+    314| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > DOI cannot alter the request URL > Slash in the DOI
+AssertionError: expected '/works/10.1038/nature12373' to be '/works/10.1038%2Fnature12373' // Object.is equality
+
+Expected: "/works/10.1038%2Fnature12373"
+Received: "/works/10.1038/nature12373"
+
+ ❯ lib/metadata/resolve-doi.test.ts:340:26
+    338|     const url = urlOfOnlyRequest(fetchFake);
+    339|     expect(url.host).toBe("api.crossref.org");
+    340|     expect(url.pathname).toBe("/works/10.1038%2Fnature12373");
+       |                          ^
+    341|     expect(outcome).toHaveProperty("publication.doi", "10.1038/nature1…
+    342|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > DOI cannot alter the request URL > Dot segments in the DOI
+AssertionError: expected '/works/10.1038/nature12373' to be '/works/10.1234%2F..%2F10.1038%2Fnatur…' // Object.is equality
+
+Expected: "/works/10.1234%2F..%2F10.1038%2Fnature12373"
+Received: "/works/10.1038/nature12373"
+
+ ❯ lib/metadata/resolve-doi.test.ts:351:26
+    349|     const url = urlOfOnlyRequest(fetchFake);
+    350|     expect(url.host).toBe("api.crossref.org");
+    351|     expect(url.pathname).toBe("/works/10.1234%2F..%2F10.1038%2Fnature1…
+       |                          ^
+    352|     expect(outcome).toEqual(failure("not-found"));
+    353|     expect(JSON.stringify(outcome)).not.toContain("Nanometre");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > DOI cannot alter the request URL > Query and fragment characters in the DOI
+AssertionError: expected '/works/10.1000/a%3Fb%23c' to be '/works/10.1000%2Fa%3Fb%23c' // Object.is equality
+
+Expected: "/works/10.1000%2Fa%3Fb%23c"
+Received: "/works/10.1000/a%3Fb%23c"
+
+ ❯ lib/metadata/resolve-doi.test.ts:363:26
+    361|     const url = urlOfOnlyRequest(fetchFake);
+    362|     expect(url.host).toBe("api.crossref.org");
+    363|     expect(url.pathname).toBe("/works/10.1000%2Fa%3Fb%23c");
+       |                          ^
+    364|     expect(url.search).toBe("");
+    365|     expect(url.hash).toBe("");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯
+
+ FAIL  lib/metadata/resolve-doi.test.ts > DOI cannot alter the request URL > Percent sign in the DOI
+AssertionError: expected '/works/10.1002/%2528sici%2529x' to be '/works/10.1002%2F%2528sici%2529x' // Object.is equality
+
+Expected: "/works/10.1002%2F%2528sici%2529x"
+Received: "/works/10.1002/%2528sici%2529x"
+
+ ❯ lib/metadata/resolve-doi.test.ts:373:50
+    371|     await resolve("10.1002/%28sici%29x", fetchFake);
+    372|
+    373|     expect(urlOfOnlyRequest(fetchFake).pathname).toBe("/works/10.1002%…
+       |                                                  ^
+    374|   });
+    375| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Only matched markup is removed > Tag-shaped text without a closing tag
+AssertionError: expected 'Role of in -body systems' to be 'Role of <y> in <N>-body systems' // Object.is equality
+
+Expected: "Role of <y> in <N>-body systems"
+Received: "Role of in -body systems"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:282:58
+    280| describe("Only matched markup is removed", () => {
+    281|   test("Tag-shaped text without a closing tag", () => {
+    282|     expect(titleFrom("Role of <y> in <N>-body systems")).toBe("Role of…
+       |                                                          ^
+    283|   });
+    284|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Only matched markup is removed > Unclosed tag
+AssertionError: expected 'Bold move' to be 'Bold <b>move' // Object.is equality
+
+Expected: "Bold <b>move"
+Received: "Bold move"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:286:39
+    284|
+    285|   test("Unclosed tag", () => {
+    286|     expect(titleFrom("Bold <b>move")).toBe("Bold <b>move");
+       |                                       ^
+    287|   });
+    288|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Only matched markup is removed > Closing tag without an opening tag
+AssertionError: expected 'End of an era' to be 'End of </i> an era' // Object.is equality
+
+Expected: "End of </i> an era"
+Received: "End of an era"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:290:45
+    288|
+    289|   test("Closing tag without an opening tag", () => {
+    290|     expect(titleFrom("End of </i> an era")).toBe("End of </i> an era");
+       |                                             ^
+    291|   });
+    292|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Only matched markup is removed > A closing tag before its opening tag is not a match
+AssertionError: expected 'From to and back' to be 'From </i> to <i> and back' // Object.is equality
+
+Expected: "From </i> to <i> and back"
+Received: "From to and back"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:302:52
+    300|
+    301|   test("A closing tag before its opening tag is not a match", () => {
+    302|     expect(titleFrom("From </i> to <i> and back")).toBe("From </i> to …
+       |                                                    ^
+    303|   });
+    304|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Only matched markup is removed > The same rule applies to the subtitle and the journal title
+AssertionError: expected 'The -body problem' to be 'The <N>-body problem' // Object.is equality
+
+Expected: "The <N>-body problem"
+Received: "The -body problem"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:308:34
+    306|     const publication = mapArticle({ subtitle: ["The <N>-body problem"…
+    307|
+    308|     expect(publication.subtitle).toBe("The <N>-body problem");
+       |                                  ^
+    309|     expect(publication.journalTitle).toBe("Journal of Botany");
+    310|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Numeric references to unusable characters are kept > Surrogate
+AssertionError: expected 'A�B' to be 'A&#xD800;B' // Object.is equality
+
+Expected: "A&#xD800;B"
+Received: "A�B"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:316:37
+    314| describe("Numeric references to unusable characters are kept", () => {
+    315|   test("Surrogate", () => {
+    316|     expect(titleFrom("A&#xD800;B")).toBe("A&#xD800;B");
+       |                                     ^
+    317|   });
+    318|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Numeric references to unusable characters are kept > Control character
+AssertionError: expected 'A\u0007B' to be 'A&#7;B' // Object.is equality
+
+Expected: "A&#7;B"
+Received: "AB"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:320:33
+    318|
+    319|   test("Control character", () => {
+    320|     expect(titleFrom("A&#7;B")).toBe("A&#7;B");
+       |                                 ^
+    321|   });
+    322|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Numeric references to unusable characters are kept > Usable characters next to them are still decoded
+AssertionError: expected 'Café \u0007� 😀' to be 'Café &#x7;&#xDFFF; 😀' // Object.is equality
+
+Expected: "Café &#x7;&#xDFFF; 😀"
+Received: "Café � 😀"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:328:60
+    326|
+    327|   test("Usable characters next to them are still decoded", () => {
+    328|     expect(titleFrom("Caf&#233; &#x7;&#xDFFF; &#x1F600;")).toBe("Café …
+       |                                                            ^
+    329|   });
+    330| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Whitespace produced by decoding is collapsed > Decoded space between spaces
+AssertionError: expected 'A   B' to be 'A B' // Object.is equality
+
+Expected: "A B"
+Received: "A   B"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:335:36
+    333| describe("Whitespace produced by decoding is collapsed", () => {
+    334|   test("Decoded space between spaces", () => {
+    335|     expect(titleFrom("A &#32; B")).toBe("A B");
+       |                                    ^
+    336|   });
+    337|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Whitespace produced by decoding is collapsed > Decoded line break
+AssertionError: expected 'A\nB' to be 'A B' // Object.is equality
+
+- Expected
++ Received
+
+- A B
++ A
++ B
+
+ ❯ lib/metadata/crossref/map-work.test.ts:339:34
+    337|
+    338|   test("Decoded line break", () => {
+    339|     expect(titleFrom("A&#10;B")).toBe("A B");
+       |                                  ^
+    340|   });
+    341|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Whitespace produced by decoding is collapsed > Decoded tab next to a decoded space
+AssertionError: expected 'A\t B' to be 'A B' // Object.is equality
+
+Expected: "A B"
+Received: "A	 B"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:343:38
+    341|
+    342|   test("Decoded tab next to a decoded space", () => {
+    343|     expect(titleFrom("A&#9;&#32;B")).toBe("A B");
+       |                                      ^
+    344|   });
+    345|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/19]⎯
+
+ FAIL  lib/metadata/crossref/map-work.test.ts > Whitespace produced by decoding is collapsed > Whitespace that touches no decoded character stays as supplied
+AssertionError: expected 'Law  and   order' to be 'Law  and order' // Object.is equality
+
+Expected: "Law  and order"
+Received: "Law  and   order"
+
+ ❯ lib/metadata/crossref/map-work.test.ts:351:47
+    349|
+    350|   test("Whitespace that touches no decoded character stays as supplied…
+    351|     expect(titleFrom("Law  and &#32; order")).toBe("Law  and order");
+       |                                               ^
+    352|   });
+    353| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/19]⎯
+
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  19 failed | 133 passed (152)
+   Start at  13:17:28
+   Duration  1.05s (environment 55%, transform 17%, import 13%, tests 13%, worker 1%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+----
+# finished: 2026-10-05T10:17:29Z
+# duration_s: 2
+# exit: 1
+# result: RED

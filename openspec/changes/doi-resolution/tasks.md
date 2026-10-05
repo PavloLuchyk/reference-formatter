@@ -38,9 +38,9 @@
 
 ## 7. Integration checks (run after group 8)
 
-- [ ] 7.1 Resolve `10.1038/nature12373` once against the live Crossref API through the real provider, from a throwaway script that is not committed, and run it through `bash scripts/record-run.sh doi-live-check -- <command>` so that its output is kept; verify the record shows one request and an outcome equal to the approved `Publication` for that fixture, and report any difference instead of adjusting the fixture (reopened on 2026-10-05: the first run passed but left no evidence, and the request construction changes in 8.3)
-- [ ] 7.2 On a clean tree, run `bash scripts/record-run.sh doi-resolution-green`; verify the record says `# exit: 0` and `GREEN`
-- [ ] 7.3 Request an independent review of the slice against the three specs; verify every finding has a disposition recorded by the human
+- [x] 7.1 Resolve `10.1038/nature12373` once against the live Crossref API through the real provider, from a throwaway script that is not committed, and run it through `bash scripts/record-run.sh doi-live-check -- <command>` so that its output is kept; verify the record shows one request and an outcome equal to the approved `Publication` for that fixture, and report any difference instead of adjusting the fixture (reopened on 2026-10-05: the first run passed but left no evidence, and the request construction changes in 8.3; closed on 2026-10-05 at `efe01ac` by `evidence/runs/20261005T105814Z_doi-live-check.log`, after `…T105752Z_doi-live-check.log` passed without showing the request or the outcome)
+- [x] 7.2 On a clean tree, run `bash scripts/record-run.sh doi-resolution-green`; verify the record says `# exit: 0` and `GREEN` (closed by `evidence/runs/20261005T104614Z_doi-resolution-green.log`: clean tree at `efe01ac`, exit 0, GREEN)
+- [ ] 7.3 Request an independent review of the slice against the three specs; verify every finding has a disposition recorded by the human (kept open by the human on 2026-10-05: the read-only review after the R repair has its dispositions in `design.md`, but a genuinely fresh independent review is still required)
 
 ## 8. Repair after the checker review of 2026-10-05
 

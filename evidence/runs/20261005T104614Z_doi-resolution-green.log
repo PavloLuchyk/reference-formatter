@@ -1,0 +1,62 @@
+# run: doi-resolution-green
+# started: 2026-10-05T10:46:14Z
+# commit: efe01ac5f3558bde742f38195463d4cd7b09640c (master)
+# tree: clean (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#   ?? evidence/runs/20261005T090742Z_doi-red.log
+#   ?? evidence/runs/20261005T093221Z_doi-resolution-green.log
+#   ?? evidence/runs/20261005T101201Z_doi-checker-findings-red.log
+#   ?? evidence/runs/20261005T101726Z_doi-checker-findings-red.log
+#   ?? evidence/runs/20261005T102608Z_doi-resolution-green.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ✓ lib/doi/normalize-doi.test.ts (32 tests) 6ms
+ ✓ lib/publication/publication.test.ts (16 tests) 7ms
+ ✓ lib/metadata/crossref/map-work.test.ts (92 tests) 18ms
+ ✓ lib/metadata/resolve-doi.test.ts (35 tests) 39ms
+ ✓ __tests__/harness.smoke.test.tsx (1 test) 74ms
+
+ Test Files  5 passed (5)
+      Tests  176 passed (176)
+   Start at  13:46:20
+   Duration  998ms (environment 53%, transform 18%, import 15%, tests 12%, worker 2%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 27ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 370ms
+  Running TypeScript ...
+  Finished TypeScript in 1072ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 425ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-05T10:46:25Z
+# duration_s: 10
+# exit: 0
+# result: GREEN
