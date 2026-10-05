@@ -1,4 +1,4 @@
-import type { CanonicalDoi } from "@/lib/doi/normalize-doi";
+import { isEquivalentDoi, type CanonicalDoi } from "@/lib/doi/normalize-doi";
 import { isRecord, mapCrossrefWork } from "@/lib/metadata/crossref/map-work";
 import type { ResolutionFailure, ResolutionOutcome } from "@/lib/metadata/resolution";
 
@@ -16,9 +16,9 @@ const TIMEOUT_MS = 10_000;
 
 const failed = (failure: ResolutionFailure): ResolutionOutcome => ({ ok: false, failure });
 
-// The slashes of a DOI stay path separators, as in the requests the fixtures were recorded with;
-// every other reserved character is percent-encoded.
-const workUrl = (doi: CanonicalDoi): string => WORKS_URL + doi.split("/").map(encodeURIComponent).join("/");
+// The whole DOI is one percent-encoded path segment, slashes included, so nothing inside a DOI
+// (`..`, a trailing slash, `?`, `#`) can change which URL is requested.
+const workUrl = (doi: CanonicalDoi): string => WORKS_URL + encodeURIComponent(doi);
 
 // The application always names itself; a contact address is added only when one has been configured.
 const userAgent = ({ appName, contactEmail }: CrossrefLookupOptions): string => {
@@ -58,6 +58,10 @@ export async function lookupCrossrefWork(doi: CanonicalDoi, options: CrossrefLoo
   }
 
   const work = answer.message;
+  // A record is trusted only for its own DOI: one that states another DOI, or none, is discarded whole.
+  if (typeof work.DOI !== "string" || !isEquivalentDoi(work.DOI, doi)) {
+    return failed({ kind: "invalid-response" });
+  }
   if (work.type !== "journal-article") {
     return failed({ kind: "unsupported-type", type: typeof work.type === "string" ? work.type : null });
   }

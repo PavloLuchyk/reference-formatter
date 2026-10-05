@@ -13,13 +13,19 @@ const RESOLVER_PREFIX = /^https:\/\/doi\.org\//i;
 // `/`, and a non-empty suffix without whitespace or control characters.
 const DOI_SHAPE = /^10\.\d{4,9}(?:\.\d+)*\/[^\s\p{Cc}]+$/u;
 
+// Only Basic Latin letters are lower-cased; every other character stays as written.
+const lowerCaseBasicLatin = (text: string): string => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+
 export function normalizeDoi(input: string): DoiNormalization {
   const trimmed = input.trim();
   const candidate = DOI_PREFIX.test(trimmed) ? trimmed.replace(DOI_PREFIX, "") : trimmed.replace(RESOLVER_PREFIX, "");
 
   if (!DOI_SHAPE.test(candidate)) return { ok: false };
 
-  // Only Basic Latin letters are lower-cased; every other character stays as written.
-  const canonical = candidate.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
-  return { ok: true, doi: canonical as CanonicalDoi };
+  return { ok: true, doi: lowerCaseBasicLatin(candidate) as CanonicalDoi };
+}
+
+// Canonical equivalence: the same DOI once Basic Latin letter case is ignored. Nothing else is forgiven.
+export function isEquivalentDoi(stated: string, doi: CanonicalDoi): boolean {
+  return lowerCaseBasicLatin(stated) === doi;
 }
