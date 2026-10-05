@@ -34,6 +34,11 @@ normalization rejects, and SHALL NOT contact Crossref for it.
 - **THEN** the outcome is an `invalid-input` failure
 - **AND** no request is sent to Crossref
 
+#### Scenario: Input with an unpaired surrogate
+- **WHEN** an input consisting of `10.1000/ab`, the unpaired surrogate U+D800 and `cd` is resolved
+- **THEN** the outcome is an `invalid-input` failure
+- **AND** no request is sent to Crossref
+
 ### Requirement: Crossref is the only metadata source
 The system SHALL look up the canonical DOI in Crossref and SHALL NOT consult any
 other provider, website or model for bibliographic values, including when
@@ -303,6 +308,28 @@ closing tag that was never opened, SHALL be kept as supplied.
 - **WHEN** the record title is `Scattering of x rays<br/>`
 - **THEN** the Publication title is `Scattering of x rays`
 
+### Requirement: Removing an empty-element tag does not join text
+When the system removes one or more empty-element tags that stand between two
+stretches of text with no whitespace on either side, it SHALL leave exactly one
+space in their place, so that the text before and the text after are not run
+together. Removing a matched opening and closing tag SHALL NOT add a space.
+
+#### Scenario: Empty-element tag between two words
+- **WHEN** the record title is `Line one<br/>line two`
+- **THEN** the Publication title is `Line one line two`
+
+#### Scenario: Whitespace already on one side
+- **WHEN** the record title is `Line one <br/>line two`
+- **THEN** the Publication title is `Line one line two`
+
+#### Scenario: Two empty-element tags in a row
+- **WHEN** the record title is `Line one<br/><br/>line two`
+- **THEN** the Publication title is `Line one line two`
+
+#### Scenario: Matched tags still join their text
+- **WHEN** the record title is `H<sub>2</sub>O`
+- **THEN** the Publication title is `H2O`
+
 ### Requirement: Numeric references to unusable characters are kept
 The system SHALL decode a numeric character reference only when it denotes a
 Unicode character that is not a surrogate and not a control character other than
@@ -320,6 +347,10 @@ exactly as supplied.
 #### Scenario: Null character and value beyond Unicode
 - **WHEN** the record title is `A&#0;B and C&#x110000;D`
 - **THEN** the Publication title is `A&#0;B and C&#x110000;D`
+
+#### Scenario: Private-use character is decoded like any other character
+- **WHEN** the record title is `Glyph &#xE000; here`
+- **THEN** the Publication title is `Glyph `, the character U+E000, ` here`
 
 ### Requirement: Whitespace produced by decoding is collapsed
 A run of spaces, tabs and line breaks that contains at least one character

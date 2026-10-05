@@ -66,8 +66,8 @@ Latin letters SHALL be the same DOI.
 The system SHALL reject, as an invalid DOI, any input that, after an accepted
 prefix is removed, is not `10.` followed by a registrant code of 4 to 9 digits
 (optionally with further `.`-separated digit groups), a `/`, and a non-empty
-suffix containing no whitespace or control characters. Validation SHALL be
-structural only.
+suffix containing no whitespace, no control characters and no unpaired
+surrogates. Validation SHALL be structural only.
 
 #### Scenario: Empty input
 - **WHEN** the input is empty or only whitespace
@@ -108,6 +108,14 @@ structural only.
 #### Scenario: Registrant code with a further digit group
 - **WHEN** the input is `10.1000.10/abc`
 - **THEN** the input is accepted and the canonical DOI is `10.1000.10/abc`
+
+#### Scenario: Unpaired surrogate in the suffix
+- **WHEN** the input is `10.1000/ab`, the unpaired surrogate U+D800, `cd`
+- **THEN** the input is rejected as an invalid DOI
+
+#### Scenario: Character outside the Basic Multilingual Plane
+- **WHEN** the input is `10.1000/ab`, the character U+1F600, `cd`
+- **THEN** the input is accepted and the canonical DOI equals the input
 
 ### Requirement: Other input forms are rejected
 The system SHALL reject, as an invalid DOI, a DOI written in any form other than

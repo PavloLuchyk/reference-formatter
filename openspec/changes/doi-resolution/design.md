@@ -198,6 +198,23 @@ are in the specs for the human's review and are not separate human decisions:
 - F5: a run of spaces, tabs and line breaks that contains a decoded character
   collapses to one space; a decoded no-break space is kept.
 
+Decisions by the human on 2026-10-05 after the re-review (findings R1–R5), all
+five accepted:
+
+- R1: a numeric reference to a private-use character was turned into a space by
+  the F5 repair. The repair must not rely on a sentinel character that can
+  collide with valid title text.
+- R3: an input containing an unpaired surrogate is `invalid-input` before any
+  provider request.
+- R4: removing self-closing markup must not concatenate the adjacent text.
+- R2 and R5 are process and evidence items (tasks 7.1 to 7.3 and the untracked
+  run records). They are completed after the repair is committed.
+
+How R4 is written in the spec (agent's wording of the human's rule): one or more
+empty-element tags standing between two stretches of text with no whitespace on
+either side leave exactly one space; matched opening and closing tags still add
+none, so `H<sub>2</sub>O` stays `H2O`.
+
 ### Crossref field → Publication field mapping (approved by the human on 2026-10-05, task 1.6)
 
 This table is the authority for the mapping. Fixtures and their expected values

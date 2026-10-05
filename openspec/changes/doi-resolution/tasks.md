@@ -46,5 +46,11 @@
 
 - [x] 8.1 Update the specs and `design.md` for the human's F1 clarification (record accepted only for a canonically equivalent DOI; DOI cannot alter the request URL) and for the cleaning rules that close F3, F4 and F5, and correct the documentation and evidence drift of F7; verify `pnpm spec:check` exits 0 and `design.md` has a "Verification history" section that describes the first RED as stub-error-driven
 - [x] 8.2 Add regression tests for the accepted findings F1 to F5 without changing the implementation, changing an existing test only where the F1 clarification reverses its expectation; verify `pnpm test` fails only in new or reversed tests, that the failures are assertion failures, and record the run with `bash scripts/record-run.sh doi-checker-findings-red -- pnpm test`
-- [ ] 8.3 Repair the implementation until the tests from 8.2 pass unchanged; verify `pnpm check` exits 0 and that no test, fixture or expected value changed
-- [ ] 8.4 Repeat the single-line mutation check on the repaired code for the six changes that survived in finding F2; verify each is now caught by a test
+- [x] 8.3 Repair the implementation until the tests from 8.2 pass unchanged; verify `pnpm check` exits 0 and that no test, fixture or expected value changed
+- [x] 8.4 Repeat the single-line mutation check on the repaired code for the six changes that survived in finding F2; verify each is now caught by a test
+
+## 9. Repair after the re-review of 2026-10-05
+
+- [x] 9.1 Update the specs and `design.md` for the accepted findings R1, R3 and R4 (private-use reference is decoded; unpaired surrogate is invalid input; removing an empty-element tag does not join text); verify `pnpm spec:check` exits 0
+- [x] 9.2 Add regression tests for R1, R3 and R4 without changing the implementation, any fixture expectation or any existing test; verify `pnpm test` fails only in the new tests and that every failure is an assertion failure
+- [ ] 9.3 Repair the implementation until the tests from 9.2 pass unchanged, with no sentinel character in title cleaning that could collide with valid title text; verify `pnpm check` exits 0 and that no spec, test, fixture or expected value changed
