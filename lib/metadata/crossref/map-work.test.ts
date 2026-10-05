@@ -352,6 +352,78 @@ describe("Whitespace produced by decoding is collapsed", () => {
   });
 });
 
+// Re-review finding R1: the whitespace handling must not swallow a character the title really contains.
+describe("Numeric references to characters that are unusual but usable", () => {
+  test("Private-use character is decoded like any other character", () => {
+    expect(titleFrom("Glyph &#xE000; here")).toBe("Glyph  here");
+  });
+
+  test.each([
+    ["first private-use character", "E000", ""],
+    ["second private-use character", "E001", ""],
+    ["last private-use character of the plane", "F8FF", ""],
+    ["supplementary private-use character", "F0000", "\u{F0000}"],
+    ["replacement character", "FFFD", "�"],
+    ["noncharacter U+FFFF", "FFFF", "￿"],
+    ["zero width space", "200B", "​"],
+  ])("A reference to the %s keeps its character", (_description, hex, character) => {
+    expect(titleFrom(`A&#x${hex};B`)).toBe(`A${character}B`);
+    expect(titleFrom(`A &#32; &#x${hex}; &#32; B`)).toBe(`A ${character} B`);
+  });
+
+  test("A private-use character already in the text does not put another one at risk", () => {
+    expect(titleFrom("AB &#xE001; CD &#xE003;")).toBe("AB  CD ");
+  });
+
+  test("Every character of a long private-use run survives next to decoded whitespace", () => {
+    const codes = Array.from({ length: 64 }, (_unused, index) => 0xe000 + index);
+    const title = codes.map((code) => `&#x${code.toString(16)};`).join("&#32;");
+
+    expect(titleFrom(title)).toBe(codes.map((code) => String.fromCharCode(code)).join(" "));
+  });
+});
+
+// Re-review finding R4.
+describe("Removing an empty-element tag does not join text", () => {
+  test("Empty-element tag between two words", () => {
+    expect(titleFrom("Line one<br/>line two")).toBe("Line one line two");
+  });
+
+  test("Whitespace already on one side", () => {
+    expect(titleFrom("Line one <br/>line two")).toBe("Line one line two");
+    expect(titleFrom("Line one<br/> line two")).toBe("Line one line two");
+    expect(titleFrom("Line one <br/> line two")).toBe("Line one line two");
+  });
+
+  test("Two empty-element tags in a row", () => {
+    expect(titleFrom("Line one<br/><br/>line two")).toBe("Line one line two");
+  });
+
+  test("Matched tags still join their text", () => {
+    expect(titleFrom("H<sub>2</sub>O")).toBe("H2O");
+    expect(titleFrom("<i>Escherichia</i><b>coli</b>")).toBe("Escherichiacoli");
+  });
+
+  test("Empty-element tag with an attribute", () => {
+    expect(titleFrom('Line one<br class="soft"/>line two')).toBe("Line one line two");
+  });
+
+  test("Empty-element tag next to matched markup", () => {
+    expect(titleFrom("<i>Line one</i><br/><i>line two</i>")).toBe("Line one line two");
+  });
+
+  test("Empty-element tag at the start or the end adds nothing", () => {
+    expect(titleFrom("<br/>Line one<br/>")).toBe("Line one");
+  });
+
+  test("The same rule applies to the subtitle and the journal title", () => {
+    const publication = mapArticle({ subtitle: ["Part one<br/>part two"], "container-title": ["Annals<br/>of Botany"] });
+
+    expect(publication.subtitle).toBe("Part one part two");
+    expect(publication.journalTitle).toBe("Annals of Botany");
+  });
+});
+
 describe("Author mapping", () => {
   test("Authors of a real record", () => {
     const { authors } = mapFixture("nature12373.json");
