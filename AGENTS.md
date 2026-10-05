@@ -73,6 +73,14 @@ Record verification runs with `bash scripts/record-run.sh <label>`; records
 in `evidence/runs/` are committed and never edited by hand.
 Do not weaken tests, ESLint or TypeScript settings to obtain GREEN.
 
+`docs/dstu/rules.md` and `tests/golden/` are HUMAN-APPROVED ORACLES.
+Never modify them to make tests pass; propose any change to either and get
+explicit human approval first.
+Formatter tests consume the approved oracle; never derive expected values
+from the formatter implementation.
+Documented provisional or source limitations stay limitations; do not
+silently "resolve" them in code.
+
 ## Agent harness
 
 Respect existing `.claude` settings and hooks.
