@@ -29,46 +29,62 @@ const TAG_SHAPE = new RegExp(
   "g",
 );
 
-type Range = readonly [start: number, end: number];
+// A stretch of the text that is markup. An empty-element tag separates the text around it;
+// the opening and closing tags of a matched pair do not.
+type Markup = { readonly start: number; readonly end: number; readonly separates: boolean };
 
 // Tag-shaped text is markup only as an empty-element tag, or as an opening tag that a later closing tag
 // of the same name closes. An opening tag that is never closed, or a closing tag that was never opened,
 // is ordinary text and stays in the title.
-const markupRanges = (text: string): Range[] => {
-  const markup: Range[] = [];
-  const unclosed = new Map<string, Range[]>();
+const markupIn = (text: string): Markup[] => {
+  const markup: Markup[] = [];
+  const unclosed = new Map<string, Markup[]>();
   for (const tag of text.matchAll(TAG_SHAPE)) {
-    const range: Range = [tag.index, tag.index + tag[0].length];
     const { opening, empty, closing } = tag.groups ?? {};
+    const found: Markup = { start: tag.index, end: tag.index + tag[0].length, separates: empty !== undefined };
     if (empty !== undefined) {
-      markup.push(range);
+      markup.push(found);
     } else if (opening !== undefined) {
-      unclosed.set(opening, [...(unclosed.get(opening) ?? []), range]);
+      unclosed.set(opening, [...(unclosed.get(opening) ?? []), found]);
     } else {
       const opened = unclosed.get(closing)?.pop();
-      if (opened !== undefined) markup.push(opened, range);
+      if (opened !== undefined) markup.push(opened, found);
     }
   }
-  return markup.sort((a, b) => a[0] - b[0]);
+  return markup.sort((a, b) => a.start - b.start);
 };
 
-// Removing a tag between two stretches of whitespace would leave a double gap; only that gap is closed.
+// Joins the text that remains around removed markup.
+// - Markup that stood between two stretches of whitespace would leave a double gap; that gap becomes one space.
+// - An empty-element tag that stood between two stretches of text with no whitespace leaves one space,
+//   so the two are not run together. The tags of a matched pair never add a space.
 const withoutMarkup = (text: string): string => {
-  const kept: string[] = [];
+  let joined = "";
+  let separated = false;
   let from = 0;
-  for (const [start, end] of markupRanges(text)) {
-    kept.push(text.slice(from, start));
+  const append = (part: string) => {
+    if (part === "") return;
+    if (/\s$/.test(joined) && /^\s/.test(part)) {
+      joined = `${joined.trimEnd()} ${part.trimStart()}`;
+    } else if (separated && joined !== "" && !/\s$/.test(joined) && !/^\s/.test(part)) {
+      joined = `${joined} ${part}`;
+    } else {
+      joined += part;
+    }
+    separated = false;
+  };
+  for (const { start, end, separates } of markupIn(text)) {
+    append(text.slice(from, start));
+    separated ||= separates;
     from = end;
   }
-  kept.push(text.slice(from));
-  return kept.reduce((joined, part) =>
-    /\s$/.test(joined) && /^\s/.test(part) ? `${joined.trimEnd()} ${part.trimStart()}` : joined + part,
-  );
+  append(text.slice(from));
+  return joined;
 };
 
 // Only the five predefined XML entities and numeric character references are decoded;
 // any other named entity is kept as supplied.
-const ENTITY = /&(#\d+|#[xX][0-9a-fA-F]+|amp|lt|gt|quot|apos);/g;
+const ENTITY = /&(#\d+|#[xX][0-9a-fA-F]+|amp|lt|gt|quot|apos);/;
 const NAMED_ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" };
 
 const TAB = 0x09;
@@ -91,23 +107,42 @@ const decodedCharacter = (body: string): string | null => {
   return isUsableCharacter(codePoint) ? String.fromCodePoint(codePoint) : null;
 };
 
-// A private-use character that does not occur in the text, to mark where decoding produced whitespace.
-const unusedCharacter = (text: string): string => {
-  let code = 0xe000;
-  while (text.includes(String.fromCharCode(code))) code++;
-  return String.fromCharCode(code);
-};
+// Decoded whitespace is kept apart from the text as a value of its own (null), never as a character
+// inside the string, so no character a title may contain can be mistaken for it.
+type Piece = string | null;
+
+const isCollapsibleWhitespace = (character: string): boolean => /^[ \t\n\r]$/.test(character);
+
+// The text as a sequence of pieces: literal stretches, decoded characters, entities kept as supplied,
+// and null wherever an entity decoded to a space, tab or line break.
+const decodedPieces = (text: string): Piece[] =>
+  // Splitting on a pattern with one group alternates literal text (even positions) and entity bodies (odd).
+  text.split(ENTITY).map((part, position) => {
+    if (position % 2 === 0) return part;
+    const character = decodedCharacter(part);
+    if (character === null) return `&${part};`;
+    return isCollapsibleWhitespace(character) ? null : character;
+  });
 
 // A run of spaces, tabs and line breaks that contains decoded whitespace becomes one space.
 // A decoded no-break space is not in that set and stays; whitespace that touches nothing decoded stays too.
 const decodeEntities = (text: string): string => {
-  const mark = unusedCharacter(text);
-  const decoded = text.replace(ENTITY, (entity, body: string) => {
-    const character = decodedCharacter(body);
-    if (character === null) return entity;
-    return /^[ \t\n\r]$/.test(character) ? mark : character;
-  });
-  return decoded.replace(new RegExp(`[ \\t\\n\\r]*${mark}[ \\t\\n\\r${mark}]*`, "g"), " ");
+  let decoded = "";
+  let inDecodedRun = false;
+  for (const piece of decodedPieces(text)) {
+    if (piece === null) {
+      inDecodedRun = true;
+    } else if (!inDecodedRun) {
+      decoded += piece;
+    } else {
+      // The whitespace on either side of the decoded whitespace belongs to the same run.
+      const rest = piece.replace(/^[ \t\n\r]+/, "");
+      if (rest === "") continue;
+      decoded = `${decoded.replace(/[ \t\n\r]+$/, "")} ${rest}`;
+      inDecodedRun = false;
+    }
+  }
+  return inDecodedRun ? `${decoded.replace(/[ \t\n\r]+$/, "")} ` : decoded;
 };
 
 // Title, subtitle and journal title: markup removed, then entities decoded, then surrounding whitespace trimmed.

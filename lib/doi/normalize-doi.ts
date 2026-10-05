@@ -10,8 +10,9 @@ const DOI_PREFIX = /^doi:\s*/i;
 const RESOLVER_PREFIX = /^https:\/\/doi\.org\//i;
 
 // Structural check only: `10.`, a registrant code of 4 to 9 digits with optional further digit groups,
-// `/`, and a non-empty suffix without whitespace or control characters.
-const DOI_SHAPE = /^10\.\d{4,9}(?:\.\d+)*\/[^\s\p{Cc}]+$/u;
+// `/`, and a non-empty suffix without whitespace, control characters or unpaired surrogates.
+// With the `u` flag a properly paired surrogate is one character outside `\p{Cs}`; only a lone one is in it.
+const DOI_SHAPE = /^10\.\d{4,9}(?:\.\d+)*\/[^\s\p{Cc}\p{Cs}]+$/u;
 
 // Only Basic Latin letters are lower-cased; every other character stays as written.
 const lowerCaseBasicLatin = (text: string): string => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());

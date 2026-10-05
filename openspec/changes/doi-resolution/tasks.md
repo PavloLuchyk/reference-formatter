@@ -53,4 +53,4 @@
 
 - [x] 9.1 Update the specs and `design.md` for the accepted findings R1, R3 and R4 (private-use reference is decoded; unpaired surrogate is invalid input; removing an empty-element tag does not join text); verify `pnpm spec:check` exits 0
 - [x] 9.2 Add regression tests for R1, R3 and R4 without changing the implementation, any fixture expectation or any existing test; verify `pnpm test` fails only in the new tests and that every failure is an assertion failure
-- [ ] 9.3 Repair the implementation until the tests from 9.2 pass unchanged, with no sentinel character in title cleaning that could collide with valid title text; verify `pnpm check` exits 0 and that no spec, test, fixture or expected value changed
+- [x] 9.3 Repair the implementation until the tests from 9.2 pass unchanged, with no sentinel character in title cleaning that could collide with valid title text; verify `pnpm check` exits 0 and that no spec, test, fixture or expected value changed
