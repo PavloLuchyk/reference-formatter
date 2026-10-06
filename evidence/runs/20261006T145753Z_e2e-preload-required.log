@@ -1,0 +1,130 @@
+# run: e2e-preload-required
+# started: 2026-10-06T14:57:53Z
+# commit: 1d7976d43c178d1144ed6a63cb5a3e409d46b0a6 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M .gitignore
+#    M openspec/changes/browser-e2e/tasks.md
+#    M package.json
+#    M pnpm-lock.yaml
+#   ?? e2e/
+#   ?? evidence/runs/20261006T145333Z_e2e-spec-check.log
+#   ?? evidence/runs/20261006T145335Z_e2e-baseline.log
+#   ?? evidence/runs/20261006T145504Z_e2e-browser-install.log
+#   ?? playwright.config.ts
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash C:/Users/Legion/AppData/Local/Temp/claude/D--Study-AI-engineering-capstone-capstone-reference-formatter/3c60cf2b-8c31-4248-8d71-3d65c5e92eed/scratchpad/preload-required.sh
+----
+== source of this check
+#!/usr/bin/env bash
+# Throwaway check for task 2.6 of the change browser-e2e (HD-E13, HD-E21). It is not part of the repository; its
+# source is printed below so that the record holds it. Run from the repository root.
+#
+# It starts the production server with the command of playwright.config.ts twice, each time with the stub made
+# unable to load, and exits 0 only when the server process exited with an error both times and nothing listened on
+# port 3100. A server that refuses to start is the EXPECTED behaviour of the harness here. It is not a product RED.
+set -u
+
+echo "== source of this check"
+cat "$0"
+echo "== end of source"
+echo
+
+PORT=3100
+listening() { netstat -ano -p TCP | grep -E ":$PORT +.*LISTENING"; }
+unexpected=0
+
+if listening; then
+  echo "ABORT: something already listens on port $PORT, so the check would show nothing."
+  exit 2
+fi
+
+check() {
+  code=$1
+  echo "server exit code: $code"
+  if [ "$code" -eq 0 ] || [ "$code" -eq 124 ]; then
+    echo "UNEXPECTED: the server process did not exit with an error (124 means it had to be stopped after 30 s)."
+    unexpected=1
+  else
+    echo "as expected: the server process exited with an error."
+  fi
+  if listening; then
+    echo "UNEXPECTED: something listens on port $PORT."
+    unexpected=1
+  else
+    echo "as expected: nothing listens on port $PORT."
+  fi
+}
+
+echo "== case 1: the preload module does not exist"
+echo "command: node --import ./e2e/support/does-not-exist.mjs ./node_modules/next/dist/bin/next start -p $PORT"
+E2E_CROSSREF_RECORD=not-reached-in-this-case.jsonl \
+  timeout 30 node --import ./e2e/support/does-not-exist.mjs ./node_modules/next/dist/bin/next start -p "$PORT"
+check $?
+echo
+
+echo "== case 2: the stub is there, the location of the record (E2E_CROSSREF_RECORD) is not set"
+echo "command: node --import ./e2e/support/crossref-stub.mjs ./node_modules/next/dist/bin/next start -p $PORT"
+env -u E2E_CROSSREF_RECORD \
+  timeout 30 node --import ./e2e/support/crossref-stub.mjs ./node_modules/next/dist/bin/next start -p "$PORT"
+check $?
+echo
+
+if [ "$unexpected" -eq 0 ]; then
+  echo "RESULT: in both cases the server refused to start. This is the expected behaviour of the harness, not a product RED."
+else
+  echo "RESULT: the server did not refuse to start in every case. The harness does not meet HD-E13."
+fi
+exit "$unexpected"
+== end of source
+
+== case 1: the preload module does not exist
+command: node --import ./e2e/support/does-not-exist.mjs ./node_modules/next/dist/bin/next start -p 3100
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\Study\AI engineering\capstone\capstone\reference-formatter\e2e\support\does-not-exist.mjs' imported from D:\Study\AI engineering\capstone\capstone\reference-formatter\
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at node:internal/modules/esm/loader:636:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:361:14) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///D:/Study/AI%20engineering/capstone/capstone/reference-formatter/e2e/support/does-not-exist.mjs'
+}
+
+Node.js v24.20.0
+server exit code: 1
+as expected: the server process exited with an error.
+as expected: nothing listens on port 3100.
+
+== case 2: the stub is there, the location of the record (E2E_CROSSREF_RECORD) is not set
+command: node --import ./e2e/support/crossref-stub.mjs ./node_modules/next/dist/bin/next start -p 3100
+file:///D:/Study/AI%20engineering/capstone/capstone/reference-formatter/e2e/support/crossref-stub.mjs:19
+if (!recordFile) throw new Error("crossref-stub: E2E_CROSSREF_RECORD is not set; the server is not started.");
+                       ^
+
+Error: crossref-stub: E2E_CROSSREF_RECORD is not set; the server is not started.
+    at file:///D:/Study/AI%20engineering/capstone/capstone/reference-formatter/e2e/support/crossref-stub.mjs:19:24
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:96:9)
+
+Node.js v24.20.0
+server exit code: 1
+as expected: the server process exited with an error.
+as expected: nothing listens on port 3100.
+
+RESULT: in both cases the server refused to start. This is the expected behaviour of the harness, not a product RED.
+----
+# finished: 2026-10-06T14:57:54Z
+# duration_s: 0
+# exit: 0
+# result: GREEN

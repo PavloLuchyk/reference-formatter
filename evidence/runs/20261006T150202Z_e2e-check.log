@@ -1,0 +1,70 @@
+# run: e2e-check
+# started: 2026-10-06T15:02:02Z
+# commit: 1d7976d43c178d1144ed6a63cb5a3e409d46b0a6 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M .gitignore
+#    M AGENTS.md
+#    M openspec/changes/browser-e2e/design.md
+#    M openspec/changes/browser-e2e/tasks.md
+#    M package.json
+#    M pnpm-lock.yaml
+#   ?? e2e/
+#   ?? evidence/runs/20261006T145333Z_e2e-spec-check.log
+#   ?? evidence/runs/20261006T145335Z_e2e-baseline.log
+#   ?? evidence/runs/20261006T145504Z_e2e-browser-install.log
+#   ?? evidence/runs/20261006T145753Z_e2e-preload-required.log
+#   ?? evidence/runs/20261006T145816Z_e2e-harness.log
+#   ?? evidence/runs/20261006T145916Z_e2e-first-run.log
+#   ?? evidence/runs/20261006T145932Z_e2e-repeat.log
+#   ?? evidence/runs/20261006T150153Z_e2e-untouched.log
+#   ?? evidence/runs/20261006T150154Z_e2e-tooling-untouched.log
+#   ?? evidence/runs/20261006T150155Z_e2e-boundaries.log
+#   ?? playwright.config.ts
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+
+ Test Files  18 passed (18)
+      Tests  688 passed (688)
+   Start at  18:02:09
+   Duration  3.79s (tests 52%, environment 30%, import 9%, transform 8%, worker 1%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 27ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 407ms
+  Running TypeScript ...
+  Finished TypeScript in 1222ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 436ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-06T15:02:17Z
+# duration_s: 14
+# exit: 0
+# result: GREEN

@@ -73,6 +73,12 @@ Record verification runs with `bash scripts/record-run.sh <label>`; records
 in `evidence/runs/` are committed and never edited by hand.
 Do not weaken tests, ESLint or TypeScript settings to obtain GREEN.
 
+`pnpm e2e` builds the app and runs the Playwright browser E2E of the
+primary flow against recorded Crossref answers; it is separate from
+`pnpm check` and needs `pnpm exec playwright install chromium` once.
+It never contacts live Crossref: do not weaken the fail-closed stub or its
+canary to obtain GREEN.
+
 `docs/dstu/rules.md` and `tests/golden/` are HUMAN-APPROVED ORACLES.
 Never modify them to make tests pass; propose any change to either and get
 explicit human approval first.

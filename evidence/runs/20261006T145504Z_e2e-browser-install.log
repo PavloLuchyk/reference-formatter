@@ -1,0 +1,67 @@
+# run: e2e-browser-install
+# started: 2026-10-06T14:55:04Z
+# commit: 1d7976d43c178d1144ed6a63cb5a3e409d46b0a6 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M openspec/changes/browser-e2e/tasks.md
+#    M package.json
+#    M pnpm-lock.yaml
+#   ?? evidence/runs/20261006T145333Z_e2e-spec-check.log
+#   ?? evidence/runs/20261006T145335Z_e2e-baseline.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm exec playwright install chromium
+----
+Downloading Chrome for Testing 153.0.8010.12 (playwright chromium v1243)[2m from https://cdn.playwright.dev/builds/cft/153.0.8010.12/win64/chrome-win64.zip[22m
+|                                                                                |   0% of 195.6 MiB
+|■■■■■■■■                                                                        |  10% of 195.6 MiB
+|■■■■■■■■■■■■■■■■                                                                |  20% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 195.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 195.6 MiB
+Chrome for Testing 153.0.8010.12 (playwright chromium v1243) downloaded to C:\Users\Legion\AppData\Local\ms-playwright\chromium-1243
+Downloading FFmpeg (playwright ffmpeg v1011)[2m from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-win64.zip[22m
+|                                                                                |   1% of 1.3 MiB
+|■■■■■■■■                                                                        |  11% of 1.3 MiB
+|■■■■■■■■■■■■■■■■                                                                |  21% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 1.3 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 1.3 MiB
+FFmpeg (playwright ffmpeg v1011) downloaded to C:\Users\Legion\AppData\Local\ms-playwright\ffmpeg-1011
+Downloading Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243)[2m from https://cdn.playwright.dev/builds/cft/153.0.8010.12/win64/chrome-headless-shell-win64.zip[22m
+|                                                                                |   0% of 114.6 MiB
+|■■■■■■■■                                                                        |  10% of 114.6 MiB
+|■■■■■■■■■■■■■■■■                                                                |  20% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.6 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.6 MiB
+Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to C:\Users\Legion\AppData\Local\ms-playwright\chromium_headless_shell-1243
+Downloading Winldd (playwright winldd v1007)[2m from https://cdn.playwright.dev/dbazure/download/playwright/builds/winldd/1007/winldd-win64.zip[22m
+|■■■■■■■■                                                                        |  12% of 0.1 MiB
+|■■■■■■■■■■■■■■■■                                                                |  25% of 0.1 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  38% of 0.1 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  51% of 0.1 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 0.1 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  89% of 0.1 MiB
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 0.1 MiB
+Winldd (playwright winldd v1007) downloaded to C:\Users\Legion\AppData\Local\ms-playwright\winldd-1007
+----
+# finished: 2026-10-06T14:55:25Z
+# duration_s: 21
+# exit: 0
+# result: GREEN

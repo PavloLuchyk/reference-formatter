@@ -499,6 +499,12 @@ check is not repeated or automated by this change.
 - [`pnpm e2e` rewrites `.next`, as `pnpm check` does] → No mitigation needed.
 - [Port 3100 is taken] → The run fails without submitting a DOI. Nothing is
   reused.
+- [The tests wait for React to attach to the page by looking for the property
+  keys React puts on the DOI field, which are not a public interface] → If a
+  version of React named them differently the wait would time out and the
+  run would fail as a failure of the harness; it cannot make a test pass.
+  Found during implementation: without the wait a click could reach the form
+  before React, and the browser would submit it itself.
 - [The record of the boundary is left in the temporary folder after a run] →
   It holds methods and URLs of requests for the DOIs of the tests and nothing
   else (HD-E12). It is not in the repository.
@@ -509,7 +515,69 @@ check is not repeated or automated by this change.
 
 ## Verification history
 
-Nothing has been run under this change yet.
+All runs below were made on 2026-10-06 by the maker session, on one machine
+(Windows 11, Node v24.20.0, pnpm 11.25.0), at commit `1d7976d`, the commit of
+the accepted plan. From `e2e-browser-install` on, the tree held the
+uncommitted change. The records on a clean tree are task 4.5.
+
+- **Before any change.** `…145333Z_e2e-spec-check.log`: `pnpm spec:check`
+  exit 0 with this change valid. `…145335Z_e2e-baseline.log`: `pnpm check`
+  GREEN on the clean tree, 18 test files, 688 tests.
+- **Tool and browser.** `@playwright/test` 1.63.0 was added as an exact
+  devDependency; pnpm reported no ignored build script. The lockfile also
+  rewrites the two lines that key `next` 16.3.8 by its peers, because
+  `@playwright/test` is an optional peer of `next`; the version of `next`
+  did not change. `…145504Z_e2e-browser-install.log`: Chrome for Testing
+  153.0.8010.12 (playwright chromium v1243) and its headless shell were
+  downloaded to the cache of Playwright outside the repository.
+- **The server refuses to start without the stub.**
+  `…145753Z_e2e-preload-required.log`. With a preload module that does not
+  exist, and with the stub but without the location of the record, Node
+  exited with code 1 and nothing listened on port 3100. These two failures
+  are the expected behaviour of the harness (HD-E13, HD-E21). They are not a
+  product RED. The record is GREEN because the check passed. The check is a
+  throwaway script outside the repository; its source is printed in the
+  record.
+- **First run of the harness: GREEN.** `…145816Z_e2e-harness.log`, the canary
+  alone: the build ended before the server started, the stub printed one
+  `installed` line, the request for `10.9999/unrecorded.e2e` was `refused`,
+  one test passed.
+- **First run of the complete file: GREEN.** `…145916Z_e2e-first-run.log`:
+  three tests, three passed, on the first run. Nothing failed, so nothing was
+  classified under HD-E17 and no difference from an approved expectation was
+  seen.
+- **Repeated run: GREEN.** `…145932Z_e2e-repeat.log`, `--repeat-each=5`:
+  15 passed. The output of the server holds 1 `installed`, 15 `served` and
+  5 `refused` lines of the stub and no other Crossref line.
+
+What these records do not show, and limits to keep in mind:
+
+- **No test was ever seen to fail on the behaviour it names.** Every test
+  passed on its first run, because the product already behaved as accepted.
+  No RED was produced for the record (HD-E8, HD-E17). The only failures in
+  the records are the two expected refusals of the server to start. No run of
+  `pnpm e2e` was made outside the records.
+- **The fail-closed property is verified against `next` 16.3.8 only**
+  (HD-E20). A Next.js upgrade requires the two refusals to start, the canary
+  and `pnpm e2e` to be run and recorded again before the claim is carried
+  forward.
+- **The provider answers date from 2026-10-05.** Nothing here shows the
+  current state of live Crossref. The live browser check of 2026-10-06 stays
+  separate evidence and its three records are untouched.
+- **The record of the Crossref boundary is instrumentation.** The file of
+  each run was left in the temporary folder of the system. None is in the
+  repository and none is cited as evidence; what they proved was asserted by
+  the tests whose results the run records hold.
+- **One machine, one browser.** Windows and the Chromium build named above.
+  Which of the two downloaded binaries a headless run starts is decided by
+  Playwright and is not printed in the records.
+- **The tree was not clean.** All runs from the browser installation on were
+  made with the change uncommitted.
+- **One comment changed after the runs.** The first line of the header
+  comment of the stub was reworded after `e2e-repeat`, so that the search of
+  task 4.3 finds the preload option in `playwright.config.ts` alone. No code
+  changed. The run of task 4.4 does not start the stub; the run on the
+  committed state, task 4.5, is the one made with the file as committed.
 
 Planning input, not evidence. On 2026-10-06 the agent tried the approach
 twice with throwaway files outside the repository, against the existing

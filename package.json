@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "e2e": "pnpm build && playwright test",
     "spec:check": "openspec validate --all --strict --no-interactive",
     "agent:log": "node scripts/agent-log-summary.mjs",
     "hooks:selftest": "node scripts/hooks-selftest.mjs",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@fission-ai/openspec": "1.14.0",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
