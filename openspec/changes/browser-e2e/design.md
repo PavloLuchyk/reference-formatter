@@ -127,6 +127,17 @@ semantics of an archived slice, to `docs/dstu/rules.md` or `tests/golden/`,
 to R1, R2, R4 or the approved expectation table, to the dependencies or to
 CI; `pnpm check` stays separate from `pnpm e2e`.
 
+### Human disposition of feature review 02 (decided 2026-10-06)
+
+Review 02 (`evidence/reviews/browser-e2e-review-02.md`, a fresh
+`feature-reviewer` session at `c731798`): verdict READY, with all seven
+dispositions of review 01 found implemented and evidenced, and one
+documentation note. The disposition is appended below the report.
+
+| Finding | Disposition | Decision |
+|---|---|---|
+| BE-R02-1 | **ACCEPT AS DOCUMENTATION CORRECTION** | The Verification history no longer says that no run exists on the committed follow-up to review 01. It records the actual final chronology: the hardening commit `a268ad4`; then, on its clean tree, `pnpm e2e` (`…163716Z_e2e-review01-final-green.log`), `pnpm check` (`…163724Z_e2e-review01-final-check.log`) and `pnpm spec:check` (`…163736Z_e2e-review01-final-spec-check.log`), all three GREEN, with task 5.14 complete. Historical records are not rewritten, and nothing implies that those runs existed before the hardening commit. |
+
 ### Technical decisions (agent's, within the approved strategy)
 
 **TD-E1. Files.** `playwright.config.ts` at the repository root;
@@ -595,11 +606,12 @@ check is not repeated or automated by this change.
 ## Verification history
 
 All runs below were made on 2026-10-06 by the maker session, on one machine
-(Windows 11, Node v24.20.0, pnpm 11.25.0). They fall into three groups, told
+(Windows 11, Node v24.20.0, pnpm 11.25.0). They fall into four groups, told
 in this order: the implementation, at `1d7976d`, the commit of the accepted
 plan, where the tree held the uncommitted change from `e2e-browser-install`
-on; the committed state, at `7d82901` on a clean tree; and the follow-up to
-review 01, at `a6c46f8` with the follow-up uncommitted.
+on; the committed state, at `7d82901` on a clean tree; the follow-up to
+review 01, at `a6c46f8` with the follow-up uncommitted; and the committed
+follow-up, at `a268ad4` on a clean tree.
 
 - **Before any change.** `…145333Z_e2e-spec-check.log`: `pnpm spec:check`
   exit 0 with this change valid. `…145335Z_e2e-baseline.log`: `pnpm check`
@@ -715,6 +727,36 @@ Follow-up to review 01, at `a6c46f8` with the follow-up uncommitted:
   differing from an approved expectation. The four focused checks are
   throwaway scripts outside the repository; each record prints its source.
 
+The committed follow-up. Everything in this part happened after the
+follow-up above was written; this part was added on 2026-10-06 after review
+02 (BE-R02-1).
+
+- **The follow-up was committed** as `a268ad4` (`test(e2e): harden
+  deterministic browser harness after review`) by the maker session, on the
+  human's explicit instruction and with the message the human gave. No run
+  named below existed before that commit.
+- **The committed follow-up on a clean tree (task 5.14).** Three records,
+  made after the commit, each naming `a268ad4` and a clean tree, each GREEN.
+  `evidence/runs/20261006T163716Z_e2e-review01-final-green.log`:
+  `pnpm e2e`, the build before the server, Next.js 16.3.8, three tests and
+  three passed; the stub printed 1 `installed`, 3 `served` and 1 `refused`
+  line and no other.
+  `evidence/runs/20261006T163724Z_e2e-review01-final-check.log`:
+  `pnpm check` with its four stages, 18 files, 688 tests.
+  `evidence/runs/20261006T163736Z_e2e-review01-final-spec-check.log`:
+  `pnpm spec:check`, 8 items passed. Task 5.14 is complete. The five-times
+  repeat and the searches of tasks 4.1 to 4.3 were not run again on this
+  commit; the task does not ask for them. These records were committed as
+  `c731798`.
+- **Independent review 02.** `evidence/reviews/browser-e2e-review-02.md`, a
+  fresh `feature-reviewer` session at `c731798` that ran no command: verdict
+  READY, the seven dispositions of review 01 implemented and evidenced, one
+  note, BE-R02-1, on this history. The human accepted it as a documentation
+  correction; the disposition is under Decisions and below the report.
+- **No run was made at `c731798` or after it**, apart from validations of
+  the specs. That commit and the closure of the review change documents,
+  evidence and the agent log only.
+
 What these records do not show, and limits to keep in mind:
 
 - **No test was ever seen to fail on the behaviour it names.** Every test
@@ -740,8 +782,11 @@ What these records do not show, and limits to keep in mind:
 - **Which tree.** The implementation runs were made with the change
   uncommitted. The six records of task 4.5 were made on the clean tree at
   `7d82901`. The runs of the follow-up to review 01 were made at `a6c46f8`
-  with the follow-up uncommitted; no run on the committed follow-up exists
-  yet (task 5.14).
+  with the follow-up uncommitted. The follow-up was then committed as
+  `a268ad4`, and the three records of task 5.14 were made afterwards on its
+  clean tree. Until review 02 this entry ended by saying that no run on the
+  committed follow-up existed yet. That was true when it was written, before
+  the commit; it was corrected by the disposition of BE-R02-1.
 - **The contact-address check is partial.** It shows that nothing of the
   address reaches the record or the output. It cannot show that the address
   reached the product, which the stub does not observe.

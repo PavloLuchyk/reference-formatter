@@ -1,30 +1,33 @@
 # Session notes — handoff
 
-Updated 2026-10-06 with the `browser-e2e` change implemented, not yet
-committed and not yet reviewed. Every statement was checked against the
+Updated 2026-10-06 with the `browser-e2e` change implemented, independently
+reviewed and awaiting its archive. Every statement was checked against the
 repository at that time; nothing is reconstructed from memory. Read
 `AGENTS.md` and `docs/intent.md` first.
 
 ## Repository state
 
-- Branch `master`, HEAD `1d7976d` (`spec(e2e): define deterministic browser
-  verification`), which holds the accepted plan of the `browser-e2e` change.
-  No git remote is configured.
-- Uncommitted when this file was written, all of it the implementation of
-  `browser-e2e`:
-  - new: `playwright.config.ts`, `e2e/primary-flow.e2e.ts`,
-    `e2e/support/crossref-stub.mjs`, and eleven run records labelled
-    `e2e-…` under `evidence/runs/`;
-  - modified: `package.json`, `pnpm-lock.yaml`, `.gitignore`, `AGENTS.md`,
-    `openspec/changes/browser-e2e/design.md` and `tasks.md`, this file;
+- Branch `master`, HEAD `c731798` (`docs(evidence): record browser e2e
+  hardening green`). No git remote is configured.
+- The commits of the `browser-e2e` change, oldest first: `1d7976d` the
+  accepted plan; `7d82901` the implementation; `a6c46f8` its clean-tree
+  records; `a268ad4` the hardening after review 01; `c731798` the
+  clean-tree records of the hardening.
+- Uncommitted when this file was written, all of it the closure of the
+  review process:
+  - new: `evidence/reviews/browser-e2e-review-02.md`, the reviewer's report
+    with the human's disposition appended, and the record
+    `evidence/runs/20261006T173604Z_e2e-review02-spec-check.log`;
+  - modified: `openspec/changes/browser-e2e/design.md` and `tasks.md`, this
+    file;
   - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
     committed on purpose, see `.agent-log/README.md`).
-- No product source, no existing test, no spec and no oracle file is
-  modified: nothing under `app/`, `lib/`, `tests/`, `docs/dstu/` or
-  `openspec/specs/`, and not `next.config.ts`.
-- One OpenSpec change is active, `openspec/changes/browser-e2e/`, with 22 of
-  24 tasks done. `openspec/specs/` holds seven main specs; the change adds an
-  eighth, `browser-flow-verification`, when it is archived.
+- No product source, no existing test, no main spec and no oracle file was
+  modified by the change: nothing under `app/`, `lib/`, `tests/`,
+  `docs/dstu/` or `openspec/specs/`, and not `next.config.ts`.
+- One OpenSpec change is active, `openspec/changes/browser-e2e/`, with all
+  40 of its tasks done. It awaits its archive. `openspec/specs/` holds seven
+  main specs; the archive adds an eighth, `browser-flow-verification`.
 
 ## Slices
 
@@ -33,6 +36,12 @@ repository at that time; nothing is reconstructed from memory. Read
 | DOI Resolution | done, archived | `openspec/changes/archive/2026-10-05-doi-resolution/` | `doi-normalization`, `publication-model`, `doi-resolution` |
 | DSTU Journal Article Formatter | done, archived | `openspec/changes/archive/2026-10-05-dstu-journal-formatter/` | `dstu-journal-formatting` |
 | Bibliography Workspace | done, archived | `openspec/changes/archive/2026-10-06-bibliography-workspace/` | `bibliography-workspace`, `metadata-correction`, `bibliography-copy` |
+
+The verification change that follows the three slices:
+
+| Change | State | Archive | Main spec |
+|---|---|---|---|
+| `browser-e2e` (deterministic browser E2E) | implemented, independently reviewed, **awaiting archive** | not yet; `openspec/changes/browser-e2e/` | `browser-flow-verification`, created by the archive |
 
 Each archived `design.md` holds that slice's decisions, readings, deferred
 findings, known limitations and Verification history. They still hold.
@@ -63,24 +72,57 @@ Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
 - The list lives in the memory of the page and is gone on reload. The page
   says so.
 
-## Browser E2E (change `browser-e2e`, implemented, not committed, not reviewed)
+## Browser E2E (change `browser-e2e`: implemented, independently reviewed, awaiting archive)
 
+- **State.** Implemented, hardened after review 01 and independently
+  reviewed twice, both times READY. All 40 tasks of the change are done.
+  Nothing is left in it but the archive, on the human's word.
+- **Final verification state**, on the clean tree at `a268ad4`, the
+  hardening commit. Nothing that runs has changed since: the later commit
+  and the closure of the review change documents, evidence and the agent
+  log only.
+  - `pnpm e2e`: **3 Playwright tests GREEN**
+    (`evidence/runs/20261006T163716Z_e2e-review01-final-green.log`).
+  - `pnpm check`: **GREEN, 688 tests** in 18 files, with typecheck, lint
+    and the production build
+    (`evidence/runs/20261006T163724Z_e2e-review01-final-check.log`).
+  - `pnpm spec:check`: **GREEN**, 8 items
+    (`evidence/runs/20261006T163736Z_e2e-review01-final-spec-check.log`),
+    and again after the closure of the review, with the closure uncommitted
+    (`evidence/runs/20261006T173604Z_e2e-review02-spec-check.log`).
 - **Command.** `pnpm e2e` makes the ordinary production build and then runs
-  the Playwright tests of `e2e/primary-flow.e2e.ts` in Chromium. It is
-  separate from `pnpm check`, which is unchanged and starts no browser. CI
-  is not changed.
-- **Once per machine.** `pnpm exec playwright install chromium` downloads the
-  browser that Playwright manages to its own cache outside the repository.
-  Without it `pnpm e2e` cannot run. `@playwright/test` is pinned to 1.63.0.
-- **How Crossref is made deterministic.** Playwright starts the Next.js
-  production server as one Node process,
+  the Playwright tests of `e2e/primary-flow.e2e.ts`. It is separate from
+  `pnpm check`, which is unchanged and starts no browser. CI is not changed.
+- **Setup.** `@playwright/test` 1.63.0, an exact devDependency. Chromium
+  only, the build Playwright manages. One worker, zero retries.
+  `pnpm exec playwright install chromium` once per machine downloads the
+  browser to the cache of Playwright outside the repository; without it
+  `pnpm e2e` cannot run.
+- **How Crossref is made deterministic.** Playwright hands one command to a
+  shell, which starts the Next.js production server as one Node process:
   `node --import ./e2e/support/crossref-stub.mjs ./node_modules/next/dist/bin/next start -p 3100`.
-  The stub replaces `globalThis.fetch` in that process: a request for a DOI
-  with a recorded answer gets the unmodified file from
-  `lib/metadata/crossref/__fixtures__/`; any other request to Crossref is
-  refused without being sent. If the stub cannot load, the server does not
-  start. No product file knows about it, and `pnpm dev`, `pnpm start`,
-  `pnpm build` and `pnpm check` never load it.
+  The stub is preloaded by an option of that process and replaces
+  `globalThis.fetch` in it. A request for a DOI with a recorded answer gets
+  the unmodified recorded response from
+  `lib/metadata/crossref/__fixtures__/`. Any other request to Crossref
+  fails closed: it is refused without being sent. If the stub cannot load,
+  the server does not start; a server that is already running is never
+  reused. No product file knows about the stub, and `pnpm dev`,
+  `pnpm start`, `pnpm build` and `pnpm check` never load it.
+- **The request record.** The stub writes one line per event, with the
+  event, the method and the URL only, to a file that each run allocates for
+  itself under the temporary folder of the system. A location pre-set by the
+  caller is not used. Every test checks, before its first DOI, that the
+  record shows the stub installed exactly once. The file is instrumentation
+  and is not evidence.
+- **BOUND of the fail-closed guarantee, and a REQUIREMENT.** The guarantee is
+  bounded to the pinned Next.js 16.3.8 and the verified `next start`
+  process model, in which the server serves requests in the process it is
+  started in. It is not claimed for another version. A Next.js upgrade
+  requires re-verifying the server start, the preload refusals (a missing
+  preload module, a missing `E2E_CROSSREF_RECORD`) and the canary, with
+  `pnpm e2e`, recorded, before the claim is carried forward (HD-E20). The
+  same stands in `AGENTS.md` and in the spec of the change.
 - **What the three tests cover.** A canary (an unrecorded DOI is refused);
   the primary flow (add, add in another input form, duplicate refused,
   correct the journal title, reorder, copy one, copy all, remove); one
@@ -92,36 +134,46 @@ Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
   production build, driven through its page, takes a DOI through the Server
   Function, DOI resolution, the mapping and the formatter to the approved
   text; the listed steps behave as the accepted specs say; the application
-  passes the specified text to the clipboard; no request left the server for
-  Crossref.
-- **What it does not prove.** Anything about the current state of live
-  Crossref: the provider answers were recorded on 2026-10-05. The live
-  browser check of 2026-10-06 stays the only evidence against live Crossref
-  and is separate evidence; its three records are untouched. Nor does it
-  show another browser or platform, or what a platform stores on its
-  clipboard.
-- **REQUIREMENT on a Next.js upgrade.** The deterministic stub is verified
-  against `next` 16.3.8 only, where `next start` serves requests in the
-  process it is started in. The fail-closed claim is not made for another
-  version. Whenever `next` is upgraded, the two refusals to start (a missing
-  preload module, a missing `E2E_CROSSREF_RECORD`), the canary and
-  `pnpm e2e` must be run and recorded again before the claim is carried
-  forward (HD-E20). The same requirement stands in the spec of the change.
-- **Records.** Eleven, all of 2026-10-06 at `1d7976d`, the later ones with
-  the change uncommitted: `e2e-spec-check`, `e2e-baseline`,
-  `e2e-browser-install`, `e2e-preload-required`, `e2e-harness`,
-  `e2e-first-run`, `e2e-repeat`, `e2e-untouched`,
-  `e2e-tooling-untouched`, `e2e-boundaries`, `e2e-check`. Every test
-  passed on its first run; none was ever seen to fail on product behaviour,
-  and no RED was produced. The two failures in `e2e-preload-required` are
-  the expected refusals of the server to start, not a product RED. What each
-  record shows is in the Verification history of the design.
-- **Human decisions.** HD-E1 to HD-E23, all in
-  `openspec/changes/browser-e2e/design.md`.
-- **Open in the change.** Task 4.5: after the human commits the change,
-  `pnpm e2e` and `pnpm spec:check` recorded on the clean tree. Task 4.6: an
-  independent review by the `feature-reviewer` agent in a fresh session,
-  with the human's dispositions. Then the archive, on the human's word.
+  passes the specified text to the clipboard; no Crossref request left the
+  server.
+- **What it does not prove or claim.** Nothing about the current state of
+  live Crossref: the provider answers were recorded on 2026-10-05. Nothing
+  about another browser or platform, or about what a platform stores on its
+  clipboard. **It does not claim that the entire build pipeline is
+  offline.** The claim is about the Crossref requests of the server the run
+  starts and nothing wider; the build stage was not examined, and
+  `app/layout.tsx` takes its fonts through `next/font/google`.
+- **The live-Crossref evidence remains separate.** The manual browser check
+  of 2026-10-06 against live Crossref stays the only evidence against the
+  live provider. It is not E2E evidence, and its three records are
+  untouched.
+- **Review 01** (`evidence/reviews/browser-e2e-review-01.md`), a fresh
+  `feature-reviewer` session at `a6c46f8`: READY, one minor finding and six
+  notes. The human accepted all seven, and they were hardened in `a268ad4`:
+  the record that each run allocates, the stub check in every test, executed
+  checks of an occupied port and of a configured contact address, and
+  corrections of wording. No product code, no expectation and no oracle
+  changed.
+- **Review 02** (`evidence/reviews/browser-e2e-review-02.md`), a fresh
+  session at `c731798`: verdict **READY**. One documentation note,
+  BE-R02-1, on the Verification history; accepted by the human and
+  corrected. The human's dispositions are appended below each report. Task
+  4.6, the independent review, is complete.
+- **Records.** 33 run records labelled `e2e-…`, all of 2026-10-06. Every
+  browser test passed on its first run; none was ever seen to fail on
+  product behaviour, and no RED was produced for the record. The failures
+  the records hold: the two expected refusals of the server to start
+  (`e2e-preload-required`) and the expected refusal of a run on an occupied
+  port (`e2e-review01-port-in-use`), both in GREEN records because the
+  checks passed; and one RED record,
+  `evidence/runs/20261006T162914Z_e2e-review01-filtered-run.log`. **That
+  RED was a defect of the check script**, whose filter word also matched the
+  name of the test file. It was not a product RED and not a defect of the
+  harness; the corrected check is GREEN (`e2e-review01-filtered-run-2`).
+  What each record shows is in the Verification history of the design.
+- **Human decisions.** HD-E1 to HD-E23 and the dispositions of both reviews,
+  all in `openspec/changes/browser-e2e/design.md`, which moves with the
+  archive.
 
 ## Human-approved oracles (protected)
 
@@ -262,12 +314,13 @@ workspace shows what the formatter returns and adds no rule of its own.
 Stated in full in the archived `design.md` of the workspace; the ones that
 matter most:
 
-- **The primary browser flow now has automated evidence, with limits.** See
+- **The primary browser flow has automated evidence, with limits.** See
   "Browser E2E" above: recorded provider answers of 2026-10-05, one machine
-  (Windows, Chromium), runs made on the uncommitted tree, not yet reviewed.
-  The component tests still run in jsdom with a fake resolver and a stubbed
-  clipboard. The live browser check is one unrepeatable pass in one browser
-  on one platform, depends on live Crossref and is not E2E evidence.
+  (Windows, Chromium), a fail-closed guarantee bounded to Next.js 16.3.8, no
+  claim of an offline build. The component tests still run in jsdom with a
+  fake resolver and a stubbed clipboard. The live browser check is one
+  unrepeatable pass in one browser on one platform, depends on live Crossref
+  and is not E2E evidence.
 - **The E2E tests were born GREEN.** The product already behaved as
   accepted, so none of them was seen to fail on the behaviour it names.
 - The UI RED run did not discriminate: nearly every component test failed at
@@ -278,7 +331,9 @@ matter most:
   the test files are what remains. Three of the hashed files changed
   afterwards, by comments and one added test.
 - `CROSSREF_CONTACT_EMAIL` was never set in a live run; a stubbed value is
-  covered by `app/actions.test.ts`.
+  covered by `app/actions.test.ts`. One deterministic E2E run was made with
+  a synthetic address; it shows that the address reaches neither the request
+  record nor the output, not what the product sent.
 
 ## Other open items
 
@@ -299,9 +354,9 @@ matter most:
 
 ## What is left before the MVP is done
 
-No feature slice is in progress. The `browser-e2e` change is implemented and
-waits for its commit and its review. Against the Definition of Done of
-`docs/intent.md`:
+No feature slice is in progress. The `browser-e2e` change is implemented,
+independently reviewed and waits for its archive. Against the Definition of
+Done of `docs/intent.md`:
 
 | Item of the Definition of Done | State |
 |---|---|
@@ -310,17 +365,16 @@ waits for its commit and its review. Against the Definition of Done of
 | DSTU expected values have source or human-decision provenance | done: the approved profile and golden oracle |
 | Completed slices independently reviewed, findings disposed by the human | done for all three |
 | Evidence points to real repository states and runs | done; its limits are written down |
-| **Primary browser flow has deterministic E2E verification** | **open until closed by the human**: implemented and recorded GREEN on the uncommitted tree; the commit, the records on the clean tree (task 4.5) and the independent review (task 4.6) remain |
+| **Primary browser flow has deterministic E2E verification** | **implemented, GREEN on the clean tree at `a268ad4`, independently reviewed (READY twice)**; the change awaits its archive, and closing the item is the human's |
 | **Known limitations documented; repository can be set up and verified from its README** | **open**: the README is still the scaffold text |
 | **Final product acceptance** | **open**: the human's |
 
 Next actions, in the order that seems natural; each needs the human's
 decision first:
 
-1. Finish the `browser-e2e` change: the human commits it; task 4.5 records
-   `pnpm e2e` and `pnpm spec:check` on the clean tree; a fresh session runs
-   the `feature-reviewer` agent (task 4.6) and the human disposes of its
-   findings; then `/opsx:archive` on the human's word.
+1. **Archive `browser-e2e`** with `/opsx:archive`, on the human's word,
+   after the closure of the review process has been committed. The archive
+   creates the main spec `browser-flow-verification`.
 2. The README and product documentation: setup with pnpm, `pnpm check`,
    `pnpm exec playwright install chromium` and `pnpm e2e`, the optional
    `CROSSREF_CONTACT_EMAIL`, the session-only list, the source limitations

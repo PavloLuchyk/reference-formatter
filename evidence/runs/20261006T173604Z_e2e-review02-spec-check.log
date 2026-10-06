@@ -1,0 +1,28 @@
+# run: e2e-review02-spec-check
+# started: 2026-10-06T17:36:04Z
+# commit: c7317980ce860cf243a2fa1a358e9154bce3c0eb (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M openspec/changes/browser-e2e/design.md
+#    M openspec/changes/browser-e2e/tasks.md
+#   ?? evidence/reviews/browser-e2e-review-02.md
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm spec:check
+----
+$ openspec validate --all --strict --no-interactive
+✓ spec/bibliography-copy
+✓ spec/bibliography-workspace
+✓ change/browser-e2e
+✓ spec/doi-normalization
+✓ spec/doi-resolution
+✓ spec/dstu-journal-formatting
+  ℹ [INFO] requirements[21]: Requirement text is very long (>500 characters). Move examples and edge cases into scenarios, or split it into separate requirements that each state one behavior.
+✓ spec/metadata-correction
+✓ spec/publication-model
+Totals: 8 passed, 0 failed (8 items)
+----
+# finished: 2026-10-06T17:36:06Z
+# duration_s: 2
+# exit: 0
+# result: GREEN
