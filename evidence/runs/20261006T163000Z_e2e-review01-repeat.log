@@ -1,0 +1,105 @@
+# run: e2e-review01-repeat
+# started: 2026-10-06T16:30:00Z
+# commit: a6c46f8b827723b2bf88558c7cf21d9cb35268a4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M e2e/primary-flow.e2e.ts
+#    M playwright.config.ts
+#   ?? evidence/reviews/browser-e2e-review-01.md
+#   ?? evidence/runs/20261006T162848Z_e2e-review01-port-in-use.log
+#   ?? evidence/runs/20261006T162859Z_e2e-review01-contact-email.log
+#   ?? evidence/runs/20261006T162906Z_e2e-review01-preset-record.log
+#   ?? evidence/runs/20261006T162914Z_e2e-review01-filtered-run.log
+#   ?? evidence/runs/20261006T162940Z_e2e-review01-filtered-run-2.log
+#   ?? evidence/runs/20261006T162953Z_e2e-review01-green.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm e2e --repeat-each=5
+----
+$ pnpm build && playwright test "--repeat-each=5"
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 23ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 335ms
+  Running TypeScript ...
+  Finished TypeScript in 1022ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 347ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+[WebServer] [crossref-stub] installed
+[WebServer] (node:7056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.3.8
+[WebServer] - Local:         http://localhost:3100
+[WebServer] - Network:       http://192.168.0.193:3100
+[WebServer] ✓ Ready in 107ms
+[WebServer] ✓ Running next.config.ts took 25ms
+
+Running 15 tests using 1 worker
+
+(node:43776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [crossref-stub] refused GET https://api.crossref.org/works/10.9999%2Funrecorded.e2e
+  ok  1 [chromium] › e2e\primary-flow.e2e.ts:127:5 › an unrecorded DOI is refused at the Crossref boundary (231ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1038%2Fnature12373
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1371%2Fjournal.pone.0000308
+  ok  2 [chromium] › e2e\primary-flow.e2e.ts:142:5 › the primary flow: add, refuse a duplicate, correct, reorder, copy, remove (776ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1234%2Fthis-doi-does-not-exist-xyz
+  ok  3 [chromium] › e2e\primary-flow.e2e.ts:210:5 › a DOI that Crossref has no record of adds nothing (205ms)
+(node:75036) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [crossref-stub] refused GET https://api.crossref.org/works/10.9999%2Funrecorded.e2e
+  ok  4 [chromium] › e2e\primary-flow.e2e.ts:127:5 › an unrecorded DOI is refused at the Crossref boundary (240ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1038%2Fnature12373
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1371%2Fjournal.pone.0000308
+  ok  5 [chromium] › e2e\primary-flow.e2e.ts:142:5 › the primary flow: add, refuse a duplicate, correct, reorder, copy, remove (751ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1234%2Fthis-doi-does-not-exist-xyz
+  ok  6 [chromium] › e2e\primary-flow.e2e.ts:210:5 › a DOI that Crossref has no record of adds nothing (189ms)
+(node:32204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [crossref-stub] refused GET https://api.crossref.org/works/10.9999%2Funrecorded.e2e
+  ok  7 [chromium] › e2e\primary-flow.e2e.ts:127:5 › an unrecorded DOI is refused at the Crossref boundary (229ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1038%2Fnature12373
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1371%2Fjournal.pone.0000308
+  ok  8 [chromium] › e2e\primary-flow.e2e.ts:142:5 › the primary flow: add, refuse a duplicate, correct, reorder, copy, remove (776ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1234%2Fthis-doi-does-not-exist-xyz
+  ok  9 [chromium] › e2e\primary-flow.e2e.ts:210:5 › a DOI that Crossref has no record of adds nothing (192ms)
+(node:74036) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [crossref-stub] refused GET https://api.crossref.org/works/10.9999%2Funrecorded.e2e
+  ok 10 [chromium] › e2e\primary-flow.e2e.ts:127:5 › an unrecorded DOI is refused at the Crossref boundary (227ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1038%2Fnature12373
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1371%2Fjournal.pone.0000308
+  ok 11 [chromium] › e2e\primary-flow.e2e.ts:142:5 › the primary flow: add, refuse a duplicate, correct, reorder, copy, remove (779ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1234%2Fthis-doi-does-not-exist-xyz
+  ok 12 [chromium] › e2e\primary-flow.e2e.ts:210:5 › a DOI that Crossref has no record of adds nothing (209ms)
+(node:30100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [crossref-stub] refused GET https://api.crossref.org/works/10.9999%2Funrecorded.e2e
+  ok 13 [chromium] › e2e\primary-flow.e2e.ts:127:5 › an unrecorded DOI is refused at the Crossref boundary (203ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1038%2Fnature12373
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1371%2Fjournal.pone.0000308
+  ok 14 [chromium] › e2e\primary-flow.e2e.ts:142:5 › the primary flow: add, refuse a duplicate, correct, reorder, copy, remove (763ms)
+[WebServer] [crossref-stub] served GET https://api.crossref.org/works/10.1234%2Fthis-doi-does-not-exist-xyz
+  ok 15 [chromium] › e2e\primary-flow.e2e.ts:210:5 › a DOI that Crossref has no record of adds nothing (172ms)
+
+  15 passed (8.4s)
+----
+# finished: 2026-10-06T16:30:13Z
+# duration_s: 13
+# exit: 0
+# result: GREEN

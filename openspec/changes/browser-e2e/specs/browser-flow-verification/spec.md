@@ -4,7 +4,10 @@
 
 Verifies the accepted primary flow of the product in a real browser,
 deterministically: the production application is driven through its page while
-Crossref is answered from recorded responses and can never be reached live.
+every Crossref request of the server under test is answered from a recorded
+response or refused. That fail-closed property is claimed for the Next.js
+version and the `next start` process model it was verified against, and not
+beyond them.
 E… and K… name rows of the human-approved expectation table, and HD-E… name
 human decisions, recorded in the design of the change that introduced this
 capability.
@@ -75,16 +78,20 @@ edited or derived from formatter output. [HD-E3]
 - **THEN** no file under `lib/metadata/crossref/__fixtures__/` differs from its committed state
 
 ### Requirement: Recorded answers live in the serving process only
-The recorded answers SHALL be loaded into the Node process that serves the
-application under test, which the verification starts directly and not
-through a wrapper process, and into no other process. When they cannot be
-loaded, that process SHALL fail to start and the run SHALL fail without
-submitting a DOI. An application started in any other way SHALL resolve DOIs
-exactly as before this capability existed. [HD-E3, HD-E13]
+The recorded answers SHALL be loaded by an option of the Node process that
+itself runs the Next.js server under test, not taken from the environment and
+not given to a process that starts it, and by no other process. When they
+cannot be loaded, that process SHALL fail to start and the run SHALL fail
+without submitting a DOI. An application started in any other way SHALL
+resolve DOIs exactly as before this capability existed. [HD-E3, HD-E13]
 
 #### Scenario: One process loads the recorded answers
 - **WHEN** the server under test has started
 - **THEN** exactly one process has loaded the recorded answers, and it is the process that serves the application
+
+#### Scenario: Server command is launched through a shell
+- **WHEN** the browser test tool hands the server command to a shell and the server inherits the environment of the caller
+- **THEN** the option that loads the recorded answers still belongs to the Node process that runs the server, and exactly one process loads them
 
 #### Scenario: Module of the recorded answers is missing
 - **WHEN** the server under test is started and the module that holds the recorded answers does not exist
@@ -111,8 +118,12 @@ unless that request was refused. [HD-E3, HD-E12]
 - **AND** the record of requests at the Crossref boundary shows that request as refused
 
 #### Scenario: Recorded answers are checked before any DOI is submitted
-- **WHEN** a browser verification run begins
-- **THEN** it confirms from the record of the boundary that the recorded answers are loaded before it submits a DOI
+- **WHEN** any browser test that can submit a DOI runs
+- **THEN** before its first submission it confirms from the record of the boundary that the recorded answers were loaded, by exactly one process
+
+#### Scenario: One test selected by a filter
+- **WHEN** the primary-flow test is run alone, so that the canary does not run
+- **THEN** it makes that confirmation itself before it submits a DOI
 
 #### Scenario: Every request is accounted for
 - **WHEN** a browser test has ended
@@ -153,6 +164,18 @@ HD-E23]
 #### Scenario: Not committed
 - **WHEN** a browser verification run has ended
 - **THEN** the record lies outside the repository and `git status` shows no file from it
+
+### Requirement: Each run allocates its own record
+Each run of `pnpm e2e` SHALL create a new record file of its own under the
+temporary folder of the system and SHALL use that file in the test runner, in
+its workers and in the server it starts. A location that the caller had set in
+`E2E_CROSSREF_RECORD` SHALL NOT be used or written to, and no record SHALL be
+written inside the repository. [HD-E12]
+
+#### Scenario: Location pre-set by the caller
+- **WHEN** `E2E_CROSSREF_RECORD` names a file before `pnpm e2e` is run
+- **THEN** that file is not written to
+- **AND** the run uses a new file under the temporary folder of the system and passes
 
 ### Requirement: The run starts its own server
 The browser verification SHALL start its own application server and SHALL NOT

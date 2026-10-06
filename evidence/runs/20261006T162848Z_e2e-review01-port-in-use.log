@@ -1,0 +1,229 @@
+# run: e2e-review01-port-in-use
+# started: 2026-10-06T16:28:48Z
+# commit: a6c46f8b827723b2bf88558c7cf21d9cb35268a4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M e2e/primary-flow.e2e.ts
+#    M playwright.config.ts
+#   ?? evidence/reviews/browser-e2e-review-01.md
+# node: v24.20.0  pnpm: 11.25.0
+# command: node C:/Users/Legion/AppData/Local/Temp/claude/D--Study-AI-engineering-capstone-capstone-reference-formatter/3c60cf2b-8c31-4248-8d71-3d65c5e92eed/scratchpad/review01-checks.mjs port
+----
+== source of this check
+// Throwaway focused checks for the follow-up to review 01 of the change browser-e2e. Not part of the repository;
+// the source is printed below so that the record holds it. Run from the repository root:
+//   node review01-checks.mjs <port|email|preset|filtered>
+// Each check runs the real `pnpm e2e` and exits 0 only when everything it expects holds. Where a check expects the
+// E2E run to refuse to start, that refusal is the EXPECTED behaviour of the harness and not a product RED.
+import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { createServer } from "node:http";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+console.log("== source of this check");
+console.log(readFileSync(fileURLToPath(import.meta.url), "utf8"));
+console.log("== end of source\n");
+
+const RECORD_PREFIX = "reference-formatter-e2e-";
+const recordDirs = () => readdirSync(tmpdir()).filter((name) => name.startsWith(RECORD_PREFIX));
+
+// Runs a command through a shell, shows its output as it comes and returns it with the exit code.
+const run = (command, env = {}) =>
+  new Promise((resolve) => {
+    console.log(`$ ${command}   [extra environment: ${JSON.stringify(Object.keys(env))}]`);
+    const child = spawn(command, { shell: true, env: { ...process.env, ...env } });
+    let out = "";
+    const take = (chunk) => {
+      out += chunk;
+      process.stdout.write(chunk);
+    };
+    child.stdout.on("data", take);
+    child.stderr.on("data", take);
+    child.on("close", (code) => resolve({ code, out }));
+  });
+
+let unexpected = 0;
+const expect = (label, ok) => {
+  console.log(`   ${ok ? "as expected" : "UNEXPECTED "}: ${label}`);
+  if (!ok) unexpected += 1;
+};
+
+// What a record of the Crossref boundary holds, summarised: the field names it uses and how many lines of each
+// event. The lines themselves are not copied here.
+const summarise = (dir) => {
+  const file = join(tmpdir(), dir, "crossref-boundary.jsonl");
+  if (!existsSync(file)) return { file, exists: false, raw: "", keys: [], events: {} };
+  const raw = readFileSync(file, "utf8");
+  const entries = raw.split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  const keys = [...new Set(entries.flatMap((entry) => Object.keys(entry)))].sort();
+  const events = {};
+  for (const entry of entries) events[entry.event] = (events[entry.event] ?? 0) + 1;
+  return { file, exists: true, raw, keys, events };
+};
+
+// Runs `pnpm e2e` and returns its result with the record folders that were created during it.
+const e2e = async (args, env) => {
+  const before = new Set(recordDirs());
+  const result = await run(`pnpm e2e${args ? ` ${args}` : ""}`, env);
+  const created = recordDirs().filter((name) => !before.has(name));
+  console.log(`\n   exit code of pnpm e2e: ${result.code}`);
+  console.log(`   record folders created under the temporary folder during the run: ${created.length}`);
+  return { ...result, created };
+};
+
+const onlyApprovedFields = (keys) => keys.every((key) => ["event", "method", "url"].includes(key));
+
+const checks = {
+  // BE-R01-1 A. The port of the verification is taken by a server that answers.
+  async port() {
+    console.log("== port 3100 is already in use by a local HTTP server that answers every request");
+    const seen = [];
+    const occupier = createServer((request, response) => {
+      seen.push(`${request.method} ${request.url}`);
+      response.end("occupied by the check");
+    });
+    await new Promise((resolve) => occupier.listen(3100, resolve));
+    console.log("   the occupying server listens on port 3100\n");
+
+    const result = await e2e("", {});
+    occupier.close();
+
+    console.log(`   requests the occupying server received: ${JSON.stringify(seen)}`);
+    expect("pnpm e2e exited with an error", result.code !== 0);
+    expect("Playwright said that the address is already used", result.out.includes("is already used"));
+    expect("no browser test ran", !/Running \d+ tests?/.test(result.out) && !/^\s+ok \d+/m.test(result.out));
+    expect("the stub was not loaded, so no server of the verification was started", !result.out.includes("[crossref-stub]"));
+    expect("the occupying server received no POST, so no DOI was submitted to it", !seen.some((line) => line.startsWith("POST")));
+    expect("no record of the Crossref boundary was written", result.created.every((dir) => !summarise(dir).exists));
+    console.log("\n   The refusal above is the expected behaviour of the harness. It is not a product RED.");
+  },
+
+  // BE-R01-1 B. A contact address is configured in the environment of the run.
+  async email() {
+    const address = "e2e@example.invalid";
+    console.log(`== CROSSREF_CONTACT_EMAIL is set to the synthetic value ${address} for the run; no .env file is used`);
+    const result = await e2e("", { CROSSREF_CONTACT_EMAIL: address });
+    expect("pnpm e2e exited with 0", result.code === 0);
+    expect("3 tests passed", /\b3 passed\b/.test(result.out));
+    expect("exactly one record folder was created", result.created.length === 1);
+    const record = summarise(result.created[0] ?? "none");
+    console.log(`   fields used in the record: ${JSON.stringify(record.keys)}; lines per event: ${JSON.stringify(record.events)}`);
+    expect("the record uses only the fields event, method and url", record.exists && onlyApprovedFields(record.keys));
+    expect("the record holds 1 installed, 3 served and 1 refused line", JSON.stringify(record.events) === JSON.stringify({ installed: 1, refused: 1, served: 3 }));
+    expect("the address is not in the record", !record.raw.includes(address) && !record.raw.includes("example.invalid"));
+    expect("no header name is in the record", !/user-agent|mailto/i.test(record.raw));
+    const stubLines = result.out.split("\n").filter((line) => line.includes("[crossref-stub]"));
+    expect("the address is not in the output lines of the stub", stubLines.length === 5 && !stubLines.some((line) => line.includes("example.invalid")));
+    expect("the address is nowhere in the output of the run", !result.out.includes("example.invalid"));
+    console.log("\n   Not shown by this check: what the product sent as User-Agent. The stub reads no header, by design.");
+  },
+
+  // BE-R01-4. The caller has E2E_CROSSREF_RECORD set before the run.
+  async preset() {
+    const callerDir = mkdtempSync(join(tmpdir(), "reference-formatter-caller-"));
+    const callerFile = join(callerDir, "caller-provided.jsonl");
+    writeFileSync(callerFile, '{"event":"sentinel written by the check before the run"}\n');
+    const hash = () => createHash("sha256").update(readFileSync(callerFile)).digest("hex");
+    const before = hash();
+    console.log("== E2E_CROSSREF_RECORD is pre-set by the caller to a file that holds one sentinel line");
+    console.log(`   sha256 of the caller-provided file before the run: ${before}`);
+
+    const result = await e2e("", { E2E_CROSSREF_RECORD: callerFile, E2E_CROSSREF_RECORD_OWNER: "stale-value-from-the-caller" });
+    const after = hash();
+    console.log(`   sha256 of the caller-provided file after the run:  ${after}`);
+    expect("pnpm e2e exited with 0", result.code === 0);
+    expect("3 tests passed", /\b3 passed\b/.test(result.out));
+    expect("the caller-provided file was not written to", before === after);
+    expect("exactly one new record folder was created under the temporary folder", result.created.length === 1);
+    const record = summarise(result.created[0] ?? "none");
+    console.log(`   the new record: fields ${JSON.stringify(record.keys)}; lines per event: ${JSON.stringify(record.events)}`);
+    expect("the new record is not the caller-provided file", record.exists && record.file !== callerFile);
+    expect("the new record holds the 1 installed, 3 served and 1 refused line of this run", JSON.stringify(record.events) === JSON.stringify({ installed: 1, refused: 1, served: 3 }));
+    rmSync(callerDir, { recursive: true });
+  },
+
+  // BE-R01-7. One test alone, selected by a filter: the canary does not run.
+  async filtered() {
+    const step = "precondition: the Crossref stub is installed exactly once";
+    console.log("== only the primary-flow test is selected; the steps of the test are printed");
+    const result = await e2e("--grep=primary", { PLAYWRIGHT_LIST_PRINT_STEPS: "1" });
+    const lines = result.out.split("\n");
+    const stepLine = lines.findIndex((line) => line.includes(step));
+    const firstRequest = lines.findIndex((line) => line.includes("[crossref-stub] served") || line.includes("[crossref-stub] refused"));
+    expect("pnpm e2e exited with 0", result.code === 0);
+    expect("exactly one test was selected and it passed", /Running 1 test /.test(result.out) && /\b1 passed\b/.test(result.out));
+    expect("the canary did not run", !result.out.includes("an unrecorded DOI is refused"));
+    expect("the precondition step ran in the selected test", stepLine !== -1);
+    expect("the precondition step is printed before the first Crossref request of the run", stepLine !== -1 && firstRequest !== -1 && stepLine < firstRequest);
+    expect("exactly one record folder was created", result.created.length === 1);
+    const record = summarise(result.created[0] ?? "none");
+    console.log(`   the record: fields ${JSON.stringify(record.keys)}; lines per event: ${JSON.stringify(record.events)}`);
+    expect("the record holds 1 installed and 2 served lines and no refused line", JSON.stringify(record.events) === JSON.stringify({ installed: 1, served: 2 }));
+  },
+};
+
+const check = checks[process.argv[2]];
+if (!check) {
+  console.log("usage: node review01-checks.mjs <port|email|preset|filtered>");
+  process.exit(2);
+}
+await check();
+console.log(unexpected === 0 ? "\nRESULT: everything this check expects holds." : `\nRESULT: ${unexpected} expectation(s) of this check do not hold.`);
+process.exit(unexpected === 0 ? 0 : 1);
+
+== end of source
+
+== port 3100 is already in use by a local HTTP server that answers every request
+   the occupying server listens on port 3100
+
+$ pnpm e2e   [extra environment: []]
+$ pnpm build && playwright test
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 23ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 396ms
+  Running TypeScript ...
+  Finished TypeScript in 1148ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 345ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+Error: http://localhost:3100 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.
+
+[ELIFECYCLE] Command failed with exit code 1.
+
+   exit code of pnpm e2e: 1
+   record folders created under the temporary folder during the run: 1
+   requests the occupying server received: ["GET /"]
+   as expected: pnpm e2e exited with an error
+   as expected: Playwright said that the address is already used
+   as expected: no browser test ran
+   as expected: the stub was not loaded, so no server of the verification was started
+   as expected: the occupying server received no POST, so no DOI was submitted to it
+   as expected: no record of the Crossref boundary was written
+
+   The refusal above is the expected behaviour of the harness. It is not a product RED.
+
+RESULT: everything this check expects holds.
+----
+# finished: 2026-10-06T16:28:53Z
+# duration_s: 5
+# exit: 0
+# result: GREEN

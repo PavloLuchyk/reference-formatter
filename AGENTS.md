@@ -76,8 +76,12 @@ Do not weaken tests, ESLint or TypeScript settings to obtain GREEN.
 `pnpm e2e` builds the app and runs the Playwright browser E2E of the
 primary flow against recorded Crossref answers; it is separate from
 `pnpm check` and needs `pnpm exec playwright install chromium` once.
-It never contacts live Crossref: do not weaken the fail-closed stub or its
-canary to obtain GREEN.
+In the E2E server every Crossref request is answered from a recorded file or
+refused. This fail-closed property is verified only for the pinned Next.js
+16.3.8 and its `next start` process model; after a Next.js upgrade, verify
+the server start, the preload refusals and the canary again before relying
+on it.
+Do not weaken the fail-closed stub or its canary to obtain GREEN.
 
 `docs/dstu/rules.md` and `tests/golden/` are HUMAN-APPROVED ORACLES.
 Never modify them to make tests pass; propose any change to either and get

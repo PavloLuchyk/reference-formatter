@@ -20,8 +20,8 @@ live Crossref and cannot be repeated.
   build and runs the browser tests against the application started from it.
   `pnpm check` is not changed and starts no browser.
 - Make Crossref deterministic for that run only: the browser test tool
-  starts the Next.js production server directly as one Node process with a
-  stub preloaded into it. The stub answers the requests of the existing
+  starts the Next.js production server as one Node process, with a stub
+  preloaded into that process by an option of its own. The stub answers the requests of the existing
   resolver from the recorded, unmodified Crossref answers under
   `lib/metadata/crossref/__fixtures__/`. A request with no recorded answer
   is refused and does not reach live Crossref; if the stub cannot load, the
@@ -106,6 +106,14 @@ remaining points, recorded as HD-E19 to HD-E23:
 - HD-E23: the expectation table, the request record, the correction and the
   scope are confirmed as recorded in HD-E11, HD-E12, HD-E14, HD-E15, HD-E16
   and HD-E10.
+
+Feature review 01 gave the verdict READY with seven findings, one minor and
+six notes. The human accepted all seven on 2026-10-06; the dispositions are
+recorded in `design.md` and below the review report. They led to two
+hardenings of the harness (a record file that each run allocates for itself,
+and a check in every test that the stub is active), to executed checks of two
+scenarios that had only been read, and to corrections of wording. No product
+code, no expectation and no oracle changed.
 
 Not in this change: the README and the final product documentation; any
 change to CI; any change to product code, to `next.config.ts` or to the

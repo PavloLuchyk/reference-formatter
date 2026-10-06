@@ -2,7 +2,9 @@
 // answered from recorded responses (e2e/support/crossref-stub.mjs). Run with `pnpm e2e`.
 //
 // What it shows is behaviour against provider answers recorded on 2026-10-05, not the current state of live
-// Crossref. No request reaches live Crossref: the first test is the canary for that.
+// Crossref. In the server under test every Crossref request is answered from a recorded response or refused. That
+// holds for the pinned Next.js 16.3.8 and its `next start` process model, the ones it was verified against; the
+// first test is the canary for it.
 //
 // EXPECTED VALUES. Every reference text below is a literal copied from the E2E expectation table of the design of
 // the change browser-e2e, HUMAN-APPROVED on 2026-10-06 (rows E1 to E6, K1 and K2). It is never computed: this file
@@ -13,7 +15,7 @@ import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { UI } from "../app/_components/__fixtures__/approved-copy";
 
-// The canary runs first and a failure stops the rest: nothing is submitted unless the stub is seen to be active.
+// The canary runs first and a failure stops the rest.
 test.describe.configure({ mode: "serial" });
 
 // ---- The record of the Crossref boundary: what the stub wrote, one event per line. Temporary instrumentation.
@@ -30,6 +32,15 @@ const boundaryRecord = (): BoundaryEvent[] => {
     .filter((line) => line !== "")
     .map((line) => JSON.parse(line) as BoundaryEvent);
 };
+
+// Before any test submits a DOI, the record must prove that the stub is active: loaded, and loaded by exactly one
+// process. Every test checks this for itself, so a run of one test alone checks it too; it does not rest on the
+// order of the tests or on the canary having run.
+test.beforeEach(async () => {
+  await test.step("precondition: the Crossref stub is installed exactly once", () => {
+    expect(boundaryRecord().filter((entry) => entry.event === "installed")).toHaveLength(1);
+  });
+});
 
 // The request the product makes for a DOI: the DOI as one percent-encoded segment.
 const worksUrl = (encodedDoi: string): string => `https://api.crossref.org/works/${encodedDoi}`;
@@ -111,11 +122,9 @@ const watchClipboardWrites = (page: Page) =>
 const clipboardWrites = (page: Page): Promise<string[]> =>
   page.evaluate(() => (window as unknown as ClipboardProbe).__clipboardWrites);
 
-// ---- C1. Canary: an unrecorded DOI is refused by the stub and never reaches live Crossref (row E6).
+// ---- C1. Canary: an unrecorded DOI is refused by the stub and is not sent to live Crossref (row E6).
 
 test("an unrecorded DOI is refused at the Crossref boundary", async ({ page }) => {
-  // Before anything is submitted: the stub is active, and exactly one process loaded it.
-  expect(boundaryRecord().filter((entry) => entry.event === "installed")).toHaveLength(1);
   const before = boundaryRecord().length;
 
   await openPage(page);

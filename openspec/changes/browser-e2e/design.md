@@ -37,7 +37,8 @@ See `proposal.md` for the motivation. What shapes the approach:
 **Goals:**
 
 - Repeatable browser evidence of the accepted primary flow against the
-  production build, with no dependency on the network.
+  production build, with deterministic provider behaviour: no dependency on
+  live Crossref.
 - The product's own path from the page to the formatted reference is the one
   exercised; nothing in the product is replaced except the answer of Crossref.
 - A run cannot use live Crossref, by construction and by a canary, on the
@@ -52,6 +53,8 @@ See `proposal.md` for the motivation. What shapes the approach:
 - Coverage of every scenario of the workspace specs; the component tests keep
   that.
 - Any change to CI, to the README or to product documentation.
+- A build or a pipeline that needs no network at all. The claim is about
+  Crossref only.
 
 ## Decisions
 
@@ -93,6 +96,37 @@ See `proposal.md` for the motivation. What shapes the approach:
 | HD-E22 | **`AGENTS.md` wording, just in time.** The rule is not added during planning. After `pnpm e2e` exists and has been demonstrated successfully, the concise durable rule is added exactly as planned; the final wording is shown to the human immediately before writing only if it materially differs. |
 | HD-E23 | **Confirmed as recorded.** The expectation table, with E1 to E6, K1, K2, R1, R2 and R4, is human-approved for this slice; R1, R2 and R4 remain literal expectations never computed through the production formatter, and the approved-copy fixture is reused only for already approved UI strings (HD-E11, HD-E14). The per-run request record stays outside the repository and restricted to event, method and URL, with no headers, contact email or unrelated request data (HD-E12). The correction stays `PLoS ONE` set to `PLOS ONE` (HD-E15). The scope stays: `@playwright/test` only; Chromium only; the browser managed by Playwright; one worker; zero retries; a dedicated `pnpm e2e`; no CI change; no change to `pnpm check`; no README or product-documentation work; no production `app/` or `lib/` change; no modification of the semantics of an archived slice or of the approved oracles (HD-E10, HD-E16). |
 
+### Human dispositions of feature review 01 (decided 2026-10-06)
+
+Review 01 (`evidence/reviews/browser-e2e-review-01.md`, a fresh
+`feature-reviewer` session at `a6c46f8`): verdict READY, one minor finding
+and six notes. The human disposed of all seven. The same dispositions are
+appended below the report.
+
+| Finding | Disposition | Decision |
+|---|---|---|
+| BE-R01-1 | **ACCEPT** | Execute and record the two accepted scenarios that had not been exercised. A: port 3100 occupied by a local HTTP server that answers; the E2E run must refuse to reuse it or start over it and must not proceed as though it owned the server; expected harness verification, not a product RED. B: `CROSSREF_CONTACT_EMAIL` set to a harmless synthetic value; the deterministic run must still pass with live Crossref unreachable through the stub, and the request record must hold only the approved event, method and URL, without the address, headers or other unnecessary data. No `.env` file is created or modified. |
+| BE-R01-2 | **ACCEPT AS DOCUMENTATION CLARIFICATION** | The durable wording bounds the fail-closed guarantee explicitly to the currently pinned Next.js 16.3.8 and the verified `next start` process model; a future Next.js upgrade requires the server, preload and canary behaviour to be verified again. `AGENTS.md` is updated accordingly, and absolute wording in the spec Purpose such as "can never be reached live" is given the same boundary. A clarification of HD-E20, not new behaviour. |
+| BE-R01-3 | **ACCEPT AS DOCUMENTATION CORRECTION ONLY** | The launch mechanism is not changed. Statements such as "no wrapper process" and "nothing inherited from the environment" are corrected to describe reality: Playwright launches the configured command through its shell mechanism; that shell launches the explicit Node command; `--import` belongs to the Node process that runs Next; the process inherits the invoking environment; the fail-closed property does not depend on claiming otherwise. The fail-closed requirement itself is not weakened. |
+| BE-R01-4 | **ACCEPT** | The allocation of `E2E_CROSSREF_RECORD` is hardened. Each `pnpm e2e` run creates and uses its own fresh record path under the temporary folder of the system. A value provided by the caller is not preserved or reused. The generated path is still shared with the Playwright runner and workers and with the server the run starts. A focused verification starts with the variable pre-set and proves that the harness overrides it. No request record is written inside the repository. |
+| BE-R01-5 | **ACCEPT AS EVIDENCE WORDING CORRECTION** | No recorded run shows the hydration race being observed. Wording such as "Found during implementation" is replaced by wording that describes a risk identified through reasoning about the implementation and the harness. No historical failure is invented or reconstructed. |
+| BE-R01-6 | **ACCEPT AS PROCESS WORK** | The Verification history of this design is brought up to date now with the committed implementation state, the final clean-tree `pnpm e2e`, `pnpm check`, `pnpm spec:check` and the boundary and tooling evidence. `docs/session-notes.md` is not updated yet; that remains task 4.7, after the independent review is complete. |
+| BE-R01-7 | **ACCEPT** | The stub-active precondition is strengthened. Every browser test that can submit a DOI verifies, before its first submission, that the request record proves the stub is installed exactly once. It does not rest on declaration order or on the canary having run first, so a filtered run of the primary flow alone still verifies it. The canary itself is kept. |
+
+Wording clarification given with the dispositions: the documents do not claim
+that the whole `pnpm e2e` pipeline has no network dependency, which was not
+proven. The claim is that deterministic provider behaviour has no dependency
+on live Crossref, and that all Crossref requests in the server the run starts
+are recorded responses or fail closed under the verified pinned Next.js
+process model. The build may have unrelated environmental or network
+requirements; the Crossref guarantee is not broadened into a guarantee of a
+fully offline build.
+
+Boundaries set with the dispositions: no change to `app/` or `lib/`, to the
+semantics of an archived slice, to `docs/dstu/rules.md` or `tests/golden/`,
+to R1, R2, R4 or the approved expectation table, to the dependencies or to
+CI; `pnpm check` stays separate from `pnpm e2e`.
+
 ### Technical decisions (agent's, within the approved strategy)
 
 **TD-E1. Files.** `playwright.config.ts` at the repository root;
@@ -128,17 +162,26 @@ with `reuseExistingServer: false`. It starts the Next.js production server as
 one Node process and gives that process the preload as a command-line option
 of Node itself.
 
-- No `pnpm start`, so no wrapper process stands between Playwright and the
-  server. The `start` script of `package.json` is neither used nor changed.
-- No `NODE_OPTIONS`, anywhere. The preload is not an inherited environment
-  value that some other process could pick up or lose.
+- Playwright launches the command through its shell mechanism, and that
+  shell launches the Node command written above. `--import` belongs to that
+  Node process, the one that runs Next.js and serves the application; a
+  shell cannot take a Node preload (corrected after review 01, BE-R01-3: an
+  earlier wording said that no process stands between Playwright and the
+  server).
+- The command does not go through `pnpm start`. The `start` script of
+  `package.json` is neither used nor changed.
+- The harness sets no `NODE_OPTIONS`. The server process does inherit the
+  environment of whoever runs `pnpm e2e`, including any `NODE_OPTIONS` or
+  `CROSSREF_CONTACT_EMAIL` set there. The preload does not come from that
+  environment and does not depend on it, and the fail-closed property does
+  not rest on the environment being empty.
 - Both paths are relative to the repository root, which is where Playwright
   runs the command, and `./node_modules/next/dist/bin/next` is the entry
   point that the `bin` field of the `next` package names. Relative paths
   keep the space of the repository path out of the command; forward slashes
   work in the shells of Windows and of POSIX systems alike.
-- The port is an argument of the command. The only value passed through the
-  `env` of `webServer` is the location of the record of TD-E7.
+- The port is an argument of the command. The only value the harness adds
+  through the `env` of `webServer` is the location of the record of TD-E7.
 - A server that is already running is never reused, and a taken port fails
   the run.
 
@@ -184,17 +227,25 @@ output of the server:
 | a request was refused | `event: "refused"`, `method`, `url` |
 
 Nothing else is written: no header, no contact address, no body. The file
-lies in the temporary folder of the system, outside the repository, and has a
-new name for every run; `playwright.config.ts` chooses the name once and both
-the server and the tests receive it through one environment variable. The
-file is instrumentation: it is not committed, not copied into `evidence/` and
-not cited as evidence. What it proved is asserted by the tests, and the run
+is instrumentation: it is not committed, not copied into `evidence/` and not
+cited as evidence. What it proved is asserted by the tests, and the run
 record keeps the output of those tests and of the server.
+
+Where the file lies (hardened after review 01, BE-R01-4). The test runner
+creates a new folder under the temporary folder of the system for every run
+and puts the file there. It passes the path on in `E2E_CROSSREF_RECORD` and
+marks it, in a second variable, with its own process id. Its workers load
+`playwright.config.ts` again, find the id of their parent in that mark and
+keep the path; the server receives the path through the `env` of
+`webServer`. A value of `E2E_CROSSREF_RECORD` that the caller had set carries
+no such mark, so it is never used and never written to. Before the
+hardening the configuration kept any value it found, and could not tell the
+caller's value from the runner's.
 
 The tests read the file to assert what the page cannot show:
 
-- before any DOI is submitted, that it holds exactly one `installed` line:
-  the stub is active, and one process loaded it;
+- in every test, before its first DOI is submitted, that it holds exactly
+  one `installed` line: the stub is active, and one process loaded it;
 - for each DOI the flow adds, that one `served` line with the expected
   method and URL appeared;
 - for the duplicate, that no line appeared;
@@ -206,11 +257,14 @@ Why a record at all: the message of `provider-unavailable` cannot by itself
 tell a refusal by the stub from a live Crossref that happens to be
 unavailable. The record can.
 
-**TD-E8. Order of the tests.** One worker, the tests of the file run in
-series, and a failure stops the rest: first the canary, which starts by
-reading the record of TD-E7; then the primary flow; then the `not-found`
-failure. Nothing is submitted before the first assertion on the record has
-passed.
+**TD-E8. Order of the tests, and the precondition of each.** One worker, the
+tests of the file run in series, and a failure stops the rest: first the
+canary; then the primary flow; then the `not-found` failure. Every test
+begins with the same precondition, in a hook that runs before each of them:
+the record of TD-E7 holds exactly one `installed` line. No test submits a
+DOI before that has passed. Since review 01 (BE-R01-7) this no longer rests
+on the canary running first: a run that selects one test alone checks it
+too.
 
 **TD-E9. Runner settings (HD-E16).** One project, Chromium. One worker. No
 retries, because a retry would hide a result that differs between runs.
@@ -245,7 +299,7 @@ whatever its result (HD-E8, HD-E17).
 pnpm e2e
  ├─ 1. pnpm build ............................ ordinary build, no stub in this process
  └─ 2. playwright test
-        ├─ starts ONE Node process:
+        ├─ hands this command to a shell, which starts ONE Node process:
         │    node --import ./e2e/support/crossref-stub.mjs \
         │         ./node_modules/next/dist/bin/next start -p 3100
         │       │  the stub loads first; if it cannot, the process exits
@@ -271,9 +325,11 @@ The invariant (HD-E13): an unrecorded Crossref request during deterministic
 E2E never calls the real Crossref provider. It rests on five points, each of
 which fails the run instead of letting a request out:
 
-1. **The stub is part of how the serving process is started.** `--import` is
-   an option of the very Node process that becomes the server. There is no
-   wrapper process that could receive the preload in its place. If the module
+1. **The stub is part of how the serving process is started.** Playwright
+   hands the command to a shell and the shell starts Node; `--import` is an
+   option of that Node process, the one that becomes the server. A shell
+   cannot take a Node preload, and the option is not read from the
+   environment, which the process inherits from the caller. If the module
    is missing or throws while it loads, Node exits with an error before
    Next.js starts, nothing listens on the port, Playwright reports that the
    server did not start, and no test runs.
@@ -285,8 +341,9 @@ which fails the run instead of letting a request out:
    answers from a recorded file or rejects; in neither branch does it call
    the original `fetch`. A request it does not recognise is refused, not
    passed on.
-4. **Nothing is submitted before the stub is seen to be active.** The first
-   assertion of the run requires exactly one `installed` line in the record.
+4. **Nothing is submitted before the stub is seen to be active.** Every
+   test, before its first submission, requires exactly one `installed` line
+   in the record of its own run, whether it runs with the others or alone.
 5. **The canary and the record check it on every run.** An unrecorded DOI
    must show the `provider-unavailable` message and a `refused` line; every
    added DOI must show a `served` line. A request that bypassed the stub
@@ -373,6 +430,10 @@ Steps of the browser tests:
 | P8 | «Вилучити: запис 1» | The list holds one entry, with R1 |
 | F1 | Not-found failure, a newly opened page: submit the input of E5 | E5; one `served` line for its URL |
 
+Since review 01 (BE-R01-7) the assertion that the first row gives to C1,
+exactly one `installed` line before anything is submitted, is made by every
+test and not by the canary alone. The approved table above is unchanged.
+
 Derivation of the three reference texts:
 
 | Segment | Text | Basis | Approved analogue |
@@ -423,19 +484,31 @@ page range in R1 comes from the uncorrected printing of S1 by human decision
 (O8, G11). A browser test that passes shows that the page prints what the
 approved profile prescribes. It verifies no source.
 
-### Rule planned for `AGENTS.md` (HD-E9, HD-E18, HD-E22)
+### Rule in `AGENTS.md` (HD-E9, HD-E18, HD-E22; revised after review 01)
 
 Not added during planning. Added to the Verification section only after
-`pnpm e2e` exists and has been demonstrated successfully by the recorded
-runs of tasks 3.3 and 3.4 (task 3.6), in exactly this wording. If the wording
-has to differ materially, the final wording is shown to the human immediately
-before it is written:
+`pnpm e2e` existed and had been demonstrated by the recorded runs of tasks
+3.3 and 3.4 (task 3.6), in exactly the planned wording:
 
 > `pnpm e2e` builds the app and runs the Playwright browser E2E of the
 > primary flow against recorded Crossref answers; it is separate from
 > `pnpm check` and needs `pnpm exec playwright install chromium` once.
 > It never contacts live Crossref: do not weaken the fail-closed stub or its
 > canary to obtain GREEN.
+
+Review 01 noted that "It never contacts live Crossref" states the guarantee
+without the bound of HD-E20. By the human's disposition of BE-R01-2 the rule
+now reads:
+
+> `pnpm e2e` builds the app and runs the Playwright browser E2E of the
+> primary flow against recorded Crossref answers; it is separate from
+> `pnpm check` and needs `pnpm exec playwright install chromium` once.
+> In the E2E server every Crossref request is answered from a recorded file or
+> refused. This fail-closed property is verified only for the pinned Next.js
+> 16.3.8 and its `next start` process model; after a Next.js upgrade, verify
+> the server start, the preload refusals and the canary again before relying
+> on it.
+> Do not weaken the fail-closed stub or its canary to obtain GREEN.
 
 ## What the verification proves and does not prove
 
@@ -453,7 +526,10 @@ changed since; that the application can reach Crossref at all, or what it
 sends as `User-Agent` with a configured contact address; behaviour in another
 browser or on another platform; what a platform stores on its clipboard; any
 scenario outside the listed steps; that the fail-closed property holds on
-another version of Next.js than the pinned one (HD-E20).
+another version of Next.js than the pinned one (HD-E20); that `pnpm e2e` as
+a whole needs no network. The build stage was not examined for that, and
+`app/layout.tsx` takes its fonts through `next/font/google`; the claim made
+here is about Crossref requests of the server under test and nothing wider.
 
 The live browser check of 2026-10-06 stays the only evidence against live
 Crossref: `…105455Z_workspace-manual-browser-check.log`,
@@ -503,8 +579,11 @@ check is not repeated or automated by this change.
   keys React puts on the DOI field, which are not a public interface] → If a
   version of React named them differently the wait would time out and the
   run would fail as a failure of the harness; it cannot make a test pass.
-  Found during implementation: without the wait a click could reach the form
-  before React, and the browser would submit it itself.
+  The wait answers a risk identified by reasoning about the harness while it
+  was written: without it a click could reach the form before React, and the
+  browser would submit the form itself. No run showed this happening; every
+  recorded run had the wait in place (wording corrected after review 01,
+  BE-R01-5).
 - [The record of the boundary is left in the temporary folder after a run] →
   It holds methods and URLs of requests for the DOIs of the tests and nothing
   else (HD-E12). It is not in the repository.
@@ -516,9 +595,11 @@ check is not repeated or automated by this change.
 ## Verification history
 
 All runs below were made on 2026-10-06 by the maker session, on one machine
-(Windows 11, Node v24.20.0, pnpm 11.25.0), at commit `1d7976d`, the commit of
-the accepted plan. From `e2e-browser-install` on, the tree held the
-uncommitted change. The records on a clean tree are task 4.5.
+(Windows 11, Node v24.20.0, pnpm 11.25.0). They fall into three groups, told
+in this order: the implementation, at `1d7976d`, the commit of the accepted
+plan, where the tree held the uncommitted change from `e2e-browser-install`
+on; the committed state, at `7d82901` on a clean tree; and the follow-up to
+review 01, at `a6c46f8` with the follow-up uncommitted.
 
 - **Before any change.** `…145333Z_e2e-spec-check.log`: `pnpm spec:check`
   exit 0 with this change valid. `…145335Z_e2e-baseline.log`: `pnpm check`
@@ -550,13 +631,98 @@ uncommitted change. The records on a clean tree are task 4.5.
   15 passed. The output of the server holds 1 `installed`, 15 `served` and
   5 `refused` lines of the stub and no other Crossref line.
 
+- **Integration checks before the commit.** `…150153Z_e2e-untouched.log`,
+  `…150154Z_e2e-tooling-untouched.log` and `…150155Z_e2e-boundaries.log`:
+  every search gave what its task expects. `…150202Z_e2e-check.log`:
+  `pnpm check` GREEN with the change in place, 18 files, 688 tests.
+- **The implementation was committed** as `7d82901` (`test(e2e): add
+  deterministic browser verification`) by the maker session, on the human's
+  explicit instruction and with the message the human gave.
+- **The committed state on a clean tree (task 4.5).** Six records, each
+  naming `7d82901` and a clean tree, each GREEN.
+  `…151147Z_e2e-green.log`: `pnpm e2e`, the build before the server,
+  Next.js 16.3.8, three tests and three passed; the stub printed 1
+  `installed`, 3 `served` and 1 `refused` line and no other.
+  `…151155Z_e2e-final-spec-check.log`: `pnpm spec:check`, 8 items passed.
+  `…151157Z_e2e-final-check.log`: `pnpm check` with its four stages, 18
+  files, 688 tests. `…151224Z_e2e-final-untouched.log`,
+  `…151225Z_e2e-final-tooling-untouched.log` and
+  `…151226Z_e2e-final-boundaries.log`: the searches of tasks 4.1 to 4.3
+  again, each giving what its task expects. These records were committed as
+  `a6c46f8`.
+- **Independent review 01.** `evidence/reviews/browser-e2e-review-01.md`, a
+  fresh `feature-reviewer` session at `a6c46f8` that ran no command: verdict
+  READY, one minor finding and six notes. The human accepted all seven; the
+  dispositions are under Decisions and below the report.
+
+Follow-up to review 01, at `a6c46f8` with the follow-up uncommitted:
+
+- **Harness changes.** `playwright.config.ts` now allocates the record of
+  the boundary itself for every run and ignores a value the caller had set
+  (BE-R01-4). `e2e/primary-flow.e2e.ts` checks in a hook before every test
+  that the stub is installed exactly once (BE-R01-7). Comments in both were
+  corrected (BE-R01-2, BE-R01-3). No expected value changed. Before any run,
+  the first version of the configuration edit failed `pnpm typecheck`, on
+  the type of the value passed to the server, and was corrected; this was a
+  defect of the edit, seen by the type checker and not in a recorded run.
+- **Port already in use (BE-R01-1 A): GREEN on its first run.**
+  `…162848Z_e2e-review01-port-in-use.log`. With a local HTTP server
+  answering on port 3100, `pnpm e2e` exited with code 1 after the build;
+  Playwright reported "http://localhost:3100 is already used"; no test ran
+  and no line of the stub appeared; the occupying server received one
+  `GET /` and no `POST`. This refusal is the expected behaviour of the
+  harness and not a product RED. The record is GREEN because the check
+  passed.
+- **Contact address configured (BE-R01-1 B): GREEN on its first run.**
+  `…162859Z_e2e-review01-contact-email.log`. With
+  `CROSSREF_CONTACT_EMAIL=e2e@example.invalid` in the environment of the run
+  and no `.env` file, three tests passed. The record of the boundary used
+  the fields `event`, `method` and `url` only and held 1 `installed`, 3
+  `served` and 1 `refused` line; the address was not in it and not in the
+  output of the run. Not shown: what the product sent as `User-Agent`; the
+  stub reads no header.
+- **Pre-set record location (BE-R01-4): GREEN on its first run.**
+  `…162906Z_e2e-review01-preset-record.log`. With `E2E_CROSSREF_RECORD`
+  pointing at a file that held one sentinel line, three tests passed; the
+  sha256 of that file was the same before and after; one new folder was
+  created under the temporary folder and its record held the 1 `installed`,
+  3 `served` and 1 `refused` line of the run.
+- **Filtered run (BE-R01-7): RED once, by a defect of the check; then
+  GREEN.** `…162914Z_e2e-review01-filtered-run.log` is RED: the check
+  selected tests with the word "primary", which also matches the name of the
+  test file, so all three tests ran and its three expectations about a
+  single test did not hold. All three tests passed in that run and the
+  precondition step ran in each. This was a defect of the throwaway check
+  script, not of the harness and not of the product. With the filter
+  "reorder", `…162940Z_e2e-review01-filtered-run-2.log` is GREEN: one test
+  was selected, the canary did not run, the precondition step was printed
+  before the first Crossref request, and the record held 1 `installed` and
+  2 `served` lines.
+- **Full run and repeat with the hardened harness: GREEN.**
+  `…162953Z_e2e-review01-green.log`: three tests, three passed.
+  `…163000Z_e2e-review01-repeat.log`, `--repeat-each=5`: 15 passed, with 1
+  `installed`, 15 `served` and 5 `refused` lines of the stub and no other.
+- **After the wording corrections.**
+  `…163234Z_e2e-review01-spec-check.log`: `pnpm spec:check` exit 0, 8 items
+  passed. `…163236Z_e2e-review01-check.log`: `pnpm check` GREEN with its
+  four stages, 18 files, 688 tests. `…163248Z_e2e-review01-untouched.log`,
+  `…163249Z_e2e-review01-tooling-untouched.log` and
+  `…163250Z_e2e-review01-boundaries.log`: every search gave what its task
+  expects. This history and task group 5 were written after these records.
+- **Summary of the follow-up.** Every new check of the harness passed on its
+  first run. One record is RED, by a defect of the check script. No run
+  exposed a defect of the harness, and none showed product behaviour
+  differing from an approved expectation. The four focused checks are
+  throwaway scripts outside the repository; each record prints its source.
+
 What these records do not show, and limits to keep in mind:
 
 - **No test was ever seen to fail on the behaviour it names.** Every test
   passed on its first run, because the product already behaved as accepted.
-  No RED was produced for the record (HD-E8, HD-E17). The only failures in
-  the records are the two expected refusals of the server to start. No run of
-  `pnpm e2e` was made outside the records.
+  No RED was produced for the record (HD-E8, HD-E17). The failures in the
+  records are the two expected refusals of the server to start, the expected
+  refusal of the run on an occupied port, and one RED of a check script whose
+  filter was wrong. No run of `pnpm e2e` was made outside the records.
 - **The fail-closed property is verified against `next` 16.3.8 only**
   (HD-E20). A Next.js upgrade requires the two refusals to start, the canary
   and `pnpm e2e` to be run and recorded again before the claim is carried
@@ -571,13 +737,20 @@ What these records do not show, and limits to keep in mind:
 - **One machine, one browser.** Windows and the Chromium build named above.
   Which of the two downloaded binaries a headless run starts is decided by
   Playwright and is not printed in the records.
-- **The tree was not clean.** All runs from the browser installation on were
-  made with the change uncommitted.
+- **Which tree.** The implementation runs were made with the change
+  uncommitted. The six records of task 4.5 were made on the clean tree at
+  `7d82901`. The runs of the follow-up to review 01 were made at `a6c46f8`
+  with the follow-up uncommitted; no run on the committed follow-up exists
+  yet (task 5.14).
+- **The contact-address check is partial.** It shows that nothing of the
+  address reaches the record or the output. It cannot show that the address
+  reached the product, which the stub does not observe.
 - **One comment changed after the runs.** The first line of the header
   comment of the stub was reworded after `e2e-repeat`, so that the search of
   task 4.3 finds the preload option in `playwright.config.ts` alone. No code
   changed. The run of task 4.4 does not start the stub; the run on the
-  committed state, task 4.5, is the one made with the file as committed.
+  committed state, task 4.5, is the one made with the file as committed, and
+  it was GREEN (`e2e-green`).
 
 Planning input, not evidence. On 2026-10-06 the agent tried the approach
 twice with throwaway files outside the repository, against the existing

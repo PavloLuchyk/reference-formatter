@@ -1,0 +1,67 @@
+# run: e2e-review01-check
+# started: 2026-10-06T16:32:36Z
+# commit: a6c46f8b827723b2bf88558c7cf21d9cb35268a4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M AGENTS.md
+#    M e2e/primary-flow.e2e.ts
+#    M openspec/changes/browser-e2e/design.md
+#    M openspec/changes/browser-e2e/proposal.md
+#    M openspec/changes/browser-e2e/specs/browser-flow-verification/spec.md
+#    M playwright.config.ts
+#   ?? evidence/reviews/browser-e2e-review-01.md
+#   ?? evidence/runs/20261006T162848Z_e2e-review01-port-in-use.log
+#   ?? evidence/runs/20261006T162859Z_e2e-review01-contact-email.log
+#   ?? evidence/runs/20261006T162906Z_e2e-review01-preset-record.log
+#   ?? evidence/runs/20261006T162914Z_e2e-review01-filtered-run.log
+#   ?? evidence/runs/20261006T162940Z_e2e-review01-filtered-run-2.log
+#   ?? evidence/runs/20261006T162953Z_e2e-review01-green.log
+#   ?? evidence/runs/20261006T163000Z_e2e-review01-repeat.log
+#   ?? evidence/runs/20261006T163234Z_e2e-review01-spec-check.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+
+ Test Files  18 passed (18)
+      Tests  688 passed (688)
+   Start at  19:32:41
+   Duration  3.21s (tests 51%, environment 29%, transform 11%, import 9%, worker 1%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 23ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 324ms
+  Running TypeScript ...
+  Finished TypeScript in 1021ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 368ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-06T16:32:48Z
+# duration_s: 11
+# exit: 0
+# result: GREEN

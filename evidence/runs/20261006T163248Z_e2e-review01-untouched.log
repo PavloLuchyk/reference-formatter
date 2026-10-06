@@ -1,0 +1,138 @@
+# run: e2e-review01-untouched
+# started: 2026-10-06T16:32:48Z
+# commit: a6c46f8b827723b2bf88558c7cf21d9cb35268a4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M AGENTS.md
+#    M e2e/primary-flow.e2e.ts
+#    M openspec/changes/browser-e2e/design.md
+#    M openspec/changes/browser-e2e/proposal.md
+#    M openspec/changes/browser-e2e/specs/browser-flow-verification/spec.md
+#    M playwright.config.ts
+#   ?? evidence/reviews/browser-e2e-review-01.md
+#   ?? evidence/runs/20261006T162848Z_e2e-review01-port-in-use.log
+#   ?? evidence/runs/20261006T162859Z_e2e-review01-contact-email.log
+#   ?? evidence/runs/20261006T162906Z_e2e-review01-preset-record.log
+#   ?? evidence/runs/20261006T162914Z_e2e-review01-filtered-run.log
+#   ?? evidence/runs/20261006T162940Z_e2e-review01-filtered-run-2.log
+#   ?? evidence/runs/20261006T162953Z_e2e-review01-green.log
+#   ?? evidence/runs/20261006T163000Z_e2e-review01-repeat.log
+#   ?? evidence/runs/20261006T163234Z_e2e-review01-spec-check.log
+#   ?? evidence/runs/20261006T163236Z_e2e-review01-check.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash C:/Users/Legion/AppData/Local/Temp/claude/D--Study-AI-engineering-capstone-capstone-reference-formatter/3c60cf2b-8c31-4248-8d71-3d65c5e92eed/scratchpad/integration-checks.sh untouched
+----
+== source of this check
+#!/usr/bin/env bash
+# Throwaway checks for tasks 4.1 to 4.3 of the change browser-e2e. Not part of the repository; the source is printed
+# below so that the record holds it. Run from the repository root: integration-checks.sh <untouched|tooling|boundaries>
+# Exits 0 only when every search gives what its task expects.
+set -u
+
+echo "== source of this check"
+cat "$0"
+echo "== end of source"
+echo
+
+BASE=1d7976d # the commit of the baseline record of task 1.3
+bad=0
+
+# Runs a command and expects it to print nothing.
+nothing() {
+  echo "\$ $*"
+  out=$("$@" 2>&1)
+  if [ -z "$out" ]; then echo "  (nothing)"; else printf '%s\n' "$out"; echo "  UNEXPECTED: output above"; bad=1; fi
+}
+
+case "${1:-}" in
+  untouched)
+    echo "== 4.1 product, oracles and archived slices against $BASE"
+    paths="app/ lib/ next.config.ts tests/ docs/dstu/ docs/intent.md README.md openspec/specs/ openspec/changes/archive/"
+    nothing git status --short -- $paths
+    nothing git diff --stat "$BASE" -- $paths
+    echo
+    echo "== the records of the live browser check"
+    ls evidence/runs/ | grep "workspace-manual-browser-check"
+    count=$(ls evidence/runs/ | grep -c "workspace-manual-browser-check")
+    [ "$count" -eq 3 ] || { echo "  UNEXPECTED: $count records, not 3"; bad=1; }
+    nothing git status --short -- evidence/runs/*workspace-manual-browser-check*
+    nothing git diff --stat "$BASE" -- evidence/runs/*workspace-manual-browser-check*
+    ;;
+
+  tooling)
+    echo "== 4.2 tooling against $BASE"
+    paths="vitest.config.mts eslint.config.mjs tsconfig.json pnpm-workspace.yaml .github/ .claude/ scripts/"
+    nothing git status --short -- $paths
+    nothing git diff --stat "$BASE" -- $paths
+    echo
+    echo "== the diff of package.json"
+    git diff "$BASE" -- package.json | grep -E "^[+-]" | grep -vE "^(\+\+\+|---)"
+    numstat=$(git diff --numstat "$BASE" -- package.json | cut -f1,2 | tr '\t' ' ')
+    echo "added and removed lines: $numstat"
+    [ "$numstat" = "2 0" ] || { echo "  UNEXPECTED: not exactly two added lines"; bad=1; }
+    ;;
+
+  boundaries)
+    echo "== 4.3 a. every import under e2e/ and in playwright.config.ts"
+    grep -rnE "^import |^} from | from \"" e2e playwright.config.ts
+    echo "-- of these, any that names a product module (lib/, the formatter, the mapping, app/ other than the approved copy fixture):"
+    nothing bash -c 'grep -rnE "^import |^} from | from \"" e2e playwright.config.ts | grep -E "lib/|@/|format-journal|map-work|app/" | grep -v "app/_components/__fixtures__/approved-copy"'
+    echo
+    echo "== b. app/ and lib/ naming the stub, e2e/ or Playwright"
+    nothing grep -rniE "crossref-stub|e2e/|playwright" app lib
+    echo
+    echo "== c. api.crossref.org under e2e/ (expected: the stub, and the URL the test expects in the record)"
+    grep -rn "api.crossref.org" e2e
+    lines=$(grep -rn "api.crossref.org" e2e | cut -d: -f1 | sort | tr '\n' ' ')
+    [ "$lines" = "e2e/primary-flow.e2e.ts e2e/support/crossref-stub.mjs " ] || { echo "  UNEXPECTED: $lines"; bad=1; }
+    echo "-- calls of fetch under e2e/ outside the stub:"
+    nothing grep -rnE "fetch\(" e2e --exclude=crossref-stub.mjs
+    echo
+    echo "== d. reading of the clipboard under e2e/ or in playwright.config.ts"
+    nothing grep -rnE "readText|clipboard\.read\(|clipboard-read" e2e playwright.config.ts
+    echo
+    echo "== e. the preload option outside openspec/, docs/, evidence/ and .agent-log/ (expected: playwright.config.ts alone)"
+    git grep --untracked -n -e "--import" -- . ':(exclude)openspec' ':(exclude)docs' ':(exclude)evidence' ':(exclude).agent-log'
+    files=$(git grep --untracked -l -e "--import" -- . ':(exclude)openspec' ':(exclude)docs' ':(exclude)evidence' ':(exclude).agent-log' | tr '\n' ' ')
+    [ "$files" = "playwright.config.ts " ] || { echo "  UNEXPECTED: $files"; bad=1; }
+    echo
+    echo "== f. NODE_OPTIONS in the same files"
+    nothing git grep --untracked -n -e "NODE_OPTIONS" -- . ':(exclude)openspec' ':(exclude)docs' ':(exclude)evidence' ':(exclude).agent-log'
+    echo
+    echo "== g. the command that starts the server under test"
+    grep -n "command:" playwright.config.ts
+    ;;
+
+  *)
+    echo "usage: integration-checks.sh <untouched|tooling|boundaries>"
+    exit 2
+    ;;
+esac
+
+echo
+if [ "$bad" -eq 0 ]; then echo "RESULT: every search gave what the task expects."; else echo "RESULT: at least one search gave something unexpected."; fi
+exit "$bad"
+== end of source
+
+== 4.1 product, oracles and archived slices against 1d7976d
+$ git status --short -- app/ lib/ next.config.ts tests/ docs/dstu/ docs/intent.md README.md openspec/specs/ openspec/changes/archive/
+  (nothing)
+$ git diff --stat 1d7976d -- app/ lib/ next.config.ts tests/ docs/dstu/ docs/intent.md README.md openspec/specs/ openspec/changes/archive/
+  (nothing)
+
+== the records of the live browser check
+20261006T105455Z_workspace-manual-browser-check.log
+20261006T105522Z_workspace-manual-browser-check.log
+20261006T110108Z_workspace-manual-browser-check-repeat.log
+$ git status --short -- evidence/runs/20261006T105455Z_workspace-manual-browser-check.log evidence/runs/20261006T105522Z_workspace-manual-browser-check.log evidence/runs/20261006T110108Z_workspace-manual-browser-check-repeat.log
+  (nothing)
+$ git diff --stat 1d7976d -- evidence/runs/20261006T105455Z_workspace-manual-browser-check.log evidence/runs/20261006T105522Z_workspace-manual-browser-check.log evidence/runs/20261006T110108Z_workspace-manual-browser-check-repeat.log
+  (nothing)
+
+RESULT: every search gave what the task expects.
+----
+# finished: 2026-10-06T16:32:49Z
+# duration_s: 0
+# exit: 0
+# result: GREEN
