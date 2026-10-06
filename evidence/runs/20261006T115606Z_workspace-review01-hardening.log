@@ -1,0 +1,62 @@
+# run: workspace-review01-hardening
+# started: 2026-10-06T11:56:06Z
+# commit: 78a182ea598ddc6d6b7e2e05c0f9fa5bf2114d32 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M app/_components/__fixtures__/approved-copy.ts
+#    M app/_components/workspace-entries.test.tsx
+#    M lib/bibliography/__fixtures__/golden.ts
+#    M openspec/changes/bibliography-workspace/design.md
+#    M openspec/changes/bibliography-workspace/tasks.md
+#   ?? app/_components/workspace-duplicate-refusal.test.tsx
+#   ?? app/page-shell.test.tsx
+#   ?? evidence/reviews/bibliography-workspace-review-01.md
+#   ?? evidence/runs/20261006T111327Z_workspace-green.log
+#   ?? evidence/runs/20261006T111349Z_workspace-spec-check-final.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+
+ Test Files  18 passed (18)
+      Tests  687 passed (687)
+   Start at  14:56:11
+   Duration  3.14s (tests 49%, environment 34%, transform 9%, import 8%, worker 1%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 21ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 355ms
+  Running TypeScript ...
+  Finished TypeScript in 1147ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 423ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-06T11:56:18Z
+# duration_s: 12
+# exit: 0
+# result: GREEN

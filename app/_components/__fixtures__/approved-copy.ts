@@ -1,7 +1,7 @@
 // Test support: the Ukrainian strings the tests expect, written by hand from the HUMAN-APPROVED copy table in the
 // design of the change bibliography-workspace (rows in comments). Never imported from copy.ts: a difference between
-// the two is a failing test. Characters that have a look-alike are written as escapes: the apostrophe U+2019, the
-// ellipsis U+2026 and the em dash U+2014.
+// the two is a failing test. Three characters here have a look-alike: the apostrophe U+2019, the ellipsis U+2026 and
+// the em dash U+2014. They stand as literal characters, not as escapes: check the code point when one is edited.
 
 export const UI = {
   pageHeading: "Бібліографічні посилання на журнальні статті", // 3

@@ -411,7 +411,11 @@ they state no rule of the standard. Row 23 says what the metadata does not
 give and does not say that a value is required. `{fields}` is a list joined
 by a comma and a space; `{n}` is a number. The apostrophe is U+2019 and the
 ellipsis is U+2026. The numbers are those of the table the human reviewed;
-24 (subtitle) and 29 (article number on its own) are no longer used.
+24 (subtitle) and 29 (article number on its own) are no longer used. Row 68
+was added on 2026-10-06 by the human's approval of finding BW-R01-8 of
+feature review 01: `{doi}` is the canonical DOI of the entry, and the line is
+rendered from the label of row 44, a colon and a space. That approval covers
+this one line and no other copy change.
 
 | # | Where | Text |
 |---|---|---|
@@ -480,6 +484,7 @@ ellipsis is U+2026. The numbers are those of the table the human reviewed;
 | 65 | Accessible name of an author row control | {control}: автор {n} — for example «Вилучити: автор 2» |
 | 66 | Save the correction | Зберегти |
 | 67 | Cancel the correction | Скасувати |
+| 68 | Entry-level DOI identity line, shown at an entry that has no reference (approved by the human on 2026-10-06 in the dispositions of feature review 01, BW-R01-8) | DOI: {doi} |
 
 ### Source limitations carried, not resolved
 
@@ -533,8 +538,12 @@ its own.
   the real Server Function, the real clipboard or the built page] → `pnpm
   build` is part of `pnpm check`; task 4.4 is a manual check in a browser
   whose result is written down as it happened; deterministic E2E is the later
-  change of HD-4. Until then the primary browser flow has no automated
-  evidence, and the session notes say so.
+  change of HD-4. Since feature review 01, `app/page-shell.test.tsx` pins the
+  document language, the title and description, and the element the page
+  returns with `resolveDoiAction` as its resolver; it inspects React elements
+  and source text and still shows nothing in a browser. Until the E2E change
+  the primary browser flow has no automated evidence; task 4.7 will record
+  that in the session notes, which do not say it yet.
 - [`fireEvent` is a cruder model of a user than `user-event`] → Accepted to
   avoid a dependency. The tests assert on roles and accessible names, so they
   do not depend on markup details.
@@ -567,11 +576,27 @@ GREEN, 355 tests).
 - **Domain GREEN** (`…102806Z_workspace-domain-green.log`): `pnpm check`,
   exit 0, 506 tests, tree not committed. The five hashes equal those of RED.
 - **UI RED** (`…103643Z_workspace-ui-red.log`): 165 failed, 508 passed,
-  failures only in the five new test files. Most are Testing Library query
-  failures against stub components that render only a heading; two tests of
-  `app/actions.test.ts` failed with a TypeError raised inside the test, when
-  it read the first request and the stub had made none. Two tests of that
-  file passed against the stub and were not seen to fail.
+  failures only in the five new test files. Every failure of a component
+  test is a Testing Library query failure against stub components that render
+  only a heading; two tests of `app/actions.test.ts` failed with a TypeError
+  raised inside the test, when it read the first request and the stub had
+  made none. Two tests of that file passed against the stub and were not seen
+  to fail.
+- **What the UI RED does not show** (finding BW-R01-2 of feature review 01,
+  acknowledged by the human as an evidence limitation, with no repair). It is
+  a genuine query-level RED, which TD-12 allows, but it does not
+  discriminate: of the 139 query failures in the record, 135 are the same
+  one, "Unable to find a label with the text of: DOI статті", raised by the
+  first query of the shared test driver; the other four are the
+  introduction, the session notice, the «Додати» control and the «Копіювати
+  весь перелік» control. So nearly every component test stopped before it
+  reached the behaviour it names, and no component test was seen to fail on
+  that behaviour. In particular the negative assertions (no copy for an
+  unformatted entry, no indication of gaps, resolver not called, no warning)
+  were never seen to fail. The first wording of this section said "Most are
+  Testing Library query failures"; the record shows all. The domain RED does
+  not have this weakness. No stronger RED was produced afterwards, and the
+  record is unchanged.
 - **UI GREEN** (`…103936Z_workspace-check.log`): `pnpm check`, exit 0, 16
   files, 673 tests, build compiled, tree not committed. The eight UI hashes
   and the five domain hashes equal those of their RED runs
@@ -644,8 +669,55 @@ GREEN, 355 tests).
   is one unrepeatable pass in one browser on one platform. The document
   language and title were read from the built page and from that browser.
   Deterministic browser E2E is the later change of HD-4.
-- **No independent review yet.** Everything above was written and run by the
-  session that wrote the code and the tests. Task 4.6 is open.
+- **Clean-tree GREEN at the implementation commit.**
+  `…111327Z_workspace-green.log`: `pnpm check` on the clean tree at
+  `78a182e`, exit 0, 673 tests; `…111349Z_workspace-spec-check-final.log`:
+  the spec check on the same commit, exit 0. The slice was committed by the
+  maker session on the human's explicit instruction. Both records are kept
+  as history; neither describes the state after the review hardening.
+- **Feature review 01** (2026-10-06, `feature-reviewer`, a fresh session,
+  read-only, at `78a182e`):
+  `evidence/reviews/bibliography-workspace-review-01.md`. Verdict READY, no
+  blocking or major defect, nine findings: three minor and six notes, all
+  about evidence, test coverage and wording. The human's dispositions are
+  appended below the report. Everything before the review was written and
+  run by the session that wrote the code and the tests.
+- **Review hardening started GREEN; no RED exists for it.** For the accepted
+  findings BW-R01-3 and BW-R01-6 the maker session added
+  `app/page-shell.test.tsx` (7 tests) and
+  `app/_components/workspace-duplicate-refusal.test.tsx` (7 tests). The
+  behaviour they pin was already implemented and no product code changed, so
+  all 14 passed on their first run and none was ever seen to fail. That is
+  what the human's disposition allows; no failure was produced for the
+  record. At the human's request one more test was then added to
+  `app/_components/workspace-entries.test.tsx`, pinning the line of row 68,
+  `DOI: ` followed by the canonical DOI; it too passed on its first run and
+  was never seen to fail.
+- **Hardening runs.** `…115606Z_workspace-review01-hardening.log`: `pnpm
+  check`, exit 0, 18 files, 687 tests, before the test of row 68 was added;
+  kept as history. `…120227Z_workspace-review01-hardening-final.log`: `pnpm
+  check` with all 15 hardening tests, exit 0, 18 files, 688 tests. Both were
+  taken at `78a182e` with the hardening uncommitted; the clean-tree record of
+  the hardened commit is task 5.10.
+- **Three hashed files changed after their GREEN hashes.** For BW-R01-7 the
+  comments that claimed the look-alike characters were written as escapes
+  were corrected in `lib/bibliography/__fixtures__/golden.ts`,
+  `app/_components/__fixtures__/approved-copy.ts` and
+  `app/_components/workspace-entries.test.tsx`; in the first two every
+  changed line is a comment, and the literal characters are the same code
+  points as before. The third also gained the one test of row 68. So the
+  hashes recorded at RED and GREEN no longer match these three files; the
+  diff of the hardening commit shows the whole difference, and no test that
+  existed at RED was changed in what it asserts.
+- **Integration evidence predates the implementation commit** (BW-R01-4,
+  acknowledged). The boundary, oracle and tooling records and the three
+  browser records name `9c30af7` with a dirty tree. The live browser run is
+  not repeated to move its timestamp. The cheap checks are to be repeated on
+  the committed state after the hardening is committed (tasks 5.9 and 5.10).
+- **The entry line `DOI: {doi}`** (BW-R01-8) was not a row of the copy table
+  when the slice was written. The human approved it on 2026-10-06 and it is
+  now row 68. The tests written with the slice assert only that the DOI is
+  shown; the exact line is pinned by the test added after the approval.
 
 ## Open Questions
 

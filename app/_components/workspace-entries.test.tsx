@@ -37,7 +37,7 @@ describe("entry shows its reference", () => {
   test("a complete record is shown exactly as approved", async () => {
     await renderWith(GF01);
 
-    // The text of the spec scenario, with its non-ASCII formatting characters as escapes.
+    // The text of the spec scenario, with its non-ASCII formatting characters taken from the named constants.
     expect(
       entry(1).getByText(
         `Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. ${TE}. 12, ${NUMERO} 3. ${ES}. 45${EM_DASH}67. DOI: 10.0000/golden.gf01.`,
@@ -112,6 +112,14 @@ describe("entry that cannot be formatted", () => {
 
     expect(entryTexts()[0]).toContain("10.0000/golden.gf06");
     expect(entry(1).getByText("Не вдалося сформувати посилання. Бракує: рік.")).toBeDefined();
+  });
+
+  // Row 68 of the approved copy table, approved by the human on 2026-10-06 (finding BW-R01-8 of feature review 01).
+  // Added after that approval for a rendering that already existed, so this test was never seen to fail.
+  test("its identity line is exactly «DOI: » followed by the canonical DOI", async () => {
+    await renderWith(createPublication({ doi: canonical("https://doi.org/10.1038/NATURE12373") }));
+
+    expect(entry(1).getByText("DOI: 10.1038/nature12373")).toBeDefined();
   });
 
   test("names the title and the journal title, and not the year", async () => {

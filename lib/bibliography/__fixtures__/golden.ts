@@ -17,8 +17,10 @@ export const approvedText = (id: string): string => {
   return expected.text;
 };
 
-// Non-ASCII formatting characters of the approved profile, as escapes, so that a Latin look-alike cannot slip into
-// an expected text written by hand: Cyrillic Те and Ес, the numero sign and the em dash.
+// Non-ASCII formatting characters of the approved profile, named once so that an expected text written by hand uses
+// the same characters everywhere: Cyrillic Те (U+0422) and Ес (U+0421), the numero sign (U+2116) and the em dash
+// (U+2014). They stand here as literal characters, not as escapes, so the notation itself does not exclude a Latin
+// look-alike: check the code point when one of them is edited.
 export const TE = "Т";
 export const ES = "С";
 export const NUMERO = "№";
