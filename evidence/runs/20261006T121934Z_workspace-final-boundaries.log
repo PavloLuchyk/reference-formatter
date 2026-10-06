@@ -1,0 +1,151 @@
+# run: workspace-final-boundaries
+# started: 2026-10-06T12:19:34Z
+# commit: 33871ddffc93e16998f350ff79548ee52b49743d (master)
+# tree: clean (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#   ?? evidence/runs/20261006T121910Z_workspace-final-green.log
+#   ?? evidence/runs/20261006T121922Z_workspace-final-spec-check.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash -c #!/usr/bin/env bash
+# Boundary searches for task 4.1 of the change bibliography-workspace. Prints every search and its result.
+set -u
+none() { echo "  (none)"; }
+
+echo "## 1. lib/bibliography/: imports of react, next or the Crossref provider; process.env; network"
+grep -rn -E "from \"(react|next)[\"/]|lib/metadata/crossref|process\.env|fetch\(|XMLHttpRequest|navigator\." lib/bibliography || none
+
+echo "## 2. lib/bibliography/: every import, for reading"
+grep -rhn -E "^import " lib/bibliography --include=*.ts | grep -v "\.test\.ts" | sed -E 's/^[0-9]+://' | sort | uniq -c
+
+echo "## 3. app/: imports of the Crossref provider"
+grep -rn "lib/metadata/crossref" app || none
+
+echo "## 4. files with a 'use client' directive"
+grep -rln -E "^[\"']use client[\"']" app lib || none
+
+echo "## 5. files with a 'use server' directive"
+grep -rln -E "^[\"']use server[\"']" app lib || none
+
+echo "## 6. CROSSREF_CONTACT_EMAIL in source files"
+grep -rn "CROSSREF_CONTACT_EMAIL" app lib scripts tests __tests__ next.config.ts package.json || none
+
+echo "## 7. NEXT_PUBLIC_ in source files"
+grep -rn "NEXT_PUBLIC_" app lib next.config.ts || none
+
+echo "## 8. process.env in app/ and lib/"
+grep -rn "process\.env" app lib || none
+
+echo "## 9. built client files (.next/static) that contain the variable name or the Crossref address"
+if [ -d .next/static ]; then
+  grep -rl -E "CROSSREF_CONTACT_EMAIL|api\.crossref\.org|mailto:" .next/static || none
+  echo "  files searched: $(find .next/static -type f | wc -l)"
+else
+  echo "  .next/static does not exist"; exit 1
+fi
+
+echo "## 10. .env files in the repository root, and in git status"
+ls -a | grep -E "^\.env" || none
+git status --short | grep -i "env" || none
+
+echo "## 11. clipboard and copy mechanisms in app/"
+grep -rn -E "clipboard|execCommand|createRange|\.select\(\)" app --include=*.ts --include=*.tsx | grep -v "\.test\." | grep -v "__fixtures__" || none
+
+echo "## 12. every use of formatJournalArticle in tests and test support of this slice"
+grep -rn "formatJournalArticle" app lib/bibliography --include=*.test.ts --include=*.test.tsx || none
+grep -rn "formatJournalArticle" app/_components/__fixtures__ lib/bibliography/__fixtures__ || echo "  (none in test support)"
+
+echo "## 13. expected texts taken from the formatter: toMatchSnapshot / toMatchInlineSnapshot"
+grep -rn -E "toMatch(Inline)?Snapshot" app lib/bibliography || none
+
+echo "## 14. the built page for / (task 3.12): language, title, description, shell leftovers"
+PAGE=.next/server/app/index.html
+if [ -f "$PAGE" ]; then
+  echo "  built: $(date -u -r "$PAGE" +%Y-%m-%dT%H:%M:%SZ)"
+  grep -o '<html[^>]*lang="[a-z-]*"' "$PAGE" | sed 's/^/  /'
+  echo "  lang attributes in the page: $(grep -o ' lang="' "$PAGE" | wc -l)"
+  grep -o '<title>[^<]*</title>' "$PAGE" | sed 's/^/  /'
+  grep -o 'name="description" content="[^"]*"' "$PAGE" | sed 's/^/  /'
+  grep -o -i -E "create next app|next\.svg|vercel\.svg|Deploy Now" "$PAGE" | sort -u | sed 's/^/  leftover: /' || true
+  grep -q -i -E "create next app|next\.svg|vercel\.svg|Deploy Now" "$PAGE" || echo "  (no create-next-app text)"
+else
+  echo "  $PAGE does not exist"; exit 1
+fi
+
+echo "## 15. create-next-app text in app/"
+grep -rn -i -E "create next app|next\.svg|vercel|Deploy Now|Get started|edit the" app || none
+----
+## 1. lib/bibliography/: imports of react, next or the Crossref provider; process.env; network
+  (none)
+## 2. lib/bibliography/: every import, for reading
+      1 import type { CanonicalDoi } from "@/lib/doi/normalize-doi";
+      3 import type { Publication } from "@/lib/publication/publication";
+      2 import type { Workspace } from "@/lib/bibliography/workspace";
+      3 import {
+      2 import { approvedText, EM_DASH, ES, goldenPublication, NUMERO, TE } from "@/lib/bibliography/__fixtures__/golden";
+      1 import { bibliographyText } from "@/lib/bibliography/bibliography-text";
+      2 import { createPublication, type Publication } from "@/lib/publication/publication";
+      4 import { describe, expect, test } from "vitest";
+      2 import { formatJournalArticle } from "@/lib/dstu/format-journal-article";
+      1 import { goldenFixtures } from "@/tests/golden/dstu-journal";
+      2 import { goldenPublication } from "@/lib/bibliography/__fixtures__/golden";
+      1 import { isSamePublication, type Publication } from "@/lib/publication/publication";
+      1 import { metadataGaps } from "@/lib/bibliography/metadata-gaps";
+      1 import { missingFields, type Publication } from "@/lib/publication/publication";
+      2 import { normalizeDoi } from "@/lib/doi/normalize-doi";
+      1 import { normalizeDoi, type CanonicalDoi } from "@/lib/doi/normalize-doi";
+      1 import { selectYear } from "@/lib/dstu/format-journal-article";
+## 3. app/: imports of the Crossref provider
+  (none)
+## 4. files with a 'use client' directive
+app/_components/workspace.tsx
+## 5. files with a 'use server' directive
+app/actions.ts
+## 6. CROSSREF_CONTACT_EMAIL in source files
+app/actions.test.ts:63:    vi.stubEnv("CROSSREF_CONTACT_EMAIL", undefined);
+app/actions.test.ts:92:    vi.stubEnv("CROSSREF_CONTACT_EMAIL", undefined);
+app/actions.test.ts:101:    vi.stubEnv("CROSSREF_CONTACT_EMAIL", CONTACT);
+app/actions.test.ts:110:    vi.stubEnv("CROSSREF_CONTACT_EMAIL", CONTACT);
+app/actions.test.ts:117:    vi.stubEnv("CROSSREF_CONTACT_EMAIL", CONTACT);
+app/actions.ts:13:const contactEmail = (): string | undefined => process.env.CROSSREF_CONTACT_EMAIL;
+## 7. NEXT_PUBLIC_ in source files
+  (none)
+## 8. process.env in app/ and lib/
+app/actions.ts:13:const contactEmail = (): string | undefined => process.env.CROSSREF_CONTACT_EMAIL;
+## 9. built client files (.next/static) that contain the variable name or the Crossref address
+  (none)
+  files searched: 23
+## 10. .env files in the repository root, and in git status
+  (none)
+  (none)
+## 11. clipboard and copy mechanisms in app/
+app/_components/workspace.tsx:161:  // The one way of copying. A missing clipboard and a refused write end the same way; nothing else is tried.
+app/_components/workspace.tsx:166:      await navigator.clipboard.writeText(text);
+## 12. every use of formatJournalArticle in tests and test support of this slice
+lib/bibliography/correction.test.ts:17:import { formatJournalArticle } from "@/lib/dstu/format-journal-article";
+lib/bibliography/correction.test.ts:46:  const outcome = formatJournalArticle(publication);
+lib/bibliography/correction.test.ts:310:    expect(formatJournalArticle(corrected(GF02, { year: "" }))).toEqual({ kind: "cannot-format", blockedBy: ["year"] });
+lib/bibliography/correction.test.ts:467:    expect(formatJournalArticle(publication)).toMatchObject({ warnings: [] });
+lib/bibliography/correction.test.ts:509:    expect(formatJournalArticle(publication)).toMatchObject({ warnings: ["incomplete-personal-name"] });
+lib/bibliography/correction.test.ts:558:    expect(formatJournalArticle(withoutTitle)).toEqual({ kind: "cannot-format", blockedBy: ["title"] });
+lib/bibliography/correction.test.ts:560:      formatJournalArticle(corrected(withoutTitle, { title: "Цифрові архіви в університетських бібліотеках" })),
+lib/bibliography/correction.test.ts:565:    expect(formatJournalArticle(corrected(GF03, { subtitle: "lessons from a national pilot" }))).toEqual({
+lib/bibliography/correction.test.ts:574:      formatJournalArticle(corrected(GF08, { journalTitle: "Example Journal of Bibliographic Studies" })),
+lib/bibliography/correction.test.ts:583:    expect(formatJournalArticle(corrected(GF01, { journalTitle: "" }))).toEqual({
+  (none in test support)
+## 13. expected texts taken from the formatter: toMatchSnapshot / toMatchInlineSnapshot
+  (none)
+## 14. the built page for / (task 3.12): language, title, description, shell leftovers
+  built: 2026-10-06T12:19:21Z
+  <html lang="uk"
+  lang attributes in the page: 1
+  <title>Перелік посилань за DOI</title>
+  name="description" content="Бібліографічні посилання на журнальні статті за DOI, оформлені за профілем ДСТУ 8302:2015."
+  (no create-next-app text)
+## 15. create-next-app text in app/
+  (none)
+----
+# finished: 2026-10-06T12:19:35Z
+# duration_s: 0
+# exit: 0
+# result: GREEN

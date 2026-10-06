@@ -714,6 +714,23 @@ GREEN, 355 tests).
   browser records name `9c30af7` with a dirty tree. The live browser run is
   not repeated to move its timestamp. The cheap checks are to be repeated on
   the committed state after the hardening is committed (tasks 5.9 and 5.10).
+- **Committed-state verification after the review hardening.** The hardening
+  was committed as `33871dd` by the maker session on the human's explicit
+  instruction. On that commit, with a clean tree, on 2026-10-06:
+  `…121910Z_workspace-final-green.log` (`pnpm check`, exit 0, GREEN, 18
+  files, 688 tests, type check, lint and production build);
+  `…121922Z_workspace-final-spec-check.log` (exit 0);
+  `…121934Z_workspace-final-boundaries.log` (the thirteen searches of task
+  4.1 with the same results, and the built page of task 3.12: one
+  `lang="uk"`, the approved title and description, no `create-next-app`
+  text); `…121947Z_workspace-final-oracles-untouched.log` (between `9c30af7`
+  and HEAD only `lib/dstu/format-journal-article.ts` differs under the
+  oracles and the completed slices, by the word `export`; between `78a182e`
+  and HEAD no product file differs; the 179 tests of `lib/dstu/` pass);
+  `…121948Z_workspace-final-tooling-untouched.log` (nothing differs). These
+  replace nothing: the earlier records stay as history. The live browser
+  check was not repeated; its records are those of `9c30af7` with the
+  uncommitted slice, and no product file has changed since.
 - **The entry line `DOI: {doi}`** (BW-R01-8) was not a row of the copy table
   when the slice was written. The human approved it on 2026-10-06 and it is
   now row 68. The tests written with the slice assert only that the DOI is

@@ -1,0 +1,50 @@
+# run: workspace-final-oracles-untouched
+# started: 2026-10-06T12:19:47Z
+# commit: 33871ddffc93e16998f350ff79548ee52b49743d (master)
+# tree: clean (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#   ?? evidence/runs/20261006T121910Z_workspace-final-green.log
+#   ?? evidence/runs/20261006T121922Z_workspace-final-spec-check.log
+#   ?? evidence/runs/20261006T121934Z_workspace-final-boundaries.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash -c echo "## git diff --stat 9c30af7 HEAD -- docs/dstu/rules.md tests/golden/ lib/doi/ lib/metadata/ lib/publication/ lib/dstu/"; git --no-pager diff --stat 9c30af7 HEAD -- docs/dstu/rules.md tests/golden/ lib/doi/ lib/metadata/ lib/publication/ lib/dstu/; echo "## uncommitted or untracked files under those paths"; git status --short -- docs/dstu tests lib/doi lib/metadata lib/publication lib/dstu; echo "## (end; nothing listed means none)"; echo "## word diff of lib/dstu/ between 9c30af7 and HEAD"; git --no-pager diff --word-diff=porcelain 9c30af7 HEAD -- lib/dstu/ | grep -E "^[+-][^+-]"; echo "## files that differ between the implementation commit 78a182e and HEAD"; git --no-pager diff --name-status 78a182e HEAD; echo "## of those, product code: files under app/ or lib/ that are neither tests nor test support"; git --no-pager diff --name-only 78a182e HEAD -- app lib | grep -v -E "\.test\.tsx?$|/__fixtures__/" || echo "  (none)"; echo "## formatter tests and golden conformance test at HEAD"; pnpm exec vitest run lib/dstu
+----
+## git diff --stat 9c30af7 HEAD -- docs/dstu/rules.md tests/golden/ lib/doi/ lib/metadata/ lib/publication/ lib/dstu/
+ lib/dstu/format-journal-article.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+## uncommitted or untracked files under those paths
+## (end; nothing listed means none)
+## word diff of lib/dstu/ between 9c30af7 and HEAD
++export
+## files that differ between the implementation commit 78a182e and HEAD
+M	.agent-log/actions.jsonl
+M	app/_components/__fixtures__/approved-copy.ts
+A	app/_components/workspace-duplicate-refusal.test.tsx
+M	app/_components/workspace-entries.test.tsx
+A	app/page-shell.test.tsx
+A	evidence/reviews/bibliography-workspace-review-01.md
+A	evidence/runs/20261006T111327Z_workspace-green.log
+A	evidence/runs/20261006T111349Z_workspace-spec-check-final.log
+A	evidence/runs/20261006T115606Z_workspace-review01-hardening.log
+A	evidence/runs/20261006T120227Z_workspace-review01-hardening-final.log
+M	lib/bibliography/__fixtures__/golden.ts
+M	openspec/changes/bibliography-workspace/design.md
+M	openspec/changes/bibliography-workspace/tasks.md
+## of those, product code: files under app/ or lib/ that are neither tests nor test support
+  (none)
+## formatter tests and golden conformance test at HEAD
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+
+ Test Files  2 passed (2)
+      Tests  179 passed (179)
+   Start at  15:19:48
+   Duration  147ms (transform 57%, import 22%, tests 16%, worker 5%)
+
+----
+# finished: 2026-10-06T12:19:48Z
+# duration_s: 1
+# exit: 0
+# result: GREEN
