@@ -1,54 +1,46 @@
 # Session notes — handoff
 
-Updated 2026-10-06 with the `browser-e2e` change implemented, independently
-reviewed and awaiting its archive. Every statement was checked against the
-repository at that time; nothing is reconstructed from memory. Read
-`AGENTS.md` and `docs/intent.md` first.
+Updated 2026-10-06 after the `browser-e2e` change was archived. Every
+statement was checked against the repository at that time; nothing is
+reconstructed from memory. Read `AGENTS.md` and `docs/intent.md` first.
 
 ## Repository state
 
-- Branch `master`, HEAD `c731798` (`docs(evidence): record browser e2e
-  hardening green`). No git remote is configured.
-- The commits of the `browser-e2e` change, oldest first: `1d7976d` the
-  accepted plan; `7d82901` the implementation; `a6c46f8` its clean-tree
-  records; `a268ad4` the hardening after review 01; `c731798` the
-  clean-tree records of the hardening.
-- Uncommitted when this file was written, all of it the closure of the
-  review process:
-  - new: `evidence/reviews/browser-e2e-review-02.md`, the reviewer's report
-    with the human's disposition appended, and the record
-    `evidence/runs/20261006T173604Z_e2e-review02-spec-check.log`;
-  - modified: `openspec/changes/browser-e2e/design.md` and `tasks.md`, this
-    file;
+- Branch `master`, HEAD `b22af1a` (`docs(review): complete browser e2e
+  independent review`). No git remote is configured.
+- Uncommitted when this file was written, all of it the archive of
+  `browser-e2e` and this handoff:
+  - moved: `openspec/changes/browser-e2e/` to
+    `openspec/changes/archive/2026-10-06-browser-e2e/`, its five files
+    unchanged;
+  - new: the main spec `openspec/specs/browser-flow-verification/spec.md`;
+  - new: the run records `…175511Z_e2e-archive-spec-check.log`,
+    `…175513Z_e2e-archive.log`, `…180105Z_e2e-post-archive-green.log` and
+    the whitespace checks labelled `e2e-post-archive-diff-check…`;
+  - modified: this file;
   - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
     committed on purpose, see `.agent-log/README.md`).
-- No product source, no existing test, no main spec and no oracle file was
-  modified by the change: nothing under `app/`, `lib/`, `tests/`,
-  `docs/dstu/` or `openspec/specs/`, and not `next.config.ts`.
-- One OpenSpec change is active, `openspec/changes/browser-e2e/`, with all
-  40 of its tasks done. It awaits its archive. `openspec/specs/` holds seven
-  main specs; the archive adds an eighth, `browser-flow-verification`.
+- No source, test, harness, dependency or oracle file is modified.
+- **No OpenSpec change is active**: `openspec/changes/` holds only
+  `archive/`, with four archived changes. `openspec/specs/` holds **eight
+  main specs**.
 
 ## Slices
 
 | Slice | State | Archive | Main specs |
 |---|---|---|---|
-| DOI Resolution | done, archived | `openspec/changes/archive/2026-10-05-doi-resolution/` | `doi-normalization`, `publication-model`, `doi-resolution` |
-| DSTU Journal Article Formatter | done, archived | `openspec/changes/archive/2026-10-05-dstu-journal-formatter/` | `dstu-journal-formatting` |
-| Bibliography Workspace | done, archived | `openspec/changes/archive/2026-10-06-bibliography-workspace/` | `bibliography-workspace`, `metadata-correction`, `bibliography-copy` |
+| DOI Resolution | done, independently reviewed, archived | `openspec/changes/archive/2026-10-05-doi-resolution/` | `doi-normalization`, `publication-model`, `doi-resolution` |
+| DSTU Journal Article Formatter | done, independently reviewed, archived | `openspec/changes/archive/2026-10-05-dstu-journal-formatter/` | `dstu-journal-formatting` |
+| Bibliography Workspace | done, independently reviewed, archived | `openspec/changes/archive/2026-10-06-bibliography-workspace/` | `bibliography-workspace`, `metadata-correction`, `bibliography-copy` |
+| Browser E2E (the verification change that follows the three feature slices) | done, independently reviewed, archived | `openspec/changes/archive/2026-10-06-browser-e2e/` | `browser-flow-verification` |
 
-The verification change that follows the three slices:
-
-| Change | State | Archive | Main spec |
-|---|---|---|---|
-| `browser-e2e` (deterministic browser E2E) | implemented, independently reviewed, **awaiting archive** | not yet; `openspec/changes/browser-e2e/` | `browser-flow-verification`, created by the archive |
-
-Each archived `design.md` holds that slice's decisions, readings, deferred
+Each archived `design.md` holds that change's decisions, readings, deferred
 findings, known limitations and Verification history. They still hold.
 
-All three feature slices of `docs/intent.md` are implemented, independently
-reviewed and archived. **The MVP is not yet complete by the Definition of
-Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
+All three feature slices of `docs/intent.md` and the browser E2E
+verification are implemented, independently reviewed and archived. **The MVP
+is not yet complete by the Definition of Done of `docs/intent.md`:** see
+"What is left before the MVP is done" below.
 
 ## What the workspace is
 
@@ -72,24 +64,44 @@ Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
 - The list lives in the memory of the page and is gone on reload. The page
   says so.
 
-## Browser E2E (change `browser-e2e`: implemented, independently reviewed, awaiting archive)
+## Browser E2E (change `browser-e2e`: done, independently reviewed, archived)
 
-- **State.** Implemented, hardened after review 01 and independently
-  reviewed twice, both times READY. All 40 tasks of the change are done.
-  Nothing is left in it but the archive, on the human's word.
-- **Final verification state**, on the clean tree at `a268ad4`, the
-  hardening commit. Nothing that runs has changed since: the later commit
-  and the closure of the review change documents, evidence and the agent
-  log only.
-  - `pnpm e2e`: **3 Playwright tests GREEN**
-    (`evidence/runs/20261006T163716Z_e2e-review01-final-green.log`).
-  - `pnpm check`: **GREEN, 688 tests** in 18 files, with typecheck, lint
-    and the production build
-    (`evidence/runs/20261006T163724Z_e2e-review01-final-check.log`).
-  - `pnpm spec:check`: **GREEN**, 8 items
-    (`evidence/runs/20261006T163736Z_e2e-review01-final-spec-check.log`),
-    and again after the closure of the review, with the closure uncommitted
-    (`evidence/runs/20261006T173604Z_e2e-review02-spec-check.log`).
+- **State.** Done. Implemented, hardened after review 01, independently
+  reviewed twice, both times READY, and archived on 2026-10-06 at
+  `openspec/changes/archive/2026-10-06-browser-e2e/`, with all 40 of its
+  tasks done. The human accepted the archive as performed.
+- **The Definition of Done item "the primary browser flow has deterministic
+  E2E verification" is HUMAN-ACCEPTED and CLOSED** (2026-10-06).
+- **Canonical spec.** `browser-flow-verification` is now a main spec,
+  `openspec/specs/browser-flow-verification/spec.md`, with 16 requirements
+  and 41 scenarios. It differs from the delta spec of the change only in its
+  title and in the heading of the requirements section.
+- **Final verification state.** Nothing that runs has changed since the
+  hardening commit `a268ad4`; the later commits and the archive change
+  documents, specs, evidence and the agent log only.
+  - Browser E2E: **3 Playwright tests, GREEN.** On the clean tree at
+    `a268ad4`: `evidence/runs/20261006T163716Z_e2e-review01-final-green.log`.
+    After the archive, at `b22af1a` with the archive uncommitted:
+    `evidence/runs/20261006T180105Z_e2e-post-archive-green.log`.
+  - `pnpm check`: **GREEN, the baseline stays 688 tests** in 18 files, with
+    typecheck, lint and the production build. On the clean tree at
+    `a268ad4`: `…163724Z_e2e-review01-final-check.log`. After the archive:
+    `evidence/runs/20261006T175513Z_e2e-archive.log`.
+  - `pnpm spec:check`: **GREEN.** After the archive, with eight main specs
+    and no active change:
+    `evidence/runs/20261006T175511Z_e2e-archive-spec-check.log`.
+  - Whitespace of the uncommitted archive and handoff. `git diff --check`
+    printed no finding
+    (`evidence/runs/20261006T180225Z_e2e-post-archive-diff-check.log`). It
+    looks at tracked files only, so the same test was applied to each
+    untracked file
+    (`evidence/runs/20261006T180250Z_e2e-post-archive-diff-check-untracked-2.log`):
+    the five files of the archive and the new main spec are clean. Two run
+    records each hold three lines that end in a space, printed by
+    `next build`; they are left as they are, because records are never
+    edited. A last `git diff --check`, over this file as it now stands, was
+    recorded after it was written, under the label
+    `e2e-post-archive-diff-check-final`.
 - **Command.** `pnpm e2e` makes the ordinary production build and then runs
   the Playwright tests of `e2e/primary-flow.e2e.ts`. It is separate from
   `pnpm check`, which is unchanged and starts no browser. CI is not changed.
@@ -118,18 +130,18 @@ Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
 - **BOUND of the fail-closed guarantee, and a REQUIREMENT.** The guarantee is
   bounded to the pinned Next.js 16.3.8 and the verified `next start`
   process model, in which the server serves requests in the process it is
-  started in. It is not claimed for another version. A Next.js upgrade
-  requires re-verifying the server start, the preload refusals (a missing
-  preload module, a missing `E2E_CROSSREF_RECORD`) and the canary, with
-  `pnpm e2e`, recorded, before the claim is carried forward (HD-E20). The
-  same stands in `AGENTS.md` and in the spec of the change.
+  started in. It is not claimed for another version. A future Next.js
+  upgrade requires re-verifying the server start, the preload refusals (a
+  missing preload module, a missing `E2E_CROSSREF_RECORD`) and the canary,
+  with `pnpm e2e`, recorded, before the claim is carried forward (HD-E20).
+  The same stands in `AGENTS.md` and in the main spec.
 - **What the three tests cover.** A canary (an unrecorded DOI is refused);
   the primary flow (add, add in another input form, duplicate refused,
   correct the journal title, reorder, copy one, copy all, remove); one
   recorded not-found failure. The expected reference texts R1, R2 and R4 are
-  literals from the expectation table of the design, HUMAN-APPROVED on
-  2026-10-06. They are never computed, and the table is not an oracle for
-  the formatter. Changing one needs a new approval.
+  literals from the expectation table of the archived design,
+  HUMAN-APPROVED on 2026-10-06. They are never computed, and the table is
+  not an oracle for the formatter. Changing one needs a new approval.
 - **What it proves.** For the commit and platform a record names: the
   production build, driven through its page, takes a DOI through the Server
   Function, DOI resolution, the mapping and the formatter to the approved
@@ -139,14 +151,14 @@ Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
 - **What it does not prove or claim.** Nothing about the current state of
   live Crossref: the provider answers were recorded on 2026-10-05. Nothing
   about another browser or platform, or about what a platform stores on its
-  clipboard. **It does not claim that the entire build pipeline is
-  offline.** The claim is about the Crossref requests of the server the run
-  starts and nothing wider; the build stage was not examined, and
-  `app/layout.tsx` takes its fonts through `next/font/google`.
-- **The live-Crossref evidence remains separate.** The manual browser check
-  of 2026-10-06 against live Crossref stays the only evidence against the
-  live provider. It is not E2E evidence, and its three records are
-  untouched.
+  clipboard. **No claim is made that the whole build pipeline is offline.**
+  The claim is about the Crossref requests of the server the run starts and
+  nothing wider; the build stage was not examined, and `app/layout.tsx`
+  takes its fonts through `next/font/google`.
+- **The live-Crossref browser evidence remains separate.** The manual
+  browser check of 2026-10-06 against live Crossref stays the only evidence
+  against the live provider. It is not E2E evidence, and its three records
+  are untouched.
 - **Review 01** (`evidence/reviews/browser-e2e-review-01.md`), a fresh
   `feature-reviewer` session at `a6c46f8`: READY, one minor finding and six
   notes. The human accepted all seven, and they were hardened in `a268ad4`:
@@ -157,23 +169,28 @@ Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
 - **Review 02** (`evidence/reviews/browser-e2e-review-02.md`), a fresh
   session at `c731798`: verdict **READY**. One documentation note,
   BE-R02-1, on the Verification history; accepted by the human and
-  corrected. The human's dispositions are appended below each report. Task
-  4.6, the independent review, is complete.
-- **Records.** 33 run records labelled `e2e-…`, all of 2026-10-06. Every
-  browser test passed on its first run; none was ever seen to fail on
-  product behaviour, and no RED was produced for the record. The failures
-  the records hold: the two expected refusals of the server to start
-  (`e2e-preload-required`) and the expected refusal of a run on an occupied
-  port (`e2e-review01-port-in-use`), both in GREEN records because the
-  checks passed; and one RED record,
+  corrected. The human's dispositions are appended below each report. The
+  human asked for no further reviewer.
+- **Records.** 39 run records labelled `e2e-…` when this file was written,
+  all of 2026-10-06. Every browser test passed on its first run; none was
+  ever seen to fail on product behaviour, and no RED was produced for the
+  record. The failures the records hold: the two expected refusals of the
+  server to start (`e2e-preload-required`) and the expected refusal of a
+  run on an occupied port (`e2e-review01-port-in-use`), both in GREEN
+  records because the checks passed; and one RED record,
   `evidence/runs/20261006T162914Z_e2e-review01-filtered-run.log`. **That
   RED was a defect of the check script**, whose filter word also matched the
   name of the test file. It was not a product RED and not a defect of the
   harness; the corrected check is GREEN (`e2e-review01-filtered-run-2`).
-  What each record shows is in the Verification history of the design.
+  A second RED record,
+  `evidence/runs/20261006T180226Z_e2e-post-archive-diff-check-untracked.log`,
+  is also a defect of a check script: the whitespace check of the untracked
+  files took the notice git prints about line endings for a finding. No file
+  was at fault; the corrected check is GREEN.
+  What each record up to the review shows is in the Verification history of
+  the archived design; the records of the archive are named only here.
 - **Human decisions.** HD-E1 to HD-E23 and the dispositions of both reviews,
-  all in `openspec/changes/browser-e2e/design.md`, which moves with the
-  archive.
+  all in `openspec/changes/archive/2026-10-06-browser-e2e/design.md`.
 
 ## Human-approved oracles (protected)
 
@@ -351,35 +368,40 @@ matter most:
   `workspace.ts`, `correction.ts` and the test support that speak of "the
   design of the change bibliography-workspace". The archived tasks and design
   also name files and records by the paths they had before the archive.
+  The same holds for `browser-e2e`: its archived design and tasks name
+  `openspec/changes/browser-e2e/`, and the header comment of
+  `e2e/primary-flow.e2e.ts` speaks of "the design of the change
+  browser-e2e", which is now in the archive.
 
 ## What is left before the MVP is done
 
-No feature slice is in progress. The `browser-e2e` change is implemented,
-independently reviewed and waits for its archive. Against the Definition of
-Done of `docs/intent.md`:
+No feature slice and no OpenSpec change is in progress, and nothing is
+half-built. Against the Definition of Done of `docs/intent.md`:
 
 | Item of the Definition of Done | State |
 |---|---|
 | All three feature slices implemented | done |
 | Project verification GREEN | done: 688 tests, typecheck, lint, build |
 | DSTU expected values have source or human-decision provenance | done: the approved profile and golden oracle |
-| Completed slices independently reviewed, findings disposed by the human | done for all three |
+| Completed slices independently reviewed, findings disposed by the human | done for all three slices and for the browser E2E change |
 | Evidence points to real repository states and runs | done; its limits are written down |
-| **Primary browser flow has deterministic E2E verification** | **implemented, GREEN on the clean tree at `a268ad4`, independently reviewed (READY twice)**; the change awaits its archive, and closing the item is the human's |
+| Primary browser flow has deterministic E2E verification | done: **HUMAN-ACCEPTED and CLOSED** on 2026-10-06; 3 Playwright tests GREEN, independently reviewed (READY twice), archived |
 | **Known limitations documented; repository can be set up and verified from its README** | **open**: the README is still the scaffold text |
 | **Final product acceptance** | **open**: the human's |
 
 Next actions, in the order that seems natural; each needs the human's
 decision first:
 
-1. **Archive `browser-e2e`** with `/opsx:archive`, on the human's word,
-   after the closure of the review process has been committed. The archive
-   creates the main spec `browser-flow-verification`.
-2. The README and product documentation: setup with pnpm, `pnpm check`,
+1. The README and product documentation: setup with pnpm, `pnpm check`,
    `pnpm exec playwright install chromium` and `pnpm e2e`, the optional
    `CROSSREF_CONTACT_EMAIL`, the session-only list, the source limitations
-   of the profile, the missing rule on numbering and order.
-3. The human's final acceptance of the product.
+   of the profile, the missing rule on numbering and order, and the bound of
+   the E2E guarantee.
+2. The human's final acceptance of the product.
+3. The final audit of the rubric and of the evidence.
+
+The archive of `browser-e2e` and this handoff are uncommitted when this is
+written; the human gives the commit.
 
 Explicitly after the MVP, not built: batch paste of several DOIs, partial
 failures inside a batch, a clipboard fallback, persistence across a reload,

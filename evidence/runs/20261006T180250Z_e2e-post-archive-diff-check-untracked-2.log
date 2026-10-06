@@ -1,0 +1,123 @@
+# run: e2e-post-archive-diff-check-untracked-2
+# started: 2026-10-06T18:02:50Z
+# commit: b22af1a3a90901209cbd773724c4bd74c84a59a5 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M docs/session-notes.md
+#    D openspec/changes/browser-e2e/.openspec.yaml
+#    D openspec/changes/browser-e2e/design.md
+#    D openspec/changes/browser-e2e/proposal.md
+#    D openspec/changes/browser-e2e/specs/browser-flow-verification/spec.md
+#    D openspec/changes/browser-e2e/tasks.md
+#   ?? evidence/runs/20261006T175511Z_e2e-archive-spec-check.log
+#   ?? evidence/runs/20261006T175513Z_e2e-archive.log
+#   ?? evidence/runs/20261006T180105Z_e2e-post-archive-green.log
+#   ?? evidence/runs/20261006T180225Z_e2e-post-archive-diff-check.log
+#   ?? evidence/runs/20261006T180226Z_e2e-post-archive-diff-check-untracked.log
+#   ?? openspec/changes/archive/2026-10-06-browser-e2e/
+#   ?? openspec/specs/browser-flow-verification/
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash C:/Users/Legion/AppData/Local/Temp/claude/D--Study-AI-engineering-capstone-capstone-reference-formatter/3c60cf2b-8c31-4248-8d71-3d65c5e92eed/scratchpad/diff-check-untracked.sh
+----
+== source of this check
+#!/usr/bin/env bash
+# Throwaway check, not part of the repository; the source is printed below so that the record holds it.
+# Run from the repository root.
+#
+# `git diff --check` looks only at changes to files git already tracks. The uncommitted archive also holds NEW
+# files, which that command does not see. This check applies the same test to each untracked file, by comparing it
+# with an empty file, and changes nothing in the index.
+#
+# Pass criterion, fixed before the first run: files written for the archive and the handoff must be clean. Run
+# records under evidence/runs/ are the verbatim output of commands and are never edited by hand (AGENTS.md), so
+# whitespace that a tool printed into them is REPORTED here and is not counted as a failure of this check.
+set -u
+
+echo "== source of this check"
+cat "$0"
+echo "== end of source"
+echo
+
+authored_bad=0
+record_notes=0
+
+echo "== untracked files"
+git ls-files --others --exclude-standard
+echo
+
+while IFS= read -r file; do
+  # Only what git prints as findings is read. The first run of this check also read the notice that git prints on
+  # its error stream about line endings ("LF will be replaced by CRLF") and took it for a finding in every file:
+  # a defect of this check, kept in its RED record.
+  out=$(git diff --no-index --check -- /dev/null "$file" 2>/dev/null)
+  case "$file" in
+    evidence/runs/*)
+      if [ -n "$out" ]; then
+        record_notes=$((record_notes + 1))
+        echo "-- run record, verbatim output: $file: $(printf '%s\n' "$out" | grep -c ': ') line(s) flagged, of this kind:"
+        printf '%s\n' "$out" | grep ': ' | sed 's/^[^:]*:[0-9]*: //' | sort | uniq -c
+      else
+        echo "-- run record: $file: clean"
+      fi
+      ;;
+    *)
+      if [ -n "$out" ]; then
+        authored_bad=$((authored_bad + 1))
+        echo "-- UNEXPECTED: $file:"
+        printf '%s\n' "$out"
+      else
+        echo "-- $file: clean"
+      fi
+      ;;
+  esac
+done < <(git ls-files --others --exclude-standard)
+
+echo
+echo "files of the archive and the handoff with a whitespace problem: $authored_bad"
+echo "run records in which a tool printed flagged whitespace (reported, not counted): $record_notes"
+if [ "$authored_bad" -eq 0 ]; then
+  echo "RESULT: every untracked file written for the archive is clean."
+else
+  echo "RESULT: at least one untracked file written for the archive has a whitespace problem."
+fi
+exit "$authored_bad"
+== end of source
+
+== untracked files
+evidence/runs/20261006T175511Z_e2e-archive-spec-check.log
+evidence/runs/20261006T175513Z_e2e-archive.log
+evidence/runs/20261006T180105Z_e2e-post-archive-green.log
+evidence/runs/20261006T180225Z_e2e-post-archive-diff-check.log
+evidence/runs/20261006T180226Z_e2e-post-archive-diff-check-untracked.log
+evidence/runs/20261006T180250Z_e2e-post-archive-diff-check-untracked-2.log
+openspec/changes/archive/2026-10-06-browser-e2e/.openspec.yaml
+openspec/changes/archive/2026-10-06-browser-e2e/design.md
+openspec/changes/archive/2026-10-06-browser-e2e/proposal.md
+openspec/changes/archive/2026-10-06-browser-e2e/specs/browser-flow-verification/spec.md
+openspec/changes/archive/2026-10-06-browser-e2e/tasks.md
+openspec/specs/browser-flow-verification/spec.md
+
+-- run record: evidence/runs/20261006T175511Z_e2e-archive-spec-check.log: clean
+-- run record, verbatim output: evidence/runs/20261006T175513Z_e2e-archive.log: 3 line(s) flagged, of this kind:
+      3 trailing whitespace.
+-- run record, verbatim output: evidence/runs/20261006T180105Z_e2e-post-archive-green.log: 3 line(s) flagged, of this kind:
+      3 trailing whitespace.
+-- run record: evidence/runs/20261006T180225Z_e2e-post-archive-diff-check.log: clean
+-- run record: evidence/runs/20261006T180226Z_e2e-post-archive-diff-check-untracked.log: clean
+-- run record: evidence/runs/20261006T180250Z_e2e-post-archive-diff-check-untracked-2.log: clean
+-- openspec/changes/archive/2026-10-06-browser-e2e/.openspec.yaml: clean
+-- openspec/changes/archive/2026-10-06-browser-e2e/design.md: clean
+-- openspec/changes/archive/2026-10-06-browser-e2e/proposal.md: clean
+-- openspec/changes/archive/2026-10-06-browser-e2e/specs/browser-flow-verification/spec.md: clean
+-- openspec/changes/archive/2026-10-06-browser-e2e/tasks.md: clean
+-- openspec/specs/browser-flow-verification/spec.md: clean
+
+files of the archive and the handoff with a whitespace problem: 0
+run records in which a tool printed flagged whitespace (reported, not counted): 2
+RESULT: every untracked file written for the archive is clean.
+----
+# finished: 2026-10-06T18:02:51Z
+# duration_s: 0
+# exit: 0
+# result: GREEN

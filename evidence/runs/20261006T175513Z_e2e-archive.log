@@ -1,0 +1,60 @@
+# run: e2e-archive
+# started: 2026-10-06T17:55:13Z
+# commit: b22af1a3a90901209cbd773724c4bd74c84a59a5 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    D openspec/changes/browser-e2e/.openspec.yaml
+#    D openspec/changes/browser-e2e/design.md
+#    D openspec/changes/browser-e2e/proposal.md
+#    D openspec/changes/browser-e2e/specs/browser-flow-verification/spec.md
+#    D openspec/changes/browser-e2e/tasks.md
+#   ?? evidence/runs/20261006T175511Z_e2e-archive-spec-check.log
+#   ?? openspec/changes/archive/2026-10-06-browser-e2e/
+#   ?? openspec/specs/browser-flow-verification/
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+
+ Test Files  18 passed (18)
+      Tests  688 passed (688)
+   Start at  20:55:19
+   Duration  3.63s (tests 47%, environment 34%, transform 9%, import 9%, worker 1%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 40ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 407ms
+  Running TypeScript ...
+  Finished TypeScript in 1307ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 590ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-06T17:55:28Z
+# duration_s: 15
+# exit: 0
+# result: GREEN

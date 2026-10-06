@@ -1,0 +1,27 @@
+# run: e2e-post-archive-diff-check
+# started: 2026-10-06T18:02:25Z
+# commit: b22af1a3a90901209cbd773724c4bd74c84a59a5 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M docs/session-notes.md
+#    D openspec/changes/browser-e2e/.openspec.yaml
+#    D openspec/changes/browser-e2e/design.md
+#    D openspec/changes/browser-e2e/proposal.md
+#    D openspec/changes/browser-e2e/specs/browser-flow-verification/spec.md
+#    D openspec/changes/browser-e2e/tasks.md
+#   ?? evidence/runs/20261006T175511Z_e2e-archive-spec-check.log
+#   ?? evidence/runs/20261006T175513Z_e2e-archive.log
+#   ?? evidence/runs/20261006T180105Z_e2e-post-archive-green.log
+#   ?? openspec/changes/archive/2026-10-06-browser-e2e/
+#   ?? openspec/specs/browser-flow-verification/
+# node: v24.20.0  pnpm: 11.25.0
+# command: git diff --check
+----
+warning: in the working copy of '.agent-log/actions.jsonl', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/session-notes.md', LF will be replaced by CRLF the next time Git touches it
+----
+# finished: 2026-10-06T18:02:26Z
+# duration_s: 0
+# exit: 0
+# result: GREEN
