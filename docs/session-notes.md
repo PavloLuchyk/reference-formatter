@@ -1,37 +1,35 @@
 # Session notes — handoff
 
-Updated 2026-10-06 after the independent review of the `bibliography-workspace`
-change was completed. Every statement was checked against the repository at
-that time; nothing is reconstructed from memory. Read `AGENTS.md` and
-`docs/intent.md` first.
+Updated 2026-10-06 after the `bibliography-workspace` change was archived.
+Every statement was checked against the repository at that time; nothing is
+reconstructed from memory. Read `AGENTS.md` and `docs/intent.md` first.
 
 ## Repository state
 
-- Branch `master`, HEAD `6c330e8` (`docs(evidence): record workspace review
-  hardening green`). No git remote is configured.
-- Uncommitted when this file was written, all of it the closure of the review
-  process and none of it application code or tests:
+- Branch `master`, HEAD `3703c42` (`docs(spec): archive bibliography
+  workspace`). No git remote is configured.
+- Uncommitted when this file was written:
   - modified: this file;
-  - modified: `openspec/changes/bibliography-workspace/tasks.md` and
-    `design.md`;
-  - untracked: `evidence/reviews/bibliography-workspace-review-02.md`;
   - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
     committed on purpose, see `.agent-log/README.md`).
-- One OpenSpec change is active: `openspec/changes/bibliography-workspace/`,
-  with every task done. It is **not archived**.
+- No source, test, spec or oracle file is modified. No OpenSpec change is
+  active: `openspec/changes/` holds only `archive/`. `openspec/specs/` holds
+  seven main specs.
 
 ## Slices
 
-| Slice | State | Where | Main specs |
+| Slice | State | Archive | Main specs |
 |---|---|---|---|
 | DOI Resolution | done, archived | `openspec/changes/archive/2026-10-05-doi-resolution/` | `doi-normalization`, `publication-model`, `doi-resolution` |
 | DSTU Journal Article Formatter | done, archived | `openspec/changes/archive/2026-10-05-dstu-journal-formatter/` | `dstu-journal-formatting` |
-| Bibliography Workspace | **implementation complete, reviewed, awaiting archive** | `openspec/changes/bibliography-workspace/` | none yet; the archive adds `bibliography-workspace`, `metadata-correction`, `bibliography-copy` |
+| Bibliography Workspace | done, archived | `openspec/changes/archive/2026-10-06-bibliography-workspace/` | `bibliography-workspace`, `metadata-correction`, `bibliography-copy` |
 
-Each `design.md`, archived or active, holds that slice's decisions, readings,
-deferred findings, known limitations and Verification history.
+Each archived `design.md` holds that slice's decisions, readings, deferred
+findings, known limitations and Verification history. They still hold.
 
-All three feature slices of `docs/intent.md` are implemented.
+All three feature slices of `docs/intent.md` are implemented, independently
+reviewed and archived. **The MVP is not yet complete by the Definition of
+Done of `docs/intent.md`:** see "What is left before the MVP is done" below.
 
 ## What the workspace is
 
@@ -78,7 +76,7 @@ limitations stay limitations and are not silently "resolved" in code.
 
 ## Human decisions of the workspace slice
 
-All in `openspec/changes/bibliography-workspace/design.md`:
+All in `openspec/changes/archive/2026-10-06-bibliography-workspace/design.md`:
 
 - HD-1 to HD-10, decided 2026-10-06: the corrected year is stored as the
   print date; copy-all is unnumbered lines; copy-all is blocked by an entry
@@ -151,9 +149,17 @@ workspace shows what the formatter returns and adds no rule of its own.
   clarified criterion: 112 checks, none unexpected). It was not repeated
   after the commits, by the human's decision; no product file has changed
   since.
-- The slice has 28 run records in `evidence/runs/`, all labelled
+- **After the archive:** `pnpm check` GREEN again, 18 files, 688 tests
+  (`…123821Z_workspace-archive.log`), and `pnpm spec:check` exit 0 with seven
+  main specs and no active change
+  (`…123833Z_workspace-archive-spec-check.log`); both at `0e4c0f3` with the
+  archive not yet committed. The three new main specs were created from the
+  delta specs; they differ from them only in the title and in the heading of
+  the requirements section.
+- The slice has 30 run records in `evidence/runs/`, all labelled
   `workspace-…`. What each proves and does not prove is in the Verification
-  history of the change's `design.md`.
+  history of the archived `design.md`, which ends with the closure of the
+  review; the two archive records are named only here.
 
 ## Maker ≠ Checker review of the workspace: completed
 
@@ -183,7 +189,8 @@ workspace shows what the formatter returns and adds no rule of its own.
 
 ## Evidence limits to keep in mind
 
-Stated in full in the change's `design.md`; the ones that matter most:
+Stated in full in the archived `design.md` of the workspace; the ones that
+matter most:
 
 - **The primary browser flow has no automated evidence.** Component tests
   run in jsdom with a fake resolver and a stubbed clipboard. The live browser
@@ -214,24 +221,40 @@ Stated in full in the change's `design.md`; the ones that matter most:
   place.
 - Known stale references, left as they are: the header comments of
   `lib/dstu/golden.test.ts` and `lib/dstu/format-journal-article.test.ts`
-  name the spec at its path before the archive. The header comments of the
-  workspace tests name the specs under
-  `openspec/changes/bibliography-workspace/`, which will be the path before
-  the archive once the change is archived.
+  name the spec at its path before the archive. So do the header comments of
+  the workspace tests under `app/` and `lib/bibliography/`, which name
+  `openspec/changes/bibliography-workspace/`, and the comments in `copy.ts`,
+  `workspace.ts`, `correction.ts` and the test support that speak of "the
+  design of the change bibliography-workspace". The archived tasks and design
+  also name files and records by the paths they had before the archive.
 
-## Next action: archive bibliography-workspace
+## What is left before the MVP is done
 
-Recommended next command: `/opsx:archive bibliography-workspace`
+No slice is in progress and nothing is half-built. Against the Definition of
+Done of `docs/intent.md`:
 
-Before it, commit the closure of the review process (the files listed under
-Repository state). The archive moves the change under
-`openspec/changes/archive/` and adds the three new capabilities to
-`openspec/specs/`; record a `pnpm check` and a `pnpm spec:check` around it, as
-was done for the formatter.
+| Item of the Definition of Done | State |
+|---|---|
+| All three feature slices implemented | done |
+| Project verification GREEN | done: 688 tests, typecheck, lint, build |
+| DSTU expected values have source or human-decision provenance | done: the approved profile and golden oracle |
+| Completed slices independently reviewed, findings disposed by the human | done for all three |
+| Evidence points to real repository states and runs | done; its limits are written down |
+| **Primary browser flow has deterministic E2E verification** | **open**, deferred under HD-4 |
+| **Known limitations documented; repository can be set up and verified from its README** | **open**: the README is still the scaffold text |
+| **Final product acceptance** | **open**: the human's |
 
-After the archive, what `docs/intent.md` still asks for before the MVP is
-done: the deterministic browser E2E change (HD-4), the README and product
-documentation, and the human's final product acceptance.
+Next actions, in the order that seems natural; each needs the human's
+decision first:
+
+1. The deterministic browser E2E change. It adds a browser test tool, which
+   is a new dependency and a tooling and CI change, so the human approves the
+   tool and decides how Crossref is made deterministic before anything is
+   proposed in detail. A candidate start: `/opsx:propose` for that change.
+2. The README and product documentation: setup with pnpm, `pnpm check`, the
+   optional `CROSSREF_CONTACT_EMAIL`, the session-only list, the source
+   limitations of the profile, the missing rule on numbering and order.
+3. The human's final acceptance of the product.
 
 Explicitly after the MVP, not built: batch paste of several DOIs, partial
 failures inside a batch, a clipboard fallback, persistence across a reload,
