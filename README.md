@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reference Formatter
 
-## Getting Started
+Вебзастосунок, який приймає DOI журнальної статті, отримує її метадані з
+Crossref і формує бібліографічне посилання за профілем
+ДСТУ 8302:2015 цього проєкту. Посилання збираються в «Перелік посилань», який
+можна виправляти, впорядковувати й копіювати. Інтерфейс — українською.
 
-First, run the development server:
+## Приклад
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+DOI `10.1038/nature12373` дає таке посилання:
+
+```text
+Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Можливості MVP
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- журнальні статті за DOI через Crossref;
+- запобігання дублікатам за канонічним DOI;
+- ручне редагування метаданих;
+- зміна порядку та вилучення записів;
+- копіювання одного посилання або всього переліку;
+- перелік зберігається лише до перезавантаження сторінки.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Локальний запуск
 
-## Learn More
+```bash
+pnpm install
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Відкрийте <http://localhost:3000>. Потрібен доступ до мережі: сервер
+звертається до Crossref. Перевірено на Node v24.20.0 і pnpm 11.25.0.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Перевірка
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm check        # typecheck, lint, тести, production build
+pnpm e2e          # браузерний E2E; один раз перед цим: pnpm exec playwright install chromium
+pnpm spec:check   # специфікації OpenSpec
+```
 
-## Deploy on Vercel
+## Обмеження
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Профіль ДСТУ 8302:2015 має задокументовані обмеження джерел
+  (`docs/dstu/rules.md`); це не сертифікація відповідності стандарту.
+- Підтримуються лише журнальні статті; єдиний провайдер метаданих — Crossref.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Докладніше — `docs/intent.md` та `docs/dstu/rules.md`.

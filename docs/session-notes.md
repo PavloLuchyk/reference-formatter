@@ -1,26 +1,33 @@
 # Session notes — handoff
 
-Updated 2026-10-06 after the `browser-e2e` change was archived. Every
-statement was checked against the repository at that time; nothing is
-reconstructed from memory. Read `AGENTS.md` and `docs/intent.md` first.
+Updated 2026-10-06 after the README and documentation pass that followed the
+archive of `browser-e2e`. Every statement was checked against the repository
+at that time; nothing is reconstructed from memory. Read `AGENTS.md` and
+`docs/intent.md` first; `README.md` is the entry point for setup and
+verification.
 
 ## Repository state
 
-- Branch `master`, HEAD `b22af1a` (`docs(review): complete browser e2e
-  independent review`). No git remote is configured.
-- Uncommitted when this file was written, all of it the archive of
-  `browser-e2e` and this handoff:
-  - moved: `openspec/changes/browser-e2e/` to
-    `openspec/changes/archive/2026-10-06-browser-e2e/`, its five files
-    unchanged;
-  - new: the main spec `openspec/specs/browser-flow-verification/spec.md`;
-  - new: the run records `…175511Z_e2e-archive-spec-check.log`,
-    `…175513Z_e2e-archive.log`, `…180105Z_e2e-post-archive-green.log` and
-    the whitespace checks labelled `e2e-post-archive-diff-check…`;
+- Branch `master`, HEAD `6465ef4` (`docs(spec): archive deterministic browser
+  verification`). That commit holds the archive of `browser-e2e`, the main
+  spec `browser-flow-verification` and the records of the archive. No git
+  remote is configured.
+- Uncommitted when this file was written, all of it the documentation pass:
+  - rewritten: `README.md`, in Ukrainian by the human's decision, in place of
+    the `create-next-app` text;
   - modified: this file;
+  - new: the twelve run records of the pass. The last three, on the README
+    as the human approved it, are `docs-final-check`, `e2e-docs-final` and
+    `docs-final-spec-check`. The nine before them: three of the first text
+    (`readme-check`, `e2e-readme`, `readme-spec-check`), three of the
+    320-line text (`readme-final-check`, `e2e-readme-final`,
+    `readme-final-spec-check`) and three of the short README that stands
+    now (`readme-short-check`, `e2e-readme-short`,
+    `readme-short-spec-check`). See "README and documentation pass" below;
   - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
     committed on purpose, see `.agent-log/README.md`).
-- No source, test, harness, dependency or oracle file is modified.
+- No source, test, harness, dependency, CI, spec or oracle file is modified,
+  and no archived change.
 - **No OpenSpec change is active**: `openspec/changes/` holds only
   `archive/`, with four archived changes. `openspec/specs/` holds **eight
   main specs**.
@@ -39,8 +46,80 @@ findings, known limitations and Verification history. They still hold.
 
 All three feature slices of `docs/intent.md` and the browser E2E
 verification are implemented, independently reviewed and archived. **The MVP
-is not yet complete by the Definition of Done of `docs/intent.md`:** see
+is not yet complete by the Definition of Done of `docs/intent.md`:** the
+implementation is complete, the final product acceptance is not given. See
 "What is left before the MVP is done" below.
+
+## README and documentation pass (2026-10-06)
+
+- **What stands now: a short README.** By a change of the human's decision
+  the detailed README was replaced by a short one of 49 lines, in Ukrainian,
+  with the parts the human named: short description, example, the
+  capabilities of the MVP, how to run, verification, and a short note of
+  limitations. It ends with a pointer to `docs/intent.md` and
+  `docs/dstu/rules.md`; by the human's decision it does not link this file.
+- **The README is complete and HUMAN-APPROVED as written** (2026-10-06).
+  It is not to be rewritten further. This approves the documentation text.
+  It is not the final product acceptance, which is the next human decision
+  and is not given.
+- **What it still says:** the formatting follows the DSTU 8302:2015 profile
+  of this project, which has documented source limitations and is not a
+  certification of conformity; only journal articles are supported and
+  Crossref is the only metadata provider; duplicates are prevented by
+  canonical DOI; the list is kept only until the page is reloaded.
+- **Wording the human took out:** the README does not call the profile
+  human-approved, in any form of the words; it names no course and does not
+  call the project a capstone or an assignment; it does not link this file.
+  That the profile is HUMAN-APPROVED FOR MVP stands in `docs/dstu/rules.md`
+  and in "Human-approved oracles" below.
+- **What it no longer says, and where that stands instead:** the status of
+  the product and the dated counts (this file); the source limitations of
+  the profile (`docs/dstu/rules.md`, section 1.1, and "Source limitations"
+  below); the bound of the fail-closed guarantee to Next.js 16.3.8, and that
+  recorded Crossref answers do not mean an offline build, taken out of the
+  README by the human's decision
+  (`AGENTS.md`, the spec `browser-flow-verification`, "Browser E2E" below);
+  that no CI run was ever made (below); the architecture, the non-goals, the
+  optional `CROSSREF_CONTACT_EMAIL` and the clipboard contract (`docs/intent.md`
+  and the main specs).
+- **The example** for `10.1038/nature12373` is the literal of row E1 of the
+  HUMAN-APPROVED E2E expectation table, character for character as in
+  `e2e/primary-flow.e2e.ts`. By the human's decision the README gives the DOI
+  and the reference and nothing under them: no provenance, no date of the
+  recorded answer, no qualification.
+- **History of the day.** A first text of 454 lines; an editorial pass on the
+  human's dispositions to 320 lines; that 320-line text was approved by the
+  human and then replaced by the short one. The detailed texts were never
+  committed. Neither a clone URL, a licence, a deployment nor an
+  `.env.example` was ever named or added.
+- **Final verification of the documentation state**, run on the human's
+  instruction after the approval, at `6465ef4` with the approved README and
+  this file uncommitted; every record names the commit and the tree:
+  - `pnpm check`: GREEN, 18 test files, 688 tests, typecheck, lint and the
+    production build (`evidence/runs/…_docs-final-check.log`);
+  - `pnpm e2e`: GREEN, 3 Playwright tests
+    (`evidence/runs/…_e2e-docs-final.log`);
+  - `pnpm spec:check`: GREEN, eight main specs, no active change, with the
+    one informational hint on `dstu-journal-formatting`
+    (`evidence/runs/…_docs-final-spec-check.log`).
+  All three passed on their first run.
+- **The nine earlier records of the pass are kept**, all at `6465ef4`, all
+  GREEN on their first run. The rewrites changed `README.md` and this file
+  and nothing that runs.
+  - On the same 49-line README, before the human approved it as written:
+    `…195444Z_readme-short-check.log`, `…195456Z_e2e-readme-short.log`,
+    `…195504Z_readme-short-spec-check.log`, with the same results.
+  - On the first text: `…183812Z_readme-check.log`,
+    `…183831Z_e2e-readme.log`, `…183844Z_readme-spec-check.log`.
+  - On the 320-line text: `…191155Z_readme-final-check.log` (`pnpm check`:
+    18 test files, 688 tests, typecheck, lint, production build),
+    `…191210Z_e2e-readme-final.log` (`pnpm e2e`: 3 Playwright tests),
+    `…191219Z_readme-final-spec-check.log` (`pnpm spec:check`: eight main
+    specs, no active change, one informational hint).
+  No RED was produced for the record.
+- `evidence/runs/` holds 109 records with these twelve.
+- **No CI run exists.** `.github/workflows/ci.yml` runs `pnpm check` on
+  `ubuntu-latest` with Node 24, but no git remote is configured.
 
 ## What the workspace is
 
@@ -171,8 +250,11 @@ is not yet complete by the Definition of Done of `docs/intent.md`:** see
   BE-R02-1, on the Verification history; accepted by the human and
   corrected. The human's dispositions are appended below each report. The
   human asked for no further reviewer.
-- **Records.** 39 run records labelled `e2e-…` when this file was written,
-  all of 2026-10-06. Every browser test passed on its first run; none was
+- **Records.** 40 run records labelled `e2e-…` from the change and its
+  archive, all of 2026-10-06; the documentation pass adds four,
+  `e2e-readme`, `e2e-readme-final`, `e2e-readme-short` and
+  `e2e-docs-final`.
+  Every browser test passed on its first run; none was
   ever seen to fail on product behaviour, and no RED was produced for the
   record. The failures the records hold: the two expected refusals of the
   server to start (`e2e-preload-required`) and the expected refusal of a
@@ -354,10 +436,10 @@ matter most:
 
 ## Other open items
 
-- `README.md` is still the `create-next-app` text. The Definition of Done
-  asks that the repository can be set up and verified from its README and
-  that the limitations are documented there, including the session-only
-  list and the `CROSSREF_CONTACT_EMAIL` variable.
+- `README.md` is complete and HUMAN-APPROVED as written (see "README and
+  documentation pass" above).
+- No `LICENSE` file, no git remote and no deployment exist; the README names
+  none of them.
 - The scaffold images in `public/` are no longer referenced and were left in
   place.
 - Known stale references, left as they are: the header comments of
@@ -386,22 +468,19 @@ half-built. Against the Definition of Done of `docs/intent.md`:
 | Completed slices independently reviewed, findings disposed by the human | done for all three slices and for the browser E2E change |
 | Evidence points to real repository states and runs | done; its limits are written down |
 | Primary browser flow has deterministic E2E verification | done: **HUMAN-ACCEPTED and CLOSED** on 2026-10-06; 3 Playwright tests GREEN, independently reviewed (READY twice), archived |
-| **Known limitations documented; repository can be set up and verified from its README** | **open**: the README is still the scaffold text |
+| Known limitations documented; repository can be set up and verified from its README | done: the short README holds the setup, the three verification commands and a short note of limitations, and its text is **HUMAN-APPROVED** on 2026-10-06; the limitations in full are documented in this file, in `docs/dstu/rules.md` and in the main specs |
 | **Final product acceptance** | **open**: the human's |
 
 Next actions, in the order that seems natural; each needs the human's
 decision first:
 
-1. The README and product documentation: setup with pnpm, `pnpm check`,
-   `pnpm exec playwright install chromium` and `pnpm e2e`, the optional
-   `CROSSREF_CONTACT_EMAIL`, the session-only list, the source limitations
-   of the profile, the missing rule on numbering and order, and the bound of
-   the E2E guarantee.
-2. The human's final acceptance of the product.
-3. The final audit of the rubric and of the evidence.
+1. The human's final acceptance of the product. It is the next human
+   decision and is not given.
+2. The final audit of the rubric and of the evidence, after the product
+   acceptance.
 
-The archive of `browser-e2e` and this handoff are uncommitted when this is
-written; the human gives the commit.
+The README, this handoff and the twelve records of the documentation pass are
+uncommitted when this is written; the human gives the commit.
 
 Explicitly after the MVP, not built: batch paste of several DOIs, partial
 failures inside a batch, a clipboard fallback, persistence across a reload,
