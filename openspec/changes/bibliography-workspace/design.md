@@ -542,8 +542,8 @@ its own.
   document language, the title and description, and the element the page
   returns with `resolveDoiAction` as its resolver; it inspects React elements
   and source text and still shows nothing in a browser. Until the E2E change
-  the primary browser flow has no automated evidence; task 4.7 will record
-  that in the session notes, which do not say it yet.
+  the primary browser flow has no automated evidence; `docs/session-notes.md`
+  says so since task 4.7 was done on 2026-10-06.
 - [`fireEvent` is a cruder model of a user than `user-event`] → Accepted to
   avoid a dependency. The tests assert on roles and accessible names, so they
   do not depend on markup details.
@@ -731,6 +731,24 @@ GREEN, 355 tests).
   replace nothing: the earlier records stay as history. The live browser
   check was not repeated; its records are those of `9c30af7` with the
   uncommitted slice, and no product file has changed since.
+- **Feature review 02** (2026-10-06, `feature-reviewer`, a fresh session,
+  read-only, at `6c330e8`):
+  `evidence/reviews/bibliography-workspace-review-02.md`. Verdict READY:
+  every disposition of review 01 was carried out, the hardening changed no
+  product code, oracle, dependency or tooling, and the final GREEN is
+  recorded on the clean tree of the hardening commit. One finding of
+  severity note, BW-R02-1: the note of task 5.7 said the test of row 68
+  expected its line "for a record requested as" the URL form of the DOI,
+  while that test builds its record with the canonical DOI and the URL form
+  is submitted by a separate test. The human accepted it as a documentation
+  correction; the task note was corrected and neither test was changed. The
+  disposition is appended below the report.
+- **The review process is closed.** Task 4.6 was completed by the human's
+  decision on the basis of review 01, its dispositions and the hardening,
+  the final committed GREEN and the READY verdict of review 02; task 4.7
+  brought `docs/session-notes.md` up to this state. No `pnpm check` is
+  recorded after `33871dd`: the commits after it hold only documents, review
+  reports and evidence.
 - **The entry line `DOI: {doi}`** (BW-R01-8) was not a row of the copy table
   when the slice was written. The human approved it on 2026-10-06 and it is
   now row 68. The tests written with the slice assert only that the DOI is

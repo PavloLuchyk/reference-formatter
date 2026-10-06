@@ -1,47 +1,59 @@
 # Session notes — handoff
 
-Updated 2026-10-05 after the `dstu-journal-formatter` change was archived.
-Every statement was checked against the repository at that time; nothing is
-reconstructed from memory. Read `AGENTS.md` and `docs/intent.md` first.
+Updated 2026-10-06 after the independent review of the `bibliography-workspace`
+change was completed. Every statement was checked against the repository at
+that time; nothing is reconstructed from memory. Read `AGENTS.md` and
+`docs/intent.md` first.
 
 ## Repository state
 
-- Branch `master`, HEAD `e01d436` (`docs(spec): archive DSTU journal
-  formatter`). No git remote is configured.
-- Uncommitted when this file was written:
+- Branch `master`, HEAD `6c330e8` (`docs(evidence): record workspace review
+  hardening green`). No git remote is configured.
+- Uncommitted when this file was written, all of it the closure of the review
+  process and none of it application code or tests:
   - modified: this file;
+  - modified: `openspec/changes/bibliography-workspace/tasks.md` and
+    `design.md`;
+  - untracked: `evidence/reviews/bibliography-workspace-review-02.md`;
   - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
-    committed on purpose, see `.agent-log/README.md`);
-  - untracked: `evidence/runs/20261005T205145Z_dstu-formatter-archive.log`
-    (GREEN `pnpm check` taken during the archive, tree not committed).
-- No source, test, spec or oracle file is modified. No OpenSpec change is
-  active: `openspec/changes/` holds only `archive/`.
+    committed on purpose, see `.agent-log/README.md`).
+- One OpenSpec change is active: `openspec/changes/bibliography-workspace/`,
+  with every task done. It is **not archived**.
 
 ## Slices
 
-| Slice | State | Archive | Main specs |
+| Slice | State | Where | Main specs |
 |---|---|---|---|
 | DOI Resolution | done, archived | `openspec/changes/archive/2026-10-05-doi-resolution/` | `doi-normalization`, `publication-model`, `doi-resolution` |
 | DSTU Journal Article Formatter | done, archived | `openspec/changes/archive/2026-10-05-dstu-journal-formatter/` | `dstu-journal-formatting` |
-| Bibliography Workspace | **next, not started** | — | — |
+| Bibliography Workspace | **implementation complete, reviewed, awaiting archive** | `openspec/changes/bibliography-workspace/` | none yet; the archive adds `bibliography-workspace`, `metadata-correction`, `bibliography-copy` |
 
-Each archived `design.md` holds that slice's decisions, readings, deferred
-findings, known limitations and Verification history. They still hold.
+Each `design.md`, archived or active, holds that slice's decisions, readings,
+deferred findings, known limitations and Verification history.
 
-What the workspace can build on (all pure, under `lib/`; `app/` is still the
-`create-next-app` shell and imports nothing from `lib/`):
+All three feature slices of `docs/intent.md` are implemented.
 
-- `lib/doi/normalize-doi.ts` — `normalizeDoi`, canonical DOI as identity.
-- `lib/metadata/resolve-doi.ts` — `resolveDoi(input, options)` returns a
-  `Publication` or a typed failure; `fetch` and configuration are passed in.
-- `lib/publication/publication.ts` — `Publication`, `createPublication`,
-  `missingFields`, `isSamePublication`.
-- `lib/dstu/format-journal-article.ts` — `formatJournalArticle(publication)`
-  returns `{ kind: "formatted", text, warnings }` or
-  `{ kind: "cannot-format", blockedBy }`. Warnings:
-  `subtitle-capitalisation`, `incomplete-personal-name`,
-  `full-stop-collision`. Blocking fields: `title`, `journalTitle`, `year`.
-  Their Ukrainian wording was left to the workspace.
+## What the workspace is
+
+- `lib/bibliography/` — pure domain code, no React, Next.js or network:
+  `workspace.ts` (the ordered list; identity is the canonical DOI through
+  `isSamePublication`), `correction.ts` (manual correction as a draft of
+  strings), `metadata-gaps.ts` (the entry-level indication),
+  `bibliography-text.ts` (the text for copying the whole list).
+- `app/actions.ts` — the one Server Function, `resolveDoiAction`. It calls
+  the existing `resolveDoi` with the application name `reference-formatter`
+  and the optional contact address from the server-side environment variable
+  `CROSSREF_CONTACT_EMAIL`. No `.env*` file exists in the repository.
+- `app/_components/` — `workspace.tsx` (the only `'use client'` file; all
+  page state in one reducer), `entry-card.tsx`, `correction-form.tsx`,
+  `copy.ts` (every Ukrainian string).
+- `app/page.tsx`, `app/layout.tsx` — the page hands the Server Function to
+  the workspace; the document language is `uk`.
+- The one touch on a completed slice: `lib/dstu/format-journal-article.ts`
+  exports its existing `selectYear`. Nothing else under `lib/doi/`,
+  `lib/metadata/`, `lib/publication/` or `lib/dstu/` changed.
+- The list lives in the memory of the page and is gone on reload. The page
+  says so.
 
 ## Human-approved oracles (protected)
 
@@ -53,15 +65,43 @@ What the workspace can build on (all pure, under `lib/`; `app/` is still the
 - `tests/golden/dstu-journal.ts` — fixtures GF01 to GF08 with approved
   outcomes; the sole human-approved golden formatter oracle.
 
+Neither was changed by the workspace slice; the record
+`evidence/runs/20261006T121947Z_workspace-final-oracles-untouched.log` shows
+it for the committed state.
+
 Rule from `AGENTS.md`, Verification: never modify either to make tests pass;
 propose any change and get explicit human approval first. Formatter tests
 consume the approved oracle and never derive expected values from the
-formatter. Documented provisional or source limitations stay limitations and
-are not silently "resolved" in code.
+formatter. Workspace tests read the golden fixtures as data and never build an
+expected reference by calling the formatter. Documented provisional or source
+limitations stay limitations and are not silently "resolved" in code.
+
+## Human decisions of the workspace slice
+
+All in `openspec/changes/bibliography-workspace/design.md`:
+
+- HD-1 to HD-10, decided 2026-10-06: the corrected year is stored as the
+  print date; copy-all is unnumbered lines; copy-all is blocked by an entry
+  that cannot be formatted; browser E2E is a later change (HD-4); the nine
+  editable fields; trimming of typed values; the year range 1000–9999 as a
+  product constraint, with an unchanged year never validated; new entries are
+  appended and nothing is sorted; which gaps are shown at an entry; the
+  product terms «посилання», «Перелік посилань» and «запис».
+- Assumptions kept by the human: AS-4, 6, 7, 8, 11, 12, 13, 14, 15.
+- The Ukrainian copy table, rows 1 to 68, is HUMAN-APPROVED for this MVP.
+  Changing a string needs a new approval. Row 68, `DOI: {doi}`, was approved
+  after review 01.
+- **Clipboard clarification.** The `bibliography-copy` contract governs the
+  text the application passes to `navigator.clipboard.writeText()`: one LF
+  (U+000A) between references and no trailing line break. A platform may then
+  store its own line ending; Chrome on Windows stores CR LF. The human
+  accepted this as a specification clarification, not a defect, after the
+  first browser check ended RED on it. That RED record is preserved.
 
 ## Source limitations that must not be silently resolved
 
-Accepted by the human with the profile. Approved is not verified.
+Accepted by the human with the profile. Approved is not verified. The
+workspace shows what the formatter returns and adds no rule of its own.
 
 - Six provisional heading rows still used by the formatter: P21, P22 (entry
   under its title for four or more authors), P23 (comma after the family
@@ -74,78 +114,141 @@ Accepted by the human with the profile. Approved is not verified.
   page range comes from the uncorrected printing by human decision (O8).
 - No place of publication for same-named journals (G10). Names are rendered
   from `family` and `given` only (C9).
-- Approved behaviour that can look wrong: a full stop is doubled after a
-  supplied value ending in `.` that is not a terminal initial, with a
-  `full-stop-collision` warning (O17, O18). The workspace should show the
-  warning, not hide the full stop.
+- A full stop is doubled after a supplied value ending in `.` that is not a
+  terminal initial, with a `full-stop-collision` warning (O17, O18). The
+  workspace shows and copies the doubled full stop and shows the warning.
+- The profile holds no approved rule on the numbering or order of entries.
+  Printing no numbers and keeping the user's order are product decisions
+  (HD-2, HD-8), not readings of the standard.
 - `references/` (the source PDFs) is not in git.
 
-## Maker ≠ Checker workflow
+## Final workspace verification state
 
-- The slice is built in the maker session. A separate fresh session runs the
-  `feature-reviewer` agent (`.claude/agents/feature-reviewer.md`): read-only
-  for everything it reviews, it writes one new report per run under
-  `evidence/reviews/` and nothing else.
-- The human disposes of every finding. The maker session then appends a
-  "Human dispositions" section below the report and never alters the report
-  body. An accepted defect gets a repair cycle: clarify the spec, add a
-  regression test, record it RED, repair, record GREEN.
-- Review evidence: `evidence/reviews/doi-resolution-final.md`,
-  `dstu-journal-formatter-review.md`, `…-review-01.md`, `…-review-02.md`.
-  Review 02 of the formatter: `Findings: none`, READY TO COMPLETE REVIEW.
+- **GREEN, 688 tests.** `pnpm check` on the clean tree at `33871dd`, the last
+  commit that changed tests: 18 test files, 688 tests, typecheck, lint and
+  production build
+  (`evidence/runs/20261006T121910Z_workspace-final-green.log`). No product
+  file differs between the implementation commit `78a182e` and HEAD.
+- `pnpm spec:check` exits 0 on the same commit
+  (`…121922Z_workspace-final-spec-check.log`), with four main specs and the
+  active change. It prints one informational hint that a requirement of
+  `dstu-journal-formatting` is longer than 500 characters; that is not an
+  error.
+- Boundary, oracle and tooling checks on that commit:
+  `…121934Z_workspace-final-boundaries.log`,
+  `…121947Z_workspace-final-oracles-untouched.log`,
+  `…121948Z_workspace-final-tooling-untouched.log`. No dependency, CI, hook
+  or script changed in this slice.
+- **Live browser check completed against live Crossref** on 2026-10-06, at
+  `9c30af7` with the then uncommitted slice, on `next dev`: a throwaway
+  script outside the repository drove headless Chrome over the DevTools
+  protocol through the primary flow with the DOIs `10.1038/nature12373` and
+  `10.1371/journal.pone.0000308`. Three records are kept:
+  `…105455Z_workspace-manual-browser-check.log` (the driver crashed before
+  its first step), `…105522Z_workspace-manual-browser-check.log` (RED: 97
+  checks, 3 unexpected, all the CR LF of the Windows clipboard) and
+  `…110108Z_workspace-manual-browser-check-repeat.log` (PASS with the
+  clarified criterion: 112 checks, none unexpected). It was not repeated
+  after the commits, by the human's decision; no product file has changed
+  since.
+- The slice has 28 run records in `evidence/runs/`, all labelled
+  `workspace-…`. What each proves and does not prove is in the Verification
+  history of the change's `design.md`.
+
+## Maker ≠ Checker review of the workspace: completed
+
+- **Review 01** (`evidence/reviews/bibliography-workspace-review-01.md`), a
+  fresh `feature-reviewer` session at `78a182e`: verdict READY, nine
+  findings, three minor and six notes, all about evidence, test coverage and
+  wording. The human's dispositions are appended below the report.
+- **Hardening** for the accepted findings, commit `33871dd`: 15 tests
+  (`app/page-shell.test.tsx`, `app/_components/workspace-duplicate-refusal.test.tsx`
+  and one test of row 68 in `workspace-entries.test.tsx`), three comment
+  corrections and documentation. No product code changed. Tracked as task
+  group 5 of the change.
+- **Review 02** (`evidence/reviews/bibliography-workspace-review-02.md`), a
+  fresh session at `6c330e8`: verdict **READY**. One note, BW-R02-1, on the
+  wording of a task note; accepted by the human as a documentation correction
+  and corrected, with no test changed. The disposition is appended below the
+  report.
+- How the workflow runs: the slice is built in the maker session. A separate
+  fresh session runs the `feature-reviewer` agent
+  (`.claude/agents/feature-reviewer.md`): read-only for everything it
+  reviews, it writes one new report per run under `evidence/reviews/` and
+  nothing else. The human disposes of every finding. The maker session then
+  appends a "Human dispositions" section below the report and never alters
+  the report body.
 - Run evidence: `evidence/runs/`, written only by
   `bash scripts/record-run.sh <label>`, committed and never edited by hand.
 
-## Final formatter verification state
+## Evidence limits to keep in mind
 
-- `pnpm check` GREEN on a clean tree at `3e341c4`, the last commit that
-  changed source or tests: 7 test files, 355 tests, typecheck, lint and build
-  (`evidence/runs/20261005T201600Z_dstu-formatter-final-green.log`).
-- `pnpm check` GREEN again during the archive at `6b63b16`, tree not
-  committed, 355 tests (the untracked record named above).
-- `pnpm spec:check` exits 0 with four main specs. It prints one informational
-  hint that a requirement of `dstu-journal-formatting` is longer than 500
-  characters; that is not an error.
-- Evidence limits of the formatter slice are listed in its archived
-  `design.md`, Verification history.
+Stated in full in the change's `design.md`; the ones that matter most:
 
-Known stale references, left as they are: the header comments of
-`lib/dstu/golden.test.ts` and `lib/dstu/format-journal-article.test.ts` name
-the spec at its path before the archive.
+- **The primary browser flow has no automated evidence.** Component tests
+  run in jsdom with a fake resolver and a stubbed clipboard. The live browser
+  check is one unrepeatable pass in one browser on one platform, depends on
+  live Crossref and is not E2E evidence. `app/page-shell.test.tsx` pins the
+  page shell at the level of React elements, not in a browser.
+- **Deterministic browser E2E remains deferred under HD-4.** It is a
+  Definition of Done item of `docs/intent.md` and needs its own change: the
+  human approves the tool, which is a new dependency, and how Crossref is
+  made deterministic.
+- The UI RED run did not discriminate: nearly every component test failed at
+  the same first query, so none was seen to fail on the behaviour it names
+  (BW-R01-2, acknowledged). 27 tests passed against the stubs, and the 15
+  hardening tests started GREEN; none of those was ever seen to fail.
+- The RED states are not commits; the run records and the recorded hashes of
+  the test files are what remains. Three of the hashed files changed
+  afterwards, by comments and one added test.
+- `CROSSREF_CONTACT_EMAIL` was never set in a live run; a stubbed value is
+  covered by `app/actions.test.ts`.
 
-## Next slice: Bibliography Workspace MVP
+## Other open items
 
-Recommended next command: `/opsx:propose bibliography-workspace`
+- `README.md` is still the `create-next-app` text. The Definition of Done
+  asks that the repository can be set up and verified from its README and
+  that the limitations are documented there, including the session-only
+  list and the `CROSSREF_CONTACT_EMAIL` variable.
+- The scaffold images in `public/` are no longer referenced and were left in
+  place.
+- Known stale references, left as they are: the header comments of
+  `lib/dstu/golden.test.ts` and `lib/dstu/format-journal-article.test.ts`
+  name the spec at its path before the archive. The header comments of the
+  workspace tests name the specs under
+  `openspec/changes/bibliography-workspace/`, which will be the path before
+  the archive once the change is archived.
 
-Agreed MVP scope:
+## Next action: archive bibliography-workspace
 
-- add one DOI at a time;
-- duplicate prevention (same canonical DOI);
-- manual metadata correction, with the reference recomputed from the
-  corrected `Publication`;
-- remove an entry;
-- reorder entries;
-- copy one reference, and copy the whole bibliography.
+Recommended next command: `/opsx:archive bibliography-workspace`
 
-Explicitly after the MVP, not in this slice:
+Before it, commit the closure of the review process (the files listed under
+Repository state). The archive moves the change under
+`openspec/changes/archive/` and adds the three new capabilities to
+`openspec/specs/`; record a `pnpm check` and a `pnpm spec:check` around it, as
+was done for the formatter.
 
-- batch paste of several DOIs;
-- partial failures inside a batch;
-- a clipboard fallback;
-- other advanced cases.
+After the archive, what `docs/intent.md` still asks for before the MVP is
+done: the deterministic browser E2E change (HD-4), the README and product
+documentation, and the human's final product acceptance.
 
-Constraints already fixed elsewhere: UI copy is Ukrainian; the bibliography
-may live in browser memory only (`docs/intent.md`); no auth, database,
-scraping, other providers, other publication types or styles (`AGENTS.md`);
-read `node_modules/next/dist/docs/` before writing Next.js code; UI, route
-and action layers stay thin over `lib/`.
+Explicitly after the MVP, not built: batch paste of several DOIs, partial
+failures inside a batch, a clipboard fallback, persistence across a reload,
+a reset of a corrected entry, a confirmation before removal.
 
 ## Working rules worth repeating
 
 - pnpm only. Use `pnpm exec openspec …`; the binary is not on PATH.
 - `pnpm check` must be GREEN before work is reported as done.
-- Do not commit unless asked. The human has written every commit message.
+- Do not commit unless asked. In this slice the maker session ran each
+  `git commit` on the human's explicit instruction, with the message the
+  human gave.
 - Ask before changing scope, dependencies, tooling, hooks, agent settings,
   CI, or anything under `.claude/`.
+- Policy on metadata, validation, visibility of missing data, ordering and
+  terminology is the human's: ask for it as an explicit decision instead of
+  filing it as an assumption. Ukrainian copy needs the human's approval of
+  the exact wording.
 - Never invent a value for missing metadata. DSTU rules never from model
   memory.
