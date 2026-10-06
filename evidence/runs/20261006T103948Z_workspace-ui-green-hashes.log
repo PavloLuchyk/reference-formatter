@@ -1,0 +1,46 @@
+# run: workspace-ui-green-hashes
+# started: 2026-10-06T10:39:48Z
+# commit: 9c30af74f0f2191e03dadcee7e1e623baed0a6e4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M app/layout.tsx
+#    M app/page.tsx
+#    M lib/dstu/format-journal-article.ts
+#    M openspec/changes/bibliography-workspace/tasks.md
+#   ?? app/_components/
+#   ?? app/actions.test.ts
+#   ?? app/actions.ts
+#   ?? evidence/runs/20261006T102229Z_workspace-spec-check.log
+#   ?? evidence/runs/20261006T102231Z_workspace-baseline.log
+#   ?? evidence/runs/20261006T102656Z_workspace-domain-stubs.log
+#   ?? evidence/runs/20261006T102700Z_workspace-domain-red.log
+#   ?? evidence/runs/20261006T102702Z_workspace-domain-red-hashes.log
+#   ?? evidence/runs/20261006T102806Z_workspace-domain-green.log
+#   ?? evidence/runs/20261006T102816Z_workspace-domain-green-hashes.log
+#   ?? evidence/runs/20261006T103639Z_workspace-ui-stubs.log
+#   ?? evidence/runs/20261006T103643Z_workspace-ui-red.log
+#   ?? evidence/runs/20261006T103646Z_workspace-ui-red-hashes.log
+#   ?? evidence/runs/20261006T103926Z_workspace-copy-table-check.log
+#   ?? evidence/runs/20261006T103936Z_workspace-check.log
+#   ?? lib/bibliography/
+# node: v24.20.0  pnpm: 11.25.0
+# command: sha256sum app/actions.test.ts app/_components/workspace-adding.test.tsx app/_components/workspace-entries.test.tsx app/_components/workspace-correction.test.tsx app/_components/workspace-copy.test.tsx app/_components/__fixtures__/approved-copy.ts app/_components/__fixtures__/workspace-driver.tsx lib/bibliography/__fixtures__/golden.ts lib/bibliography/workspace.test.ts lib/bibliography/metadata-gaps.test.ts lib/bibliography/correction.test.ts lib/bibliography/bibliography-text.test.ts
+----
+2ea4dbea37f327d8ca67e1e5c9b69a44fc8e3d9b7da080d3125e63cd1087904f *app/actions.test.ts
+0984a65f5533b268b09a54fa66f3b5c6452e5c4cca9471efa208efc3cd1f8d4b *app/_components/workspace-adding.test.tsx
+44563a25351bdec28b79555a783217cfceb550c65959c4687839c7e271ff3ffe *app/_components/workspace-entries.test.tsx
+65b148e2b253c4431a59ba1ea3cd6251eda7ebbd7e74acdd333b54166bc0a6ac *app/_components/workspace-correction.test.tsx
+5e37ec7c0a4964c0e104f42ee643b24dca4d8369ae791e840dab3a154d164bd5 *app/_components/workspace-copy.test.tsx
+8a2e4c2b6d7bee021303f24b1369e01f845e858ef7ed2cf48e8ecf12d78b3890 *app/_components/__fixtures__/approved-copy.ts
+62fee2f32101907ee8511d5c498fb92f349833dca8ae8415bcdf4ea332c577f1 *app/_components/__fixtures__/workspace-driver.tsx
+6266ac31812459ede9876ceea276239f33fba62481bb2109928000e5123b010f *lib/bibliography/__fixtures__/golden.ts
+11a3e1344baeae469248f34f3320c6fef2685bdbe72189b45d60749a318c00e9 *lib/bibliography/workspace.test.ts
+e62ced6130ba684dd1e49a4eb160c4dbbf5e201bc1c4fc6c85972ec866d14aea *lib/bibliography/metadata-gaps.test.ts
+b7a703513ffe3470099a3c9922c38e98b3a4114650b42dd73bebc28e14324a1e *lib/bibliography/correction.test.ts
+45d27a3834fc921f677110dd9c5e71233115584f2bae29f8ae46254e78d6bd4a *lib/bibliography/bibliography-text.test.ts
+----
+# finished: 2026-10-06T10:39:48Z
+# duration_s: 0
+# exit: 0
+# result: GREEN

@@ -1,0 +1,27 @@
+# run: workspace-domain-green-hashes
+# started: 2026-10-06T10:28:16Z
+# commit: 9c30af74f0f2191e03dadcee7e1e623baed0a6e4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M lib/dstu/format-journal-article.ts
+#   ?? evidence/runs/20261006T102229Z_workspace-spec-check.log
+#   ?? evidence/runs/20261006T102231Z_workspace-baseline.log
+#   ?? evidence/runs/20261006T102656Z_workspace-domain-stubs.log
+#   ?? evidence/runs/20261006T102700Z_workspace-domain-red.log
+#   ?? evidence/runs/20261006T102702Z_workspace-domain-red-hashes.log
+#   ?? evidence/runs/20261006T102806Z_workspace-domain-green.log
+#   ?? lib/bibliography/
+# node: v24.20.0  pnpm: 11.25.0
+# command: sha256sum lib/bibliography/workspace.test.ts lib/bibliography/metadata-gaps.test.ts lib/bibliography/correction.test.ts lib/bibliography/bibliography-text.test.ts lib/bibliography/__fixtures__/golden.ts
+----
+11a3e1344baeae469248f34f3320c6fef2685bdbe72189b45d60749a318c00e9 *lib/bibliography/workspace.test.ts
+e62ced6130ba684dd1e49a4eb160c4dbbf5e201bc1c4fc6c85972ec866d14aea *lib/bibliography/metadata-gaps.test.ts
+b7a703513ffe3470099a3c9922c38e98b3a4114650b42dd73bebc28e14324a1e *lib/bibliography/correction.test.ts
+45d27a3834fc921f677110dd9c5e71233115584f2bae29f8ae46254e78d6bd4a *lib/bibliography/bibliography-text.test.ts
+6266ac31812459ede9876ceea276239f33fba62481bb2109928000e5123b010f *lib/bibliography/__fixtures__/golden.ts
+----
+# finished: 2026-10-06T10:28:16Z
+# duration_s: 0
+# exit: 0
+# result: GREEN

@@ -1,0 +1,3342 @@
+# run: workspace-domain-red
+# started: 2026-10-06T10:27:00Z
+# commit: 9c30af74f0f2191e03dadcee7e1e623baed0a6e4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M lib/dstu/format-journal-article.ts
+#   ?? evidence/runs/20261006T102229Z_workspace-spec-check.log
+#   ?? evidence/runs/20261006T102231Z_workspace-baseline.log
+#   ?? evidence/runs/20261006T102656Z_workspace-domain-stubs.log
+#   ?? lib/bibliography/
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm test
+----
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+ ❯ lib/bibliography/metadata-gaps.test.ts (19 tests | 8 failed) 10ms
+   ❯ gaps in optional metadata (9)
+     × the minimal record has all four gaps, in the approved order 4ms
+     × an article number without pages is no gap: only the missing issue is one 1ms
+     × pages with an article number are no gap: only the missing volume is one 0ms
+     × an entry that cannot be formatted reports its gaps like any other 1ms
+   ❯ each gap on its own (4)
+     × no authors 1ms
+     × no volume 0ms
+     × no issue 0ms
+     × neither pages nor an article number 0ms
+ ❯ lib/bibliography/bibliography-text.test.ts (11 tests | 10 failed) 12ms
+   ❯ the text of the whole list (5)
+     × two references are joined by exactly one line feed 6ms
+     × the order is the order of the list 1ms
+     × a single reference stands alone, with no line feed 1ms
+     × there is no number, no blank line, no carriage return and no line feed at the end 1ms
+     × a corrected entry gives the reference of the corrected publication 1ms
+   ❯ what blocks the text of the whole list (4)
+     × one entry that cannot be formatted blocks it and is counted 0ms
+     × two such entries are counted as two 1ms
+     × a list of nothing but such an entry is blocked, not empty 0ms
+   ❯ what does not block it (2)
+     × warnings: the references are given as the formatter returns them 0ms
+     × gaps in optional metadata 0ms
+ ❯ lib/bibliography/workspace.test.ts (29 tests | 20 failed) 20ms
+   ❯ adding an entry (4)
+     × the first entry holds the resolved publication 6ms
+     × a later entry goes to the end 1ms
+     × nothing is sorted: an entry that would sort first is still last 0ms
+     × the list it was added to is not changed 0ms
+   ❯ duplicate prevention (6)
+     × a DOI that DOI normalization keeps different is another publication 1ms
+     × a publication that is not in the list is accepted 0ms
+     × an entry that was removed can be added again 0ms
+   ❯ asking whether a DOI is in the list (3)
+     × a canonical DOI of an entry is in the list 0ms
+   ❯ removing an entry (4)
+     × the entry in the middle goes and the others keep their order 1ms
+     × a DOI that is not in the list removes nothing 0ms
+     × the entries that stay are not changed 2ms
+   ❯ reordering entries (8)
+     × moving up exchanges the entry with the one before it 0ms
+     × moving down exchanges the entry with the one after it 0ms
+     × a move changes nothing but the order 1ms
+     × every other move is available 0ms
+     × a move that is not available leaves the order as it was 0ms
+     × a single entry cannot move either way 0ms
+   ❯ replacing the publication of an entry (3)
+     × the entry keeps its position 0ms
+     × the entry holds the corrected publication and the others are untouched 1ms
+     × a publication that is not in the list changes nothing 0ms
+ ❯ lib/bibliography/correction.test.ts (92 tests | 88 failed) 38ms
+   ❯ correctable fields (4)
+     × a correction keeps the DOI 6ms
+     × a correction keeps the language 1ms
+     × the publication that is corrected is not changed 1ms
+   ❯ current values are shown as stored (6)
+     × a complete record 2ms
+     × pages are shown with the hyphen they are stored with, not as printed 0ms
+     × a Roman-numeral volume is shown as stored 0ms
+     × an organisation and a person keep their kinds and their order 0ms
+     × a missing part of a personal name is an empty field 0ms
+   ❯ saving without a change (9)
+     × GF01 is equal to what it was 1ms
+     × GF02 is equal to what it was 0ms
+     × GF03 is equal to what it was 1ms
+     × GF04 is equal to what it was 0ms
+     × GF05 is equal to what it was 0ms
+     × GF06 is equal to what it was 0ms
+     × GF07 is equal to what it was 0ms
+     × GF08 is equal to what it was 0ms
+     × the month and day of each of the four dates are kept 0ms
+   ❯ blank values and surrounding whitespace (7)
+     × an emptied field makes the value missing 0ms
+     × a field of only whitespace makes the value missing 0ms
+     × an emptied required value is missing too 0ms
+     × surrounding whitespace is ignored 0ms
+     × every scalar field is trimmed 0ms
+     × a value is otherwise kept exactly as typed 0ms
+     × nothing is repaired: a typed page range keeps its hyphen 0ms
+   ❯ year shown for correction (10)
+     × the print date gives the year when it is present 0ms
+     × without a print date the issued date gives it 0ms
+     × GF01 shows 2021, the year printed in its approved reference 0ms
+     × GF02 shows 2022, the year printed in its approved reference 0ms
+     × GF03 shows 2019, the year printed in its approved reference 0ms
+     × GF04 shows 2023, the year printed in its approved reference 0ms
+     × GF05 shows 2024, the year printed in its approved reference 0ms
+     × GF07 shows 2020, the year printed in its approved reference 0ms
+     × GF08 shows 2021, the year printed in its approved reference 0ms
+   ❯ corrected year is stored as the print date (10)
+     × a missing year is supplied 0ms
+     × a year is changed where there was no print date 0ms
+     × a year is changed where there was a print date: its month is dropped 0ms
+     × a year that is not touched leaves all four dates as they were 0ms
+     × whitespace around a typed year is ignored 0ms
+     × the bound 1000 is accepted 0ms
+     × the bound 9999 is accepted 0ms
+     × the formatter prints the corrected year: missing year supplied 0ms
+     × the formatter prints the corrected year: over an issued date 0ms
+     × the formatter prints the corrected year: over a print date 0ms
+   ❯ emptied year (3)
+     × all four dates become missing 0ms
+     × a year field of only whitespace is an emptied field 0ms
+     × the entry can then not be formatted, for want of the year 0ms
+   ❯ unchanged year is not validated (5)
+     × the year shown for a source year outside the accepted range is that year 2ms
+     × another field can be corrected, and no date is rewritten 0ms
+     × the same year typed again, with spaces around it, is unchanged 0ms
+     × changing it to another value that is not accepted is rejected 0ms
+     × changing it to an accepted value stores that year as the print date 0ms
+   ❯ changed year value that is not accepted (13)
+     × letters in the year is rejected and nothing is saved 0ms
+     × too few digits is rejected and nothing is saved 0ms
+     × a date instead of a year is rejected and nothing is saved 0ms
+     × four digits below the range is rejected and nothing is saved 0ms
+     × five digits is rejected and nothing is saved 0ms
+     × full-width digits is rejected and nothing is saved 0ms
+     × Arabic-Indic digits is rejected and nothing is saved 0ms
+     × a space inside is rejected and nothing is saved 0ms
+     × a sign is rejected and nothing is saved 0ms
+     × a decimal point is rejected and nothing is saved 0ms
+     × words is rejected and nothing is saved 0ms
+     × a rejected year where a year was shown 0ms
+     × other fields typed with a rejected year are not saved either 0ms
+   ❯ correcting the list of authors (12)
+     × an added author goes to the end and starts as a person without names 0ms
+     × adding an author changes no other field of the correction 0ms
+     × an author is removed and the others keep their order 0ms
+     × an author moves one position up or down 0ms
+     × a given value is changed 0ms
+     × an author is added 0ms
+     × an author is removed 0ms
+     × the order is changed 0ms
+     × a person is set as an organisation 0ms
+     × an organisation is set as a person 0ms
+     × every author is removed 0ms
+   ❯ author names in a correction (8)
+     × an author row without any name is left out 0ms
+     × a row of only whitespace is left out too 0ms
+     × a removed given value is missing, and the person is kept 0ms
+     × a person with only a given value is kept as such 0ms
+     × a given name is not abbreviated 0ms
+     × surrounding whitespace in a name is ignored and the inside is kept 0ms
+     × names of the other kind are not carried over 0ms
+     × an organisation set as a person without names is left out 0ms
+   ❯ the reference is recomputed from the corrected publication (5)
+     × a missing title is supplied 0ms
+     × a warning disappears with its cause 0ms
+     × a full-stop collision is corrected 0ms
+     × a required value is removed 0ms
+     × an emptied issue leaves the volume alone in its zone 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 126 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > the text of the whole list > two references are joined by exactly one line feed
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'ready', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "ready",
+-   "text": "Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. Т. 12, № 3. С. 45—67. DOI: 10.0000/golden.gf01.
+- Editorial note on data availability statements // Example Bulletin of Research Practice. 2024. DOI: 10.0000/golden.gf05.",
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:30:50
+     28| describe("the text of the whole list", () => {
+     29|   test("two references are joined by exactly one line feed", () => {
+     30|     expect(bibliographyText(listOf(GF01, GF05))).toEqual({
+       |                                                  ^
+     31|       kind: "ready",
+     32|       text: `${approvedText("GF01")}\n${approvedText("GF05")}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > the text of the whole list > the order is the order of the list
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'ready', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "ready",
+-   "text": "Editorial note on data availability statements // Example Bulletin of Research Practice. 2024. DOI: 10.0000/golden.gf05.
+- Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. Т. 12, № 3. С. 45—67. DOI: 10.0000/golden.gf01.",
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:37:50
+     35|
+     36|   test("the order is the order of the list", () => {
+     37|     expect(bibliographyText(listOf(GF05, GF01))).toEqual({
+       |                                                  ^
+     38|       kind: "ready",
+     39|       text: `${approvedText("GF05")}\n${approvedText("GF01")}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > the text of the whole list > a single reference stands alone, with no line feed
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'ready', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "ready",
+-   "text": "Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. Т. 12, № 3. С. 45—67. DOI: 10.0000/golden.gf01.",
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:44:44
+     42|
+     43|   test("a single reference stands alone, with no line feed", () => {
+     44|     expect(bibliographyText(listOf(GF01))).toEqual({ kind: "ready", te…
+       |                                            ^
+     45|   });
+     46|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > the text of the whole list > there is no number, no blank line, no carriage return and no line feed at the end
+AssertionError: expected 'empty' to be 'ready' // Object.is equality
+
+Expected: "ready"
+Received: "empty"
+
+ ❯ lib/bibliography/bibliography-text.test.ts:50:26
+     48|     const outcome = bibliographyText(listOf(GF01, GF05, GF08));
+     49|
+     50|     expect(outcome.kind).toBe("ready");
+       |                          ^
+     51|     if (outcome.kind !== "ready") return;
+     52|     expect(outcome.text.split("\n")).toEqual([approvedText("GF01"), ap…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > the text of the whole list > a corrected entry gives the reference of the corrected publication
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'ready', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "ready",
+-   "text": "Petrenko, Andrii; Lee, Sora. Citation habits of first-year doctoral students // Example Journal of Academic Writing. 2021. Т. 3, № 2. С. 210—225. DOI: 10.0000/golden.gf06.",
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:64:49
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > what blocks the text of the whole list > one entry that cannot be formatted blocks it and is counted
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'blocked', unformatted: 1 }
+
+- Expected
++ Received
+
+  {
+-   "kind": "blocked",
+-   "unformatted": 1,
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:73:50
+     71| describe("what blocks the text of the whole list", () => {
+     72|   test("one entry that cannot be formatted blocks it and is counted", …
+     73|     expect(bibliographyText(listOf(GF01, GF06))).toEqual({ kind: "bloc…
+       |                                                  ^
+     74|   });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > what blocks the text of the whole list > two such entries are counted as two
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'blocked', unformatted: 2 }
+
+- Expected
++ Received
+
+  {
+-   "kind": "blocked",
+-   "unformatted": 2,
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:77:62
+     75|
+     76|   test("two such entries are counted as two", () => {
+     77|     expect(bibliographyText(listOf(GF06, GF01, untitled()))).toEqual({…
+       |                                                              ^
+     78|   });
+     79|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > what blocks the text of the whole list > a list of nothing but such an entry is blocked, not empty
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'blocked', unformatted: 1 }
+
+- Expected
++ Received
+
+  {
+-   "kind": "blocked",
+-   "unformatted": 1,
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:81:44
+     79|
+     80|   test("a list of nothing but such an entry is blocked, not empty", ()…
+     81|     expect(bibliographyText(listOf(GF06))).toEqual({ kind: "blocked", …
+       |                                            ^
+     82|   });
+     83|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > what does not block it > warnings: the references are given as the formatter returns them
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'ready', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "ready",
+-   "text": "Persistent identifiers in practice : Lessons from a national pilot / Alice Brown, L. M. Garcia, Open Metadata Working Group, Petro Ivanenko // Example Review of Scholarly Communication. 2019. Т. 12, Suppl 1. С. 5—12. DOI: 10.0000/golden.gf03.
+- Bondarenko, Maria. Abbreviated journal names in reference lists // Ex. J. Bibliogr. Stud.. 2021. Т. 30, № 6. С. 300—315. DOI: 10.0000/golden.gf08.",
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:92:50
+     90|   test("warnings: the references are given as the formatter returns th…
+     91|     // GF03 carries subtitle-capitalisation, GF08 full-stop-collision.
+     92|     expect(bibliographyText(listOf(GF03, GF08))).toEqual({
+       |                                                  ^
+     93|       kind: "ready",
+     94|       text: `${approvedText("GF03")}\n${approvedText("GF08")}`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/126]⎯
+
+ FAIL  lib/bibliography/bibliography-text.test.ts > what does not block it > gaps in optional metadata
+AssertionError: expected { kind: 'empty' } to deeply equal { kind: 'ready', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "ready",
+-   "text": "Editorial note on data availability statements // Example Bulletin of Research Practice. 2024. DOI: 10.0000/golden.gf05.",
++   "kind": "empty",
+  }
+
+ ❯ lib/bibliography/bibliography-text.test.ts:100:44
+     98|   test("gaps in optional metadata", () => {
+     99|     // GF05 has no authors, volume, issue, pages or article number.
+    100|     expect(bibliographyText(listOf(GF05))).toEqual({ kind: "ready", te…
+       |                                            ^
+    101|   });
+    102| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correctable fields > a correction keeps the DOI
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:79:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correctable fields > a correction keeps the language
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:83:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correctable fields > the publication that is corrected is not changed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:88:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > current values are shown as stored > a complete record
+AssertionError: expected { title: '', subtitle: '', …(7) } to deeply equal { …(9) }
+
+- Expected
++ Received
+
+  {
+    "articleNumber": "",
+-   "authors": [
+-     {
+-       "family": "Коваленко",
+-       "given": "Олена",
+-       "kind": "person",
+-       "name": "",
+-     },
+-   ],
+-   "issue": "3",
+-   "journalTitle": "Умовний науковий вісник",
+-   "pages": "45-67",
++   "authors": [],
++   "issue": "",
++   "journalTitle": "",
++   "pages": "",
+    "subtitle": "",
+-   "title": "Цифрові архіви в університетських бібліотеках",
+-   "volume": "12",
+-   "year": "2021",
++   "title": "",
++   "volume": "",
++   "year": "",
+  }
+
+ ❯ lib/bibliography/correction.test.ts:96:40
+     94| describe("current values are shown as stored", () => {
+     95|   test("a complete record", () => {
+     96|     expect(draftFromPublication(GF01)).toEqual({
+       |                                        ^
+     97|       title: "Цифрові архіви в університетських бібліотеках",
+     98|       subtitle: "",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > current values are shown as stored > pages are shown with the hyphen they are stored with, not as printed
+AssertionError: expected '' to be '45-67' // Object.is equality
+
+- Expected
++ Received
+
+- 45-67
+
+ ❯ lib/bibliography/correction.test.ts:110:46
+    108|
+    109|   test("pages are shown with the hyphen they are stored with, not as p…
+    110|     expect(draftFromPublication(GF01).pages).toBe("45-67");
+       |                                              ^
+    111|   });
+    112|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > current values are shown as stored > a Roman-numeral volume is shown as stored
+AssertionError: expected '' to be 'XII' // Object.is equality
+
+- Expected
++ Received
+
+- XII
+
+ ❯ lib/bibliography/correction.test.ts:114:47
+    112|
+    113|   test("a Roman-numeral volume is shown as stored", () => {
+    114|     expect(draftFromPublication(GF03).volume).toBe("XII");
+       |                                               ^
+    115|   });
+    116|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > current values are shown as stored > an organisation and a person keep their kinds and their order
+AssertionError: expected [] to deeply equal [ Array(2) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "family": "",
+-     "given": "",
+-     "kind": "organisation",
+-     "name": "Regional Library Consortium",
+-   },
+-   {
+-     "family": "Shevchuk",
+-     "given": "Iryna",
+-     "kind": "person",
+-     "name": "",
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/correction.test.ts:129:48
+    127|
+    128|   test("an organisation and a person keep their kinds and their order"…
+    129|     expect(draftFromPublication(GF04).authors).toEqual([
+       |                                                ^
+    130|       organisation("Regional Library Consortium"),
+    131|       person("Shevchuk", "Iryna"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > current values are shown as stored > a missing part of a personal name is an empty field
+AssertionError: expected [] to deeply equal [ { kind: 'person', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "family": "Okafor",
+-     "given": "",
+-     "kind": "person",
+-     "name": "",
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/correction.test.ts:136:48
+    134|
+    135|   test("a missing part of a personal name is an empty field", () => {
+    136|     expect(draftFromPublication(GF07).authors).toEqual([person("Okafor…
+       |                                                ^
+    137|   });
+    138| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF01 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": null,
+-     "authors": [
+-       {
+-         "family": "Коваленко",
+-         "given": "Олена",
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": null,
+-       "online": null,
+-       "print": {
+-         "day": null,
+-         "month": 3,
+-         "year": 2021,
+-       },
+-       "published": null,
+-     },
+-     "doi": "10.0000/golden.gf01",
+-     "issue": "3",
+-     "journalTitle": "Умовний науковий вісник",
+-     "language": "uk",
+-     "pages": "45-67",
+-     "subtitle": null,
+-     "title": "Цифрові архіви в університетських бібліотеках",
+-     "volume": "12",
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF02 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": null,
+-     "authors": [
+-       {
+-         "family": "Miller",
+-         "given": "K. J.",
+-         "kind": "person",
+-       },
+-       {
+-         "family": "Novak",
+-         "given": "M.",
+-         "kind": "person",
+-       },
+-       {
+-         "family": "Durand",
+-         "given": "J.-P.",
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": {
+-         "day": 15,
+-         "month": 11,
+-         "year": 2021,
+-       },
+-       "online": {
+-         "day": 15,
+-         "month": 11,
+-         "year": 2021,
+-       },
+-       "print": {
+-         "day": null,
+-         "month": 1,
+-         "year": 2022,
+-       },
+-       "published": {
+-         "day": 15,
+-         "month": 11,
+-         "year": 2021,
+-       },
+-     },
+-     "doi": "10.0000/golden.gf02",
+-     "issue": "1-2",
+-     "journalTitle": "Example Journal of Information Studies",
+-     "language": "en",
+-     "pages": "101–118",
+-     "subtitle": "a survey of three repositories",
+-     "title": "Measuring reuse of open research data",
+-     "volume": "7",
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF03 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": null,
+-     "authors": [
+-       {
+-         "family": "Brown",
+-         "given": "Alice",
+-         "kind": "person",
+-       },
+-       {
+-         "family": "Garcia",
+-         "given": "L. M.",
+-         "kind": "person",
+-       },
+-       {
+-         "kind": "organisation",
+-         "name": "Open Metadata Working Group",
+-       },
+-       {
+-         "family": "Ivanenko",
+-         "given": "Petro",
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": {
+-         "day": null,
+-         "month": 12,
+-         "year": 2019,
+-       },
+-       "online": {
+-         "day": 10,
+-         "month": 1,
+-         "year": 2020,
+-       },
+-       "print": null,
+-       "published": {
+-         "day": 10,
+-         "month": 1,
+-         "year": 2020,
+-       },
+-     },
+-     "doi": "10.0000/golden.gf03",
+-     "issue": "Suppl 1",
+-     "journalTitle": "Example Review of Scholarly Communication",
+-     "language": "en",
+-     "pages": "5 - 12",
+-     "subtitle": "Lessons from a national pilot",
+-     "title": "Persistent identifiers in practice",
+-     "volume": "XII",
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF04 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": "e0457",
+-     "authors": [
+-       {
+-         "kind": "organisation",
+-         "name": "Regional Library Consortium",
+-       },
+-       {
+-         "family": "Shevchuk",
+-         "given": "Iryna",
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": null,
+-       "online": {
+-         "day": 20,
+-         "month": 12,
+-         "year": 2022,
+-       },
+-       "print": null,
+-       "published": {
+-         "day": null,
+-         "month": 2,
+-         "year": 2023,
+-       },
+-     },
+-     "doi": "10.0000/golden.gf04",
+-     "issue": null,
+-     "journalTitle": "Example Notes on Library Systems",
+-     "language": "en",
+-     "pages": null,
+-     "subtitle": null,
+-     "title": "Shared cataloguing after migration",
+-     "volume": "45",
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF05 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": null,
+-     "authors": [],
+-     "dates": {
+-       "issued": null,
+-       "online": {
+-         "day": 2,
+-         "month": 5,
+-         "year": 2024,
+-       },
+-       "print": null,
+-       "published": null,
+-     },
+-     "doi": "10.0000/golden.gf05",
+-     "issue": null,
+-     "journalTitle": "Example Bulletin of Research Practice",
+-     "language": null,
+-     "pages": null,
+-     "subtitle": null,
+-     "title": "Editorial note on data availability statements",
+-     "volume": null,
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF06 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": null,
+-     "authors": [
+-       {
+-         "family": "Petrenko",
+-         "given": "Andrii",
+-         "kind": "person",
+-       },
+-       {
+-         "family": "Lee",
+-         "given": "Sora",
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": null,
+-       "online": null,
+-       "print": null,
+-       "published": null,
+-     },
+-     "doi": "10.0000/golden.gf06",
+-     "issue": "2",
+-     "journalTitle": "Example Journal of Academic Writing",
+-     "language": "en",
+-     "pages": "210-225",
+-     "subtitle": null,
+-     "title": "Citation habits of first-year doctoral students",
+-     "volume": "3",
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF07 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": "A7",
+-     "authors": [
+-       {
+-         "family": "Okafor",
+-         "given": null,
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": {
+-         "day": 18,
+-         "month": 5,
+-         "year": 2020,
+-       },
+-       "online": {
+-         "day": 18,
+-         "month": 5,
+-         "year": 2020,
+-       },
+-       "print": {
+-         "day": null,
+-         "month": 6,
+-         "year": 2020,
+-       },
+-       "published": {
+-         "day": 18,
+-         "month": 5,
+-         "year": 2020,
+-       },
+-     },
+-     "doi": "10.0000/golden.gf07",
+-     "issue": "4",
+-     "journalTitle": "Example Annals of Reading Research",
+-     "language": "en",
+-     "pages": "S12–S19",
+-     "subtitle": null,
+-     "title": "Supplementary tables for the regional reading survey",
+-     "volume": null,
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > GF08 is equal to what it was
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: true, publication: { …(11) } }
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
+-   "publication": {
+-     "articleNumber": null,
+-     "authors": [
+-       {
+-         "family": "Bondarenko",
+-         "given": "Maria",
+-         "kind": "person",
+-       },
+-     ],
+-     "dates": {
+-       "issued": null,
+-       "online": null,
+-       "print": {
+-         "day": null,
+-         "month": 9,
+-         "year": 2021,
+-       },
+-       "published": null,
+-     },
+-     "doi": "10.0000/golden.gf08.",
+-     "issue": "6",
+-     "journalTitle": "Ex. J. Bibliogr. Stud.",
+-     "language": "en",
+-     "pages": "300-315",
+-     "subtitle": null,
+-     "title": "Abbreviated journal names in reference lists",
+-     "volume": "30",
+-   },
++   "errors": [],
++   "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:146:79
+    144|       const publication = goldenPublication(id);
+    145|
+    146|       expect(applyCorrection(publication, draftFromPublication(publica…
+       |                                                                               ^
+    147|     },
+    148|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > saving without a change > the month and day of each of the four dates are kept
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:151:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > an emptied field makes the value missing
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:162:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > a field of only whitespace makes the value missing
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:166:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > an emptied required value is missing too
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:170:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > surrounding whitespace is ignored
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:174:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > every scalar field is trimmed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:179:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > a value is otherwise kept exactly as typed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:200:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > blank values and surrounding whitespace > nothing is repaired: a typed page range keeps its hyphen
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:204:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > the print date gives the year when it is present
+AssertionError: expected '' to be '2022' // Object.is equality
+
+- Expected
++ Received
+
+- 2022
+
+ ❯ lib/bibliography/correction.test.ts:210:45
+    208| describe("year shown for correction", () => {
+    209|   test("the print date gives the year when it is present", () => {
+    210|     expect(draftFromPublication(GF02).year).toBe("2022");
+       |                                             ^
+    211|   });
+    212|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > without a print date the issued date gives it
+AssertionError: expected '' to be '2019' // Object.is equality
+
+- Expected
++ Received
+
+- 2019
+
+ ❯ lib/bibliography/correction.test.ts:214:45
+    212|
+    213|   test("without a print date the issued date gives it", () => {
+    214|     expect(draftFromPublication(GF03).year).toBe("2019");
+       |                                             ^
+    215|   });
+    216|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF01 shows 2021, the year printed in its approved reference
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF08 shows 2021, the year printed in its approved reference
+AssertionError: expected '' to be '2021' // Object.is equality
+
+- Expected
++ Received
+
+- 2021
+
+ ❯ lib/bibliography/correction.test.ts:231:62
+    229|     ["GF08", "2021"],
+    230|   ])("%s shows %s, the year printed in its approved reference", (id, y…
+    231|     expect(draftFromPublication(goldenPublication(id)).year).toBe(year…
+       |                                                              ^
+    232|     expect(approvedText(id)).toContain(`. ${year}. `);
+    233|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF02 shows 2022, the year printed in its approved reference
+AssertionError: expected '' to be '2022' // Object.is equality
+
+- Expected
++ Received
+
+- 2022
+
+ ❯ lib/bibliography/correction.test.ts:231:62
+    229|     ["GF08", "2021"],
+    230|   ])("%s shows %s, the year printed in its approved reference", (id, y…
+    231|     expect(draftFromPublication(goldenPublication(id)).year).toBe(year…
+       |                                                              ^
+    232|     expect(approvedText(id)).toContain(`. ${year}. `);
+    233|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF03 shows 2019, the year printed in its approved reference
+AssertionError: expected '' to be '2019' // Object.is equality
+
+- Expected
++ Received
+
+- 2019
+
+ ❯ lib/bibliography/correction.test.ts:231:62
+    229|     ["GF08", "2021"],
+    230|   ])("%s shows %s, the year printed in its approved reference", (id, y…
+    231|     expect(draftFromPublication(goldenPublication(id)).year).toBe(year…
+       |                                                              ^
+    232|     expect(approvedText(id)).toContain(`. ${year}. `);
+    233|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF04 shows 2023, the year printed in its approved reference
+AssertionError: expected '' to be '2023' // Object.is equality
+
+- Expected
++ Received
+
+- 2023
+
+ ❯ lib/bibliography/correction.test.ts:231:62
+    229|     ["GF08", "2021"],
+    230|   ])("%s shows %s, the year printed in its approved reference", (id, y…
+    231|     expect(draftFromPublication(goldenPublication(id)).year).toBe(year…
+       |                                                              ^
+    232|     expect(approvedText(id)).toContain(`. ${year}. `);
+    233|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF05 shows 2024, the year printed in its approved reference
+AssertionError: expected '' to be '2024' // Object.is equality
+
+- Expected
++ Received
+
+- 2024
+
+ ❯ lib/bibliography/correction.test.ts:231:62
+    229|     ["GF08", "2021"],
+    230|   ])("%s shows %s, the year printed in its approved reference", (id, y…
+    231|     expect(draftFromPublication(goldenPublication(id)).year).toBe(year…
+       |                                                              ^
+    232|     expect(approvedText(id)).toContain(`. ${year}. `);
+    233|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > year shown for correction > GF07 shows 2020, the year printed in its approved reference
+AssertionError: expected '' to be '2020' // Object.is equality
+
+- Expected
++ Received
+
+- 2020
+
+ ❯ lib/bibliography/correction.test.ts:231:62
+    229|     ["GF08", "2021"],
+    230|   ])("%s shows %s, the year printed in its approved reference", (id, y…
+    231|     expect(draftFromPublication(goldenPublication(id)).year).toBe(year…
+       |                                                              ^
+    232|     expect(approvedText(id)).toContain(`. ${year}. `);
+    233|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > a missing year is supplied
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:238:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > a year is changed where there was no print date
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:247:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > a year is changed where there was a print date: its month is dropped
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:256:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > a year that is not touched leaves all four dates as they were
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:265:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > whitespace around a typed year is ignored
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:269:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > the bound 1000 is accepted
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > the bound 9999 is accepted
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:276:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > the formatter prints the corrected year: missing year supplied
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:280:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > the formatter prints the corrected year: over an issued date
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:286:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > corrected year is stored as the print date > the formatter prints the corrected year: over a print date
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:292:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > emptied year > all four dates become missing
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:302:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > emptied year > a year field of only whitespace is an emptied field
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:306:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > emptied year > the entry can then not be formatted, for want of the year
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:310:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > unchanged year is not validated > the year shown for a source year outside the accepted range is that year
+AssertionError: expected '' to be '999' // Object.is equality
+
+- Expected
++ Received
+
+- 999
+
+ ❯ lib/bibliography/correction.test.ts:316:56
+    314| describe("unchanged year is not validated", () => {
+    315|   test("the year shown for a source year outside the accepted range is…
+    316|     expect(draftFromPublication(sourceYear999()).year).toBe("999");
+       |                                                        ^
+    317|   });
+    318|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > unchanged year is not validated > another field can be corrected, and no date is rewritten
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:320:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > unchanged year is not validated > the same year typed again, with spaces around it, is unchanged
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:332:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > unchanged year is not validated > changing it to another value that is not accepted is rejected
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: false, errors: [ { …(2) } ] }
+
+- Expected
++ Received
+
+  {
+-   "errors": [
+-     {
+-       "field": "year",
+-       "kind": "invalid-year",
+-     },
+-   ],
++   "errors": [],
+    "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:336:55
+    334|
+    335|   test("changing it to another value that is not accepted is rejected"…
+    336|     expect(rejected(sourceYear999(), { year: "99" })).toEqual(INVALID_…
+       |                                                       ^
+    337|   });
+    338|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > unchanged year is not validated > changing it to an accepted value stores that year as the print date
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:340:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > letters in the year is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > too few digits is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > a date instead of a year is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > four digits below the range is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > five digits is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > full-width digits is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > Arabic-Indic digits is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > a space inside is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > a sign is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > a decimal point is rejected and nothing is saved
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > words is rejected and nothing is saved
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: false, errors: [ { …(2) } ] }
+
+- Expected
++ Received
+
+  {
+-   "errors": [
+-     {
+-       "field": "year",
+-       "kind": "invalid-year",
+-     },
+-   ],
++   "errors": [],
+    "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:363:45
+    361|     ["words", "this year"],
+    362|   ])("%s is rejected and nothing is saved", (_name, typed) => {
+    363|     expect(rejected(GF06, { year: typed })).toEqual(INVALID_YEAR);
+       |                                             ^
+    364|   });
+    365|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > a rejected year where a year was shown
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: false, errors: [ { …(2) } ] }
+
+- Expected
++ Received
+
+  {
+-   "errors": [
+-     {
+-       "field": "year",
+-       "kind": "invalid-year",
+-     },
+-   ],
++   "errors": [],
+    "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:367:44
+    365|
+    366|   test("a rejected year where a year was shown", () => {
+    367|     expect(rejected(GF01, { year: "21" })).toEqual(INVALID_YEAR);
+       |                                            ^
+    368|   });
+    369|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > changed year value that is not accepted > other fields typed with a rejected year are not saved either
+AssertionError: expected { ok: false, errors: [] } to deeply equal { ok: false, errors: [ { …(2) } ] }
+
+- Expected
++ Received
+
+  {
+-   "errors": [
+-     {
+-       "field": "year",
+-       "kind": "invalid-year",
+-     },
+-   ],
++   "errors": [],
+    "ok": false,
+  }
+
+ ❯ lib/bibliography/correction.test.ts:371:66
+    369|
+    370|   test("other fields typed with a rejected year are not saved either",…
+    371|     expect(rejected(GF01, { title: "A new title", year: "21" })).toEqu…
+       |                                                                  ^
+    372|   });
+    373| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > an added author goes to the end and starts as a person without names
+AssertionError: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "family": "",
+-     "given": "",
+-     "kind": "person",
+-     "name": "",
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/correction.test.ts:377:59
+    375| describe("correcting the list of authors", () => {
+    376|   test("an added author goes to the end and starts as a person without…
+    377|     expect(addAuthor(draftFromPublication(GF05)).authors).toEqual([per…
+       |                                                           ^
+    378|     expect(addAuthor(draftFromPublication(GF04)).authors).toEqual([
+    379|       organisation("Regional Library Consortium"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > adding an author changes no other field of the correction
+AssertionError: expected { title: '', subtitle: '', …(7) } to deeply equal { title: '', subtitle: '', …(7) }
+
+- Expected
++ Received
+
+@@ -1,21 +1,8 @@
+  {
+    "articleNumber": "",
+-   "authors": [
+-     {
+-       "family": "Коваленко",
+-       "given": "Олена",
+-       "kind": "person",
+-       "name": "",
+-     },
+-     {
+-       "family": "",
+-       "given": "",
+-       "kind": "person",
+-       "name": "",
+-     },
+-   ],
++   "authors": [],
+    "issue": "",
+    "journalTitle": "",
+    "pages": "",
+    "subtitle": "",
+    "title": "",
+
+ ❯ lib/bibliography/correction.test.ts:386:51
+    384|
+    385|   test("adding an author changes no other field of the correction", ()…
+    386|     expect(addAuthor(draftFromPublication(GF01))).toEqual({
+       |                                                   ^
+    387|       ...draftFromPublication(GF01),
+    388|       authors: [person("Коваленко", "Олена"), person("", "")],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > an author is removed and the others keep their order
+AssertionError: expected [] to deeply equal [ { kind: 'person', …(3) }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "family": "Miller",
+-     "given": "K. J.",
+-     "kind": "person",
+-     "name": "",
+-   },
+-   {
+-     "family": "Durand",
+-     "given": "J.-P.",
+-     "kind": "person",
+-     "name": "",
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/correction.test.ts:393:65
+    391|
+    392|   test("an author is removed and the others keep their order", () => {
+    393|     expect(removeAuthor(draftFromPublication(GF02), 1).authors).toEqua…
+       |                                                                 ^
+    394|       person("Miller", "K. J."),
+    395|       person("Durand", "J.-P."),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > an author moves one position up or down
+AssertionError: expected [] to deeply equal [ { kind: 'person', …(3) }, …(2) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "family": "Novak",
+-     "given": "M.",
+-     "kind": "person",
+-     "name": "",
+-   },
+-   {
+-     "family": "Miller",
+-     "given": "K. J.",
+-     "kind": "person",
+-     "name": "",
+-   },
+-   {
+-     "family": "Durand",
+-     "given": "J.-P.",
+-     "kind": "person",
+-     "name": "",
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/correction.test.ts:402:48
+    400|     const draft = draftFromPublication(GF02);
+    401|
+    402|     expect(moveAuthor(draft, 1, "up").authors).toEqual([
+       |                                                ^
+    403|       person("Novak", "M."),
+    404|       person("Miller", "K. J."),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > a given value is changed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:422:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > an author is added
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:430:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > an author is removed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:439:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > the order is changed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:446:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > a person is set as an organisation
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:461:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > an organisation is set as a person
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:471:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > correcting the list of authors > every author is removed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:485:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > an author row without any name is left out
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:496:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > a row of only whitespace is left out too
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:502:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > a removed given value is missing, and the person is kept
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:506:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > a person with only a given value is kept as such
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:513:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > a given name is not abbreviated
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:519:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > surrounding whitespace in a name is ignored and the inside is kept
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:526:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > names of the other kind are not carried over
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:535:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > author names in a correction > an organisation set as a person without names is left out
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:543:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > the reference is recomputed from the corrected publication > a missing title is supplied
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:560:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > the reference is recomputed from the corrected publication > a warning disappears with its cause
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:565:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > the reference is recomputed from the corrected publication > a full-stop collision is corrected
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:574:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > the reference is recomputed from the corrected publication > a required value is removed
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:583:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[85/126]⎯
+
+ FAIL  lib/bibliography/correction.test.ts > the reference is recomputed from the corrected publication > an emptied issue leaves the volume alone in its zone
+AssertionError: expected { ok: false, errors: [] } to match object { ok: true }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": true,
++   "ok": false,
+  }
+
+ ❯ corrected lib/bibliography/correction.test.ts:35:19
+     33| const corrected = (publication: Publication, change: Partial<Correctio…
+     34|   const outcome = applyCorrection(publication, { ...draftFromPublicati…
+     35|   expect(outcome).toMatchObject({ ok: true });
+       |                   ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.publication;
+ ❯ lib/bibliography/correction.test.ts:590:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[86/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > gaps in optional metadata > the minimal record has all four gaps, in the approved order
+AssertionError: expected [] to deeply equal [ 'authors', 'volume', 'issue', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "authors",
+-   "volume",
+-   "issue",
+-   "pages-or-article-number",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:18:53
+     16|
+     17|   test("the minimal record has all four gaps, in the approved order", …
+     18|     expect(metadataGaps(goldenPublication("GF05"))).toEqual(["authors"…
+       |                                                     ^
+     19|   });
+     20|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[87/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > gaps in optional metadata > an article number without pages is no gap: only the missing issue is one
+AssertionError: expected [] to deeply equal [ 'issue' ]
+
+- Expected
++ Received
+
+- [
+-   "issue",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:23:53
+     21|   test("an article number without pages is no gap: only the missing is…
+     22|     // GF04: volume 45, no issue, no pages, article number e0457.
+     23|     expect(metadataGaps(goldenPublication("GF04"))).toEqual(["issue"]);
+       |                                                     ^
+     24|   });
+     25|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[88/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > gaps in optional metadata > pages with an article number are no gap: only the missing volume is one
+AssertionError: expected [] to deeply equal [ 'volume' ]
+
+- Expected
++ Received
+
+- [
+-   "volume",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:28:53
+     26|   test("pages with an article number are no gap: only the missing volu…
+     27|     // GF07: no volume, issue 4, pages and an article number.
+     28|     expect(metadataGaps(goldenPublication("GF07"))).toEqual(["volume"]…
+       |                                                     ^
+     29|   });
+     30|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[89/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > gaps in optional metadata > an entry that cannot be formatted reports its gaps like any other
+AssertionError: expected [] to deeply equal [ 'volume' ]
+
+- Expected
++ Received
+
+- [
+-   "volume",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:34:41
+     32|     const withoutVolume: Publication = { ...goldenPublication("GF06"),…
+     33|
+     34|     expect(metadataGaps(withoutVolume)).toEqual(["volume"]);
+       |                                         ^
+     35|   });
+     36| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[90/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > each gap on its own > no authors
+AssertionError: expected [] to deeply equal [ 'authors' ]
+
+- Expected
++ Received
+
+- [
+-   "authors",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:40:52
+     38| describe("each gap on its own", () => {
+     39|   test("no authors", () => {
+     40|     expect(metadataGaps({ ...GF01, authors: [] })).toEqual(["authors"]…
+       |                                                    ^
+     41|   });
+     42|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[91/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > each gap on its own > no volume
+AssertionError: expected [] to deeply equal [ 'volume' ]
+
+- Expected
++ Received
+
+- [
+-   "volume",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:44:53
+     42|
+     43|   test("no volume", () => {
+     44|     expect(metadataGaps({ ...GF01, volume: null })).toEqual(["volume"]…
+       |                                                     ^
+     45|   });
+     46|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[92/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > each gap on its own > no issue
+AssertionError: expected [] to deeply equal [ 'issue' ]
+
+- Expected
++ Received
+
+- [
+-   "issue",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:48:52
+     46|
+     47|   test("no issue", () => {
+     48|     expect(metadataGaps({ ...GF01, issue: null })).toEqual(["issue"]);
+       |                                                    ^
+     49|   });
+     50|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[93/126]⎯
+
+ FAIL  lib/bibliography/metadata-gaps.test.ts > each gap on its own > neither pages nor an article number
+AssertionError: expected [] to deeply equal [ 'pages-or-article-number' ]
+
+- Expected
++ Received
+
+- [
+-   "pages-or-article-number",
+- ]
++ []
+
+ ❯ lib/bibliography/metadata-gaps.test.ts:52:73
+     50|
+     51|   test("neither pages nor an article number", () => {
+     52|     expect(metadataGaps({ ...GF01, pages: null, articleNumber: null })…
+       |                                                                         ^
+     53|   });
+     54| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[94/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > adding an entry > the first entry holds the resolved publication
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ added lib/bibliography/workspace.test.ts:35:22
+     33| const added = (workspace: Workspace, publication: Publication): Worksp…
+     34|   const outcome = addEntry(workspace, publication);
+     35|   expect(outcome.ok).toBe(true);
+       |                      ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.workspace;
+ ❯ lib/bibliography/workspace.test.ts:52:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[95/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > adding an entry > a later entry goes to the end
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ added lib/bibliography/workspace.test.ts:35:22
+     33| const added = (workspace: Workspace, publication: Publication): Worksp…
+     34|   const outcome = addEntry(workspace, publication);
+     35|   expect(outcome.ok).toBe(true);
+       |                      ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.workspace;
+ ❯ lib/bibliography/workspace.test.ts:58:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[96/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > adding an entry > nothing is sorted: an entry that would sort first is still last
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ added lib/bibliography/workspace.test.ts:35:22
+     33| const added = (workspace: Workspace, publication: Publication): Worksp…
+     34|   const outcome = addEntry(workspace, publication);
+     35|   expect(outcome.ok).toBe(true);
+       |                      ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.workspace;
+ ❯ lib/bibliography/workspace.test.ts:65:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[97/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > adding an entry > the list it was added to is not changed
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ added lib/bibliography/workspace.test.ts:35:22
+     33| const added = (workspace: Workspace, publication: Publication): Worksp…
+     34|   const outcome = addEntry(workspace, publication);
+     35|   expect(outcome.ok).toBe(true);
+       |                      ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.workspace;
+ ❯ lib/bibliography/workspace.test.ts:72:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[98/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > duplicate prevention > a DOI that DOI normalization keeps different is another publication
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ added lib/bibliography/workspace.test.ts:35:22
+     33| const added = (workspace: Workspace, publication: Publication): Worksp…
+     34|   const outcome = addEntry(workspace, publication);
+     35|   expect(outcome.ok).toBe(true);
+       |                      ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.workspace;
+ ❯ lib/bibliography/workspace.test.ts:100:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[99/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > duplicate prevention > a publication that is not in the list is accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ lib/bibliography/workspace.test.ts:106:45
+    104|
+    105|   test("a publication that is not in the list is accepted", () => {
+    106|     expect(addEntry(listOf(GF01), GF05).ok).toBe(true);
+       |                                             ^
+    107|   });
+    108|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[100/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > duplicate prevention > an entry that was removed can be added again
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ added lib/bibliography/workspace.test.ts:35:22
+     33| const added = (workspace: Workspace, publication: Publication): Worksp…
+     34|   const outcome = addEntry(workspace, publication);
+     35|   expect(outcome.ok).toBe(true);
+       |                      ^
+     36|   if (!outcome.ok) throw new Error("unreachable");
+     37|   return outcome.workspace;
+ ❯ lib/bibliography/workspace.test.ts:110:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[101/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > asking whether a DOI is in the list > a canonical DOI of an entry is in the list
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ lib/bibliography/workspace.test.ts:120:83
+    118|     const workspace = listOf(createPublication({ doi: canonical("10.10…
+    119|
+    120|     expect(hasEntry(workspace, canonical("https://doi.org/10.1038/Natu…
+       |                                                                                   ^
+    121|   });
+    122|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[102/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > removing an entry > the entry in the middle goes and the others keep their order
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf01', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf01",
+-   "10.0000/golden.gf08.",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:134:67
+    132| describe("removing an entry", () => {
+    133|   test("the entry in the middle goes and the others keep their order",…
+    134|     expect(dois(removeEntry(listOf(GF01, GF05, GF08), GF05.doi))).toEq…
+       |                                                                   ^
+    135|       "10.0000/golden.gf01",
+    136|       "10.0000/golden.gf08.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[103/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > removing an entry > a DOI that is not in the list removes nothing
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf01', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf01",
+-   "10.0000/golden.gf05",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:145:61
+    143|
+    144|   test("a DOI that is not in the list removes nothing", () => {
+    145|     expect(dois(removeEntry(listOf(GF01, GF05), GF08.doi))).toEqual(["…
+       |                                                             ^
+    146|   });
+    147|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[104/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > removing an entry > the entries that stay are not changed
+AssertionError: expected [] to deeply equal [ { publication: { …(11) } }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Коваленко",
+-           "given": "Олена",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 3,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf01",
+-       "issue": "3",
+-       "journalTitle": "Умовний науковий вісник",
+-       "language": "uk",
+-       "pages": "45-67",
+-       "subtitle": null,
+-       "title": "Цифрові архіви в університетських бібліотеках",
+-       "volume": "12",
+-     },
+-   },
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Bondarenko",
+-           "given": "Maria",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 9,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf08.",
+-       "issue": "6",
+-       "journalTitle": "Ex. J. Bibliogr. Stud.",
+-       "language": "en",
+-       "pages": "300-315",
+-       "subtitle": null,
+-       "title": "Abbreviated journal names in reference lists",
+-       "volume": "30",
+-     },
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:149:69
+    147|
+    148|   test("the entries that stay are not changed", () => {
+    149|     expect(removeEntry(listOf(GF01, GF05, GF08), GF05.doi).entries).to…
+       |                                                                     ^
+    150|       { publication: GF01 },
+    151|       { publication: GF08 },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[105/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > reordering entries > moving up exchanges the entry with the one before it
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf05', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf05",
+-   "10.0000/golden.gf01",
+-   "10.0000/golden.gf08.",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:160:51
+    158|
+    159|   test("moving up exchanges the entry with the one before it", () => {
+    160|     expect(dois(moveEntry(list, GF05.doi, "up"))).toEqual([
+       |                                                   ^
+    161|       "10.0000/golden.gf05",
+    162|       "10.0000/golden.gf01",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[106/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > reordering entries > moving down exchanges the entry with the one after it
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf01', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf01",
+-   "10.0000/golden.gf08.",
+-   "10.0000/golden.gf05",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:168:53
+    166|
+    167|   test("moving down exchanges the entry with the one after it", () => {
+    168|     expect(dois(moveEntry(list, GF05.doi, "down"))).toEqual([
+       |                                                     ^
+    169|       "10.0000/golden.gf01",
+    170|       "10.0000/golden.gf08.",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[107/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > reordering entries > a move changes nothing but the order
+AssertionError: expected [] to deeply equal [ { publication: { …(11) } }, …(2) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [],
+-       "dates": {
+-         "issued": null,
+-         "online": {
+-           "day": 2,
+-           "month": 5,
+-           "year": 2024,
+-         },
+-         "print": null,
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf05",
+-       "issue": null,
+-       "journalTitle": "Example Bulletin of Research Practice",
+-       "language": null,
+-       "pages": null,
+-       "subtitle": null,
+-       "title": "Editorial note on data availability statements",
+-       "volume": null,
+-     },
+-   },
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Коваленко",
+-           "given": "Олена",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 3,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf01",
+-       "issue": "3",
+-       "journalTitle": "Умовний науковий вісник",
+-       "language": "uk",
+-       "pages": "45-67",
+-       "subtitle": null,
+-       "title": "Цифрові архіви в університетських бібліотеках",
+-       "volume": "12",
+-     },
+-   },
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Bondarenko",
+-           "given": "Maria",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 9,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf08.",
+-       "issue": "6",
+-       "journalTitle": "Ex. J. Bibliogr. Stud.",
+-       "language": "en",
+-       "pages": "300-315",
+-       "subtitle": null,
+-       "title": "Abbreviated journal names in reference lists",
+-       "volume": "30",
+-     },
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:176:53
+    174|
+    175|   test("a move changes nothing but the order", () => {
+    176|     expect(moveEntry(list, GF05.doi, "up").entries).toEqual([
+       |                                                     ^
+    177|       { publication: GF05 },
+    178|       { publication: GF01 },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[108/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > reordering entries > every other move is available
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ lib/bibliography/workspace.test.ts:189:50
+    187|
+    188|   test("every other move is available", () => {
+    189|     expect(canMoveEntry(list, GF01.doi, "down")).toBe(true);
+       |                                                  ^
+    190|     expect(canMoveEntry(list, GF05.doi, "up")).toBe(true);
+    191|     expect(canMoveEntry(list, GF05.doi, "down")).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[109/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > reordering entries > a move that is not available leaves the order as it was
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf01', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf01",
+-   "10.0000/golden.gf05",
+-   "10.0000/golden.gf08.",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:196:51
+    194|
+    195|   test("a move that is not available leaves the order as it was", () =…
+    196|     expect(dois(moveEntry(list, GF01.doi, "up"))).toEqual(dois(list));
+       |                                                   ^
+    197|     expect(dois(moveEntry(list, GF08.doi, "down"))).toEqual(dois(list)…
+    198|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[110/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > reordering entries > a single entry cannot move either way
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf01' ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf01",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:205:55
+    203|     expect(canMoveEntry(single, GF01.doi, "up")).toBe(false);
+    204|     expect(canMoveEntry(single, GF01.doi, "down")).toBe(false);
+    205|     expect(dois(moveEntry(single, GF01.doi, "down"))).toEqual(["10.000…
+       |                                                       ^
+    206|   });
+    207|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[111/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > replacing the publication of an entry > the entry keeps its position
+AssertionError: expected [] to deeply equal [ '10.0000/golden.gf01', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "10.0000/golden.gf01",
+-   "10.0000/golden.gf05",
+-   "10.0000/golden.gf08.",
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:222:29
+    220|     const workspace = replacePublication(listOf(GF01, GF05, GF08), cor…
+    221|
+    222|     expect(dois(workspace)).toEqual(["10.0000/golden.gf01", "10.0000/g…
+       |                             ^
+    223|   });
+    224|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[112/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > replacing the publication of an entry > the entry holds the corrected publication and the others are untouched
+AssertionError: expected [] to deeply equal [ { publication: { …(11) } }, …(2) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Коваленко",
+-           "given": "Олена",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 3,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf01",
+-       "issue": "3",
+-       "journalTitle": "Умовний науковий вісник",
+-       "language": "uk",
+-       "pages": "45-67",
+-       "subtitle": null,
+-       "title": "Цифрові архіви в університетських бібліотеках",
+-       "volume": "12",
+-     },
+-   },
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [],
+-       "dates": {
+-         "issued": null,
+-         "online": {
+-           "day": 2,
+-           "month": 5,
+-           "year": 2024,
+-         },
+-         "print": null,
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf05",
+-       "issue": null,
+-       "journalTitle": "Example Bulletin of Research Practice",
+-       "language": null,
+-       "pages": null,
+-       "subtitle": null,
+-       "title": "A corrected title",
+-       "volume": null,
+-     },
+-   },
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Bondarenko",
+-           "given": "Maria",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 9,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf08.",
+-       "issue": "6",
+-       "journalTitle": "Ex. J. Bibliogr. Stud.",
+-       "language": "en",
+-       "pages": "300-315",
+-       "subtitle": null,
+-       "title": "Abbreviated journal names in reference lists",
+-       "volume": "30",
+-     },
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:228:31
+    226|     const workspace = replacePublication(listOf(GF01, GF05, GF08), cor…
+    227|
+    228|     expect(workspace.entries).toEqual([{ publication: GF01 }, { public…
+       |                               ^
+    229|   });
+    230|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[113/126]⎯
+
+ FAIL  lib/bibliography/workspace.test.ts > replacing the publication of an entry > a publication that is not in the list changes nothing
+AssertionError: expected [] to deeply equal [ { publication: { …(11) } }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Коваленко",
+-           "given": "Олена",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 3,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf01",
+-       "issue": "3",
+-       "journalTitle": "Умовний науковий вісник",
+-       "language": "uk",
+-       "pages": "45-67",
+-       "subtitle": null,
+-       "title": "Цифрові архіви в університетських бібліотеках",
+-       "volume": "12",
+-     },
+-   },
+-   {
+-     "publication": {
+-       "articleNumber": null,
+-       "authors": [
+-         {
+-           "family": "Bondarenko",
+-           "given": "Maria",
+-           "kind": "person",
+-         },
+-       ],
+-       "dates": {
+-         "issued": null,
+-         "online": null,
+-         "print": {
+-           "day": null,
+-           "month": 9,
+-           "year": 2021,
+-         },
+-         "published": null,
+-       },
+-       "doi": "10.0000/golden.gf08.",
+-       "issue": "6",
+-       "journalTitle": "Ex. J. Bibliogr. Stud.",
+-       "language": "en",
+-       "pages": "300-315",
+-       "subtitle": null,
+-       "title": "Abbreviated journal names in reference lists",
+-       "volume": "30",
+-     },
+-   },
+- ]
++ []
+
+ ❯ lib/bibliography/workspace.test.ts:232:71
+    230|
+    231|   test("a publication that is not in the list changes nothing", () => {
+    232|     expect(replacePublication(listOf(GF01, GF08), corrected).entries).…
+       |                                                                       ^
+    233|       { publication: GF01 },
+    234|       { publication: GF08 },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[114/126]⎯
+
+
+ Test Files  4 failed | 7 passed (11)
+      Tests  126 failed | 380 passed (506)
+   Start at  13:27:01
+   Duration  848ms (transform 37%, environment 31%, import 17%, tests 13%, worker 3%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+----
+# finished: 2026-10-06T10:27:02Z
+# duration_s: 1
+# exit: 1
+# result: RED

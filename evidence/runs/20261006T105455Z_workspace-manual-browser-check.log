@@ -1,0 +1,165 @@
+# run: workspace-manual-browser-check
+# started: 2026-10-06T10:54:55Z
+# commit: 9c30af74f0f2191e03dadcee7e1e623baed0a6e4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M app/layout.tsx
+#    M app/page.tsx
+#    M lib/dstu/format-journal-article.ts
+#    M openspec/changes/bibliography-workspace/design.md
+#    M openspec/changes/bibliography-workspace/tasks.md
+#   ?? app/_components/
+#   ?? app/actions.test.ts
+#   ?? app/actions.ts
+#   ?? evidence/runs/20261006T102229Z_workspace-spec-check.log
+#   ?? evidence/runs/20261006T102231Z_workspace-baseline.log
+#   ?? evidence/runs/20261006T102656Z_workspace-domain-stubs.log
+#   ?? evidence/runs/20261006T102700Z_workspace-domain-red.log
+#   ?? evidence/runs/20261006T102702Z_workspace-domain-red-hashes.log
+#   ?? evidence/runs/20261006T102806Z_workspace-domain-green.log
+#   ?? evidence/runs/20261006T102816Z_workspace-domain-green-hashes.log
+#   ?? evidence/runs/20261006T103639Z_workspace-ui-stubs.log
+#   ?? evidence/runs/20261006T103643Z_workspace-ui-red.log
+#   ?? evidence/runs/20261006T103646Z_workspace-ui-red-hashes.log
+#   ?? evidence/runs/20261006T103926Z_workspace-copy-table-check.log
+#   ?? evidence/runs/20261006T103936Z_workspace-check.log
+#   ?? evidence/runs/20261006T103948Z_workspace-ui-green-hashes.log
+#   ?? evidence/runs/20261006T104021Z_workspace-boundaries.log
+#   ?? evidence/runs/20261006T104032Z_workspace-oracles-untouched.log
+#   ?? evidence/runs/20261006T104034Z_workspace-tooling-untouched.log
+#   ?? lib/bibliography/
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash -c mark=$(wc -l < "$S/dev-server.log"); PRINT_SOURCE=1 node "$S/browser-check.mjs"; code=$?; echo; echo "== Probe: what this browser does with a line feed written through the Clipboard API, and what the application passes"; node "$S/clipboard-probe.mjs"; echo; echo "== What the dev server (next dev, port 3100) logged during this run"; tail -n +$((mark+1)) "$S/dev-server.log"; echo; echo "== Source of the throwaway probe (kept outside the repository)"; cat "$S/clipboard-probe.mjs"; exit $code
+----
+manual browser check of the bibliography workspace
+browser: Chrome/151.0.7922.75 (headless=new), driven over the DevTools protocol
+application: http://localhost:3100 (next dev)   started: 2026-10-06T10:54:56.206Z
+
+== 0. The page as it opens
+   observed document: {"lang":"uk","title":"Перелік посилань за DOI","h1":"Бібліографічні посилання на журнальні статті","h2":["Перелік посилань"]}
+   ok         document language
+   ok         list heading
+   ok         session-only notice is visible
+   ok         empty list message is visible
+   ok         copy-all control is shown
+   ok         copy-all control is disabled for an empty list
+   ok         no message about entries to correct for an empty list
+file:///C:/Users/Legion/AppData/Local/Temp/claude/D--Study-AI-engineering-capstone-capstone-reference-formatter/b9af7e2a-b330-4c23-b327-f117ea79314c/scratchpad/browser-check.mjs:82
+      if (message.error) entry.reject(new Error(`${entry.method}: ${message.error.message}`));
+                                      ^
+
+Error: Page.captureScreenshot: Cannot take screenshot with 0 width.
+    at WebSocket.<anonymous> (file:///C:/Users/Legion/AppData/Local/Temp/claude/D--Study-AI-engineering-capstone-capstone-reference-formatter/b9af7e2a-b330-4c23-b327-f117ea79314c/scratchpad/browser-check.mjs:82:39)
+    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)
+    at WebSocket.dispatchEvent (node:internal/event_target:789:26)
+    at fireEvent (node:internal/deps/undici/undici:14403:14)
+    at #onMessage (node:internal/deps/undici/undici:15726:9)
+    at Object.onMessage (node:internal/deps/undici/undici:15433:76)
+    at websocketMessageReceived (node:internal/deps/undici/undici:14407:15)
+    at node:internal/deps/undici/undici:15135:21
+    at node:internal/deps/undici/undici:14915:11
+    at afterWrite (node:internal/streams/writable:712:5)
+
+Node.js v24.20.0
+
+== Probe: what this browser does with a line feed written through the Clipboard API, and what the application passes
+browser: Chrome/151.0.7922.75 on win32
+1. The browser alone: writeText('a\nb') and readText()
+   control characters read back: [13,10]
+   writeText('a\r\nb') reads back as: [13,10]
+2. The application: the argument it passes to writeText for copy-all, observed by wrapping the function
+   control characters in the argument the application passed: [10] (10 = line feed)
+   control characters in what the clipboard holds afterwards:  [13,10] (13 = carriage return)
+   the two texts are equal once CR LF is read as LF: true
+   lines in the argument: 2 | argument ends with a line break: false
+
+== What the dev server (next dev, port 3100) logged during this run
+ GET / 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET / 200 in 28ms (next.js: 3ms, application-code: 26ms)
+ POST / 200 in 536ms (next.js: 3ms, application-code: 533ms)
+  └─ ƒ resolveDoiAction("10.1038/nature12373") in 525ms app/actions.ts
+ POST / 200 in 274ms (next.js: 3ms, application-code: 271ms)
+  └─ ƒ resolveDoiAction("10.1371/journal.pone.0000308") in 264ms app/actions.ts
+
+== Source of the throwaway probe (kept outside the repository)
+// Throwaway probe: what does this Chrome on this Windows do with a line feed written through the Clipboard API?
+// It does not touch the application's code. It loads the page only to have a secure origin with clipboard permission,
+// then (1) writes a known two-line text itself and reads it back, and (2) observes the argument the application
+// passes to navigator.clipboard.writeText for copy-all, and what the clipboard holds afterwards.
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const APP = "http://localhost:3100";
+const PORT = 9334;
+const OUT = path.dirname(fileURLToPath(import.meta.url));
+const PROFILE = path.join(OUT, "chrome-profile-probe");
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+fs.rmSync(PROFILE, { recursive: true, force: true });
+const chrome = spawn("C:/Program Files/Google/Chrome/Application/chrome.exe", [
+  "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${PROFILE}`, "--no-first-run", "about:blank",
+], { stdio: "ignore" });
+process.on("exit", () => chrome.kill());
+
+let version;
+for (let i = 0; i < 100 && !version; i += 1) {
+  try { version = await (await fetch(`http://127.0.0.1:${PORT}/json/version`)).json(); } catch { await sleep(100); }
+}
+const connect = async (url) => {
+  const ws = new WebSocket(url);
+  await new Promise((r) => ws.addEventListener("open", r, { once: true }));
+  let id = 0; const waiting = new Map();
+  ws.addEventListener("message", (e) => { const m = JSON.parse(e.data); if (m.id) { waiting.get(m.id)(m); waiting.delete(m.id); } });
+  return { send: (method, params = {}) => new Promise((r) => { waiting.set(++id, r); ws.send(JSON.stringify({ id, method, params })); }), close: () => ws.close() };
+};
+const browser = await connect(version.webSocketDebuggerUrl);
+const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+const page = await connect(targets.find((t) => t.type === "page").webSocketDebuggerUrl);
+await page.send("Page.enable");
+await page.send("Runtime.enable");
+await page.send("Emulation.setFocusEmulationEnabled", { enabled: true });
+await browser.send("Browser.grantPermissions", { origin: APP, permissions: ["clipboardReadWrite", "clipboardSanitizedWrite"] });
+const evaluate = async (expression) => (await page.send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result.result.value;
+
+await page.send("Page.navigate", { url: APP });
+await sleep(2500);
+
+const codes = `(t) => [...t].map((c) => c.charCodeAt(0)).filter((n) => n < 32)`;
+console.log(`browser: ${version.Browser} on ${process.platform}`);
+console.log("1. The browser alone: writeText('a\\nb') and readText()");
+console.log("   control characters read back:", JSON.stringify(await evaluate(`(async () => { await navigator.clipboard.writeText("a\\nb"); return (${codes})(await navigator.clipboard.readText()); })()`)));
+console.log("   writeText('a\\r\\nb') reads back as:", JSON.stringify(await evaluate(`(async () => { await navigator.clipboard.writeText("a\\r\\nb"); return (${codes})(await navigator.clipboard.readText()); })()`)));
+
+console.log("2. The application: the argument it passes to writeText for copy-all, observed by wrapping the function");
+await evaluate(`(() => { const real = navigator.clipboard.writeText.bind(navigator.clipboard); window.__args = [];
+  navigator.clipboard.writeText = (text) => { window.__args.push(text); return real(text); }; })()`);
+const add = async (doi, count) => {
+  await evaluate(`(() => { const input = document.querySelector('input[type="text"]');
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set; setter.call(input, ${JSON.stringify(doi)});
+    input.dispatchEvent(new Event("input", { bubbles: true })); input.form.requestSubmit(); })()`);
+  for (let i = 0; i < 300; i += 1) { if ((await evaluate(`document.querySelectorAll('ul[role="list"] > li').length`)) === count) return; await sleep(100); }
+  throw new Error("entry did not appear");
+};
+await add("10.1038/nature12373", 1);
+await add("10.1371/journal.pone.0000308", 2);
+await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Копіювати весь перелік").click()`);
+await sleep(500);
+const passed = await evaluate(`window.__args[0]`);
+const held = await evaluate(`navigator.clipboard.readText()`);
+const control = (t) => [...t].map((c) => c.charCodeAt(0)).filter((n) => n < 32);
+console.log("   control characters in the argument the application passed:", JSON.stringify(control(passed)), "(10 = line feed)");
+console.log("   control characters in what the clipboard holds afterwards: ", JSON.stringify(control(held)), "(13 = carriage return)");
+console.log("   the two texts are equal once CR LF is read as LF:", held.replace(/\r\n/g, "\n") === passed);
+console.log("   lines in the argument:", passed.split("\n").length, "| argument ends with a line break:", /[\r\n]$/.test(passed));
+
+page.close(); browser.close(); chrome.kill();
+await sleep(200);
+process.exit(0);
+----
+# finished: 2026-10-06T10:55:01Z
+# duration_s: 6
+# exit: 1
+# result: RED

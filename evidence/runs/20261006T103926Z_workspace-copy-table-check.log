@@ -1,0 +1,115 @@
+# run: workspace-copy-table-check
+# started: 2026-10-06T10:39:26Z
+# commit: 9c30af74f0f2191e03dadcee7e1e623baed0a6e4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M app/layout.tsx
+#    M app/page.tsx
+#    M lib/dstu/format-journal-article.ts
+#    M openspec/changes/bibliography-workspace/tasks.md
+#   ?? app/_components/
+#   ?? app/actions.test.ts
+#   ?? app/actions.ts
+#   ?? evidence/runs/20261006T102229Z_workspace-spec-check.log
+#   ?? evidence/runs/20261006T102231Z_workspace-baseline.log
+#   ?? evidence/runs/20261006T102656Z_workspace-domain-stubs.log
+#   ?? evidence/runs/20261006T102700Z_workspace-domain-red.log
+#   ?? evidence/runs/20261006T102702Z_workspace-domain-red-hashes.log
+#   ?? evidence/runs/20261006T102806Z_workspace-domain-green.log
+#   ?? evidence/runs/20261006T102816Z_workspace-domain-green-hashes.log
+#   ?? evidence/runs/20261006T103639Z_workspace-ui-stubs.log
+#   ?? evidence/runs/20261006T103643Z_workspace-ui-red.log
+#   ?? evidence/runs/20261006T103646Z_workspace-ui-red-hashes.log
+#   ?? lib/bibliography/
+# node: v24.20.0  pnpm: 11.25.0
+# command: node -e 
+const fs=require("fs");
+const design=fs.readFileSync("openspec/changes/bibliography-workspace/design.md","utf8");
+const code=fs.readFileSync("app/_components/copy.ts","utf8");
+const start=design.indexOf("### Ukrainian copy (HUMAN-APPROVED");
+const rows=design.slice(start).split(/\r?\n/).filter(l=>/^\| \d+ \|/.test(l)).map(l=>l.split("|").map(c=>c.trim())).map(c=>({n:c[1],where:c[2],text:c[3]}));
+let missing=0;
+for(const r of rows){
+  // A row may hold several strings (separated by a middle dot), a placeholder, or an example after a dash.
+  const main=r.text.split(" — for example")[0];
+  const parts=main.split(" · ").flatMap(p=>p.split(/\{[a-z]+\}/)).map(p=>p.trim()).filter(p=>p.length>0);
+  const lost=parts.filter(p=>!code.includes(p));
+  if(lost.length){missing++;console.log("MISSING row "+r.n+" ("+r.where+"): "+JSON.stringify(lost));}
+  else console.log("ok row "+r.n+": "+parts.length+" fragment(s)");
+}
+console.log(rows.length+" rows checked, "+missing+" with a missing fragment");
+process.exit(missing?1:0);
+
+----
+ok row 1: 1 fragment(s)
+ok row 2: 1 fragment(s)
+ok row 3: 1 fragment(s)
+ok row 4: 1 fragment(s)
+ok row 5: 1 fragment(s)
+ok row 6: 1 fragment(s)
+ok row 7: 1 fragment(s)
+ok row 8: 1 fragment(s)
+ok row 9: 1 fragment(s)
+ok row 10: 1 fragment(s)
+ok row 11: 1 fragment(s)
+ok row 12: 1 fragment(s)
+ok row 13: 1 fragment(s)
+ok row 14: 1 fragment(s)
+ok row 15: 1 fragment(s)
+ok row 16: 1 fragment(s)
+ok row 17: 1 fragment(s)
+ok row 18: 1 fragment(s)
+ok row 19: 2 fragment(s)
+ok row 20: 1 fragment(s)
+ok row 21: 1 fragment(s)
+ok row 22: 1 fragment(s)
+ok row 23: 2 fragment(s)
+ok row 25: 1 fragment(s)
+ok row 26: 1 fragment(s)
+ok row 27: 1 fragment(s)
+ok row 28: 1 fragment(s)
+ok row 30: 1 fragment(s)
+ok row 31: 1 fragment(s)
+ok row 32: 1 fragment(s)
+ok row 33: 1 fragment(s)
+ok row 34: 1 fragment(s)
+ok row 35: 1 fragment(s)
+ok row 36: 1 fragment(s)
+ok row 37: 1 fragment(s)
+ok row 38: 1 fragment(s)
+ok row 39: 1 fragment(s)
+ok row 40: 2 fragment(s)
+ok row 41: 1 fragment(s)
+ok row 42: 1 fragment(s)
+ok row 43: 1 fragment(s)
+ok row 44: 1 fragment(s)
+ok row 45: 1 fragment(s)
+ok row 46: 1 fragment(s)
+ok row 47: 1 fragment(s)
+ok row 48: 1 fragment(s)
+ok row 49: 1 fragment(s)
+ok row 50: 1 fragment(s)
+ok row 51: 1 fragment(s)
+ok row 52: 1 fragment(s)
+ok row 53: 1 fragment(s)
+ok row 54: 1 fragment(s)
+ok row 55: 1 fragment(s)
+ok row 56: 1 fragment(s)
+ok row 57: 1 fragment(s)
+ok row 58: 1 fragment(s)
+ok row 59: 1 fragment(s)
+ok row 60: 1 fragment(s)
+ok row 61: 1 fragment(s)
+ok row 62: 1 fragment(s)
+ok row 63: 1 fragment(s)
+ok row 64: 3 fragment(s)
+ok row 65: 1 fragment(s)
+ok row 66: 1 fragment(s)
+ok row 67: 1 fragment(s)
+65 rows checked, 0 with a missing fragment
+----
+# finished: 2026-10-06T10:39:27Z
+# duration_s: 0
+# exit: 0
+# result: GREEN

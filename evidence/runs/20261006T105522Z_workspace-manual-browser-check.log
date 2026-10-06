@@ -1,0 +1,928 @@
+# run: workspace-manual-browser-check
+# started: 2026-10-06T10:55:22Z
+# commit: 9c30af74f0f2191e03dadcee7e1e623baed0a6e4 (master)
+# tree: dirty (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#    M app/layout.tsx
+#    M app/page.tsx
+#    M lib/dstu/format-journal-article.ts
+#    M openspec/changes/bibliography-workspace/design.md
+#    M openspec/changes/bibliography-workspace/tasks.md
+#   ?? app/_components/
+#   ?? app/actions.test.ts
+#   ?? app/actions.ts
+#   ?? evidence/runs/20261006T102229Z_workspace-spec-check.log
+#   ?? evidence/runs/20261006T102231Z_workspace-baseline.log
+#   ?? evidence/runs/20261006T102656Z_workspace-domain-stubs.log
+#   ?? evidence/runs/20261006T102700Z_workspace-domain-red.log
+#   ?? evidence/runs/20261006T102702Z_workspace-domain-red-hashes.log
+#   ?? evidence/runs/20261006T102806Z_workspace-domain-green.log
+#   ?? evidence/runs/20261006T102816Z_workspace-domain-green-hashes.log
+#   ?? evidence/runs/20261006T103639Z_workspace-ui-stubs.log
+#   ?? evidence/runs/20261006T103643Z_workspace-ui-red.log
+#   ?? evidence/runs/20261006T103646Z_workspace-ui-red-hashes.log
+#   ?? evidence/runs/20261006T103926Z_workspace-copy-table-check.log
+#   ?? evidence/runs/20261006T103936Z_workspace-check.log
+#   ?? evidence/runs/20261006T103948Z_workspace-ui-green-hashes.log
+#   ?? evidence/runs/20261006T104021Z_workspace-boundaries.log
+#   ?? evidence/runs/20261006T104032Z_workspace-oracles-untouched.log
+#   ?? evidence/runs/20261006T104034Z_workspace-tooling-untouched.log
+#   ?? evidence/runs/20261006T105455Z_workspace-manual-browser-check.log
+#   ?? lib/bibliography/
+# node: v24.20.0  pnpm: 11.25.0
+# command: bash -c mark=$(wc -l < "$S/dev-server.log"); PRINT_SOURCE=1 node "$S/browser-check.mjs"; code=$?; echo; echo "== Probe: what this browser does with a line feed written through the Clipboard API, and what the application passes"; node "$S/clipboard-probe.mjs"; echo; echo "== What the dev server (next dev, port 3100) logged during this run"; tail -n +$((mark+1)) "$S/dev-server.log"; echo; echo "== Source of the throwaway probe (kept outside the repository)"; cat "$S/clipboard-probe.mjs"; exit $code
+----
+manual browser check of the bibliography workspace
+browser: Chrome/151.0.7922.75 (headless=new), driven over the DevTools protocol
+application: http://localhost:3100 (next dev)   started: 2026-10-06T10:55:23.056Z
+
+== 0. The page as it opens
+   observed document: {"lang":"uk","title":"Перелік посилань за DOI","h1":"Бібліографічні посилання на журнальні статті","h2":["Перелік посилань"]}
+   ok         document language
+   ok         list heading
+   ok         session-only notice is visible
+   ok         empty list message is visible
+   ok         copy-all control is shown
+   ok         copy-all control is disabled for an empty list
+   ok         no message about entries to correct for an empty list
+
+== 1. Add 10.1038/nature12373 through the page, resolved by live Crossref
+   observed just after submitting: {"statuses":["Шукаємо в Crossref…"],"addDisabled":true}
+   ok         one request to the Server Function for this DOI
+   observed entry 1: ["Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373."]
+   ok         entry 1 shows the formatted reference
+   ok         entry 1 shows no other line (no warning, no gap indication)
+   ok         DOI field is cleared after the success
+   ok         no alert is shown
+   observed resolved metadata in the correction: {"fields":{"DOI":{"value":"10.1038/nature12373","readOnly":true},"Назва статті":{"value":"Nanometre-scale thermometry in a living cell","readOnly":false},"Підзаголовок":{"value":"","readOnly":false},"Назва журналу":{"value":"Nature","readOnly":false},"Рік":{"value":"2013","readOnly":false},"Том":{"value":"500","readOnly":false},"Номер випуску":{"value":"7460","readOnly":false},"Сторінки":{"value":"54-58","readOnly":false},"Номер статті":{"value":"","readOnly":false}},"authors":[{"legend":"Автор 1","kind":"Особа","values":["Kucsko","G."]},{"legend":"Автор 2","kind":"Особа","values":["Maurer","P. C."]},{"legend":"Автор 3","kind":"Особа","values":["Yao","N. Y."]},{"legend":"Автор 4","kind":"Особа","values":["Kubo","M."]},{"legend":"Автор 5","kind":"Особа","values":["Noh","H. J."]},{"legend":"Автор 6","kind":"Особа","values":["Lo","P. K."]},{"legend":"Автор 7","kind":"Особа","values":["Park","H."]},{"legend":"Автор 8","kind":"Особа","values":["Lukin","M. D."]}],"alerts":[]}
+   ok         stored pages are shown as stored
+   ok         year shown
+   ok         DOI is shown read-only
+   ok         eight author rows
+   ok         subtitle field is empty
+
+== 2. Duplicate prevention with other accepted spellings of the same DOI
+   observed after submitting "https://doi.org/10.1038/NATURE12373": {"alerts":["Ця публікація вже є в переліку."],"entries":1}
+   ok         approved duplicate message
+   ok         still one entry
+   ok         the entry is unchanged
+   ok         no request to the Server Function
+   observed after submitting "doi: 10.1038/nature12373": {"alerts":["Ця публікація вже є в переліку."],"entries":1}
+   ok         approved duplicate message
+   ok         still one entry
+   ok         the entry is unchanged
+   ok         no request to the Server Function
+   observed after submitting "  10.1038/NATURE12373  ": {"alerts":["Ця публікація вже є в переліку."],"entries":1}
+   ok         approved duplicate message
+   ok         still one entry
+   ok         the entry is unchanged
+   ok         no request to the Server Function
+
+== 2b. Input that is not a DOI is refused in the browser
+   ok         approved invalid-input message
+   ok         typed text stays in the field
+   ok         no request to the Server Function
+
+== 5a. Add a second article, 10.1371/journal.pone.0000308, typed with the doi: prefix
+   observed just after submitting: {"statuses":["Шукаємо в Crossref…"],"addDisabled":true}
+   ok         one request to the Server Function for this DOI
+   observed entry 2: ["Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308."]
+   ok         entry 1 is still first
+   ok         entry 2 is the new one, at the end
+   ok         the earlier message is gone
+   ok         copy-all is enabled with two formatted entries
+
+== 3. Manual correction of entry 1
+   observed after changing the issue to 7461: Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7461. С. 54—58. DOI: 10.1038/nature12373.
+   ok         ordinary scalar field: the reference shows the corrected issue
+   observed after changing the year to 2014: Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2014. Т. 500, № 7461. С. 54—58. DOI: 10.1038/nature12373.
+   ok         year: the reference is recomputed with 2014
+   ok         the year shown afterwards
+   observed after saving the year 21: {"year":"21","alerts":["Рік має складатися з чотирьох цифр, від 1000 до 9999."]}
+   ok         a rejected year keeps the correction open with the approved message
+   ok         the reference is unchanged by the rejected year
+   ok         entry 1 is back to its resolved reference
+
+== 3b / 4a / 6c. A blocking field is emptied
+   observed entry 1: {"lines":["DOI: 10.1038/nature12373","Не вдалося сформувати посилання. Бракує: назва журналу."],"buttons":[{"name":"Редагувати: запис 1","disabled":false},{"name":"Вище: запис 1","disabled":true},{"name":"Нижче: запис 1","disabled":false},{"name":"Вилучити: запис 1","disabled":false}],"correcting":false}
+   ok         entry 1 shows its DOI
+   ok         entry 1 names the blocking field
+   ok         entry 1 shows no partial reference
+   ok         entry 1 offers no copy of its own
+   ok         entry 1 can still be corrected, moved and removed
+   ok         copy-all stays shown
+   ok         copy-all is disabled
+   ok         approved copy-all message with the count 1
+   ok         entry 2 can still be copied
+   ok         restored: entry 1 has its reference again
+   ok         restored: copy-all is enabled
+   ok         restored: the copy-all message is gone
+
+== 4b. Gaps in optional metadata, on entry 2 (the approved four-gap policy)
+   ok         a record with authors, volume, issue and pages shows no indication, although it has no subtitle and no article number
+   ok         issue emptied
+   ok         volume emptied too
+   ok         pages emptied, no article number
+   observed with an article number and no pages: ["Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. e308. DOI: 10.1371/journal.pone.0000308.","Не вказано в метаданих: том, номер випуску."]
+   ok         an article number without pages is no gap
+   ok         the article number is printed bare as the locator
+   ok         all author rows removed in the correction
+   observed entry 2 with all four gaps: ["Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. DOI: 10.1371/journal.pone.0000308.","Не вказано в метаданих: автори, том, номер випуску, сторінки або номер статті."]
+   ok         all four gaps, in the approved order
+   ok         the reference begins with the title and omits what is missing
+   ok         the subtitle is never named
+   ok         gaps do not block copy-all
+
+== 7a. Removal, and adding the removed DOI again
+   ok         entry 2 is gone at once
+   ok         the remaining entry is entry 1, unchanged
+   observed just after submitting: {"statuses":["Шукаємо в Crossref…"],"addDisabled":true}
+   ok         one request to the Server Function for this DOI
+   ok         the DOI is resolved again and stands at the end with its resolved metadata
+
+== 6a. Copy one reference
+   observed page after copy-one: {"statuses":["Скопійовано."],"alerts":[]}
+   ok         the page confirms the copy
+   observed clipboard: Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.
+   ok         clipboard holds exactly the reference of entry 1
+
+== 6b / 5b. Copy all, reorder, copy all again
+   observed clipboard: Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.
+Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.
+   observed control characters in the clipboard: [13,10]
+   ok         clipboard: the two references in list order, once CR LF is read as LF
+   UNEXPECTED clipboard: reference 1, one line feed, reference 2 -- expected "Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.\nPiwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.", observed "Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.\r\nPiwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308."
+   observed visible order after moving entry 2 up: ["Piwowar, Heather A.; Day, Roger S.; Frid","Nanometre-scale thermometry in a living "]
+   ok         the visible order changed: former entry 2 is first
+   ok         former entry 1 is second
+   ok         move up is disabled for the first entry
+   ok         move down is disabled for the last entry
+   UNEXPECTED copy-all follows the new order -- expected "Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.\nNanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.", observed "Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.\r\nNanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373."
+
+== 6d. A warning does not block copying
+   observed entry 1 with a capitalised subtitle: ["Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate : A Study // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.","Підзаголовок починається з великої літери. Програма не змінює регістр — перевірте його."]
+   ok         the subtitle-capitalisation warning is shown at the entry
+   ok         the subtitle is printed as typed
+   ok         copy-all is enabled
+   UNEXPECTED clipboard holds both references, the first with its subtitle, and no warning text -- expected "Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate : A Study // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.\nNanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373.", observed "Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate : A Study // PLoS ONE. 2007. Т. 2, № 3. С. e308. DOI: 10.1371/journal.pone.0000308.\r\nNanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. Т. 500, № 7460. С. 54—58. DOI: 10.1038/nature12373."
+
+== 7b. Removal
+   observed after removing entry 1: [{"line":"Nanometre-scale thermometry in a living ","buttons":["Копіювати: запис 1","Редагувати: запис 1","Вище: запис 1","Нижче: запис 1","Вилучити: запис 1"]}]
+   ok         one entry is left, at once and without a confirmation
+   ok         it is the Nature article, unchanged
+   ok         its controls are renumbered to запис 1
+   ok         copy-all is enabled
+
+== 8. Session behaviour
+   ok         session-only notice is visible with an entry in the list
+   ok         after one reload the list is empty, as the notice says
+   ok         the empty list message is shown again
+
+== 9. Server boundary and what reached the browser
+   observed hosts the browser sent requests to: ["localhost:3100"]
+   ok         the browser talked to the application only
+   observed requests to the Server Function: [{"method":"POST","url":"http://localhost:3100/","status":200,"body":"[\"10.1038/nature12373\"]"},{"method":"POST","url":"http://localhost:3100/","status":200,"body":"[\"10.1371/journal.pone.0000308\"]"},{"method":"POST","url":"http://localhost:3100/","status":200,"body":"[\"10.1371/journal.pone.0000308\"]"}]
+   ok         three lookups were requested: two DOIs and one DOI again after its removal
+   ok         every one was answered 200
+   ok         each carried one canonical DOI as its argument, in the order submitted
+   observed response bodies scanned: {"scanned":18,"of":49}
+   observed mentions of the contact variable, a mailto address or the Crossref address: []
+   ok         nothing sent to the browser names the contact variable or a contact address
+   ok         nothing sent to the browser holds the Crossref address: the lookup code is not in client code
+   observed console errors and exceptions in the page: []
+   ok         no console error or exception
+
+== Result
+   finished: 2026-10-06T10:55:29.401Z
+   checks: 97, unexpected: 3
+   FAIL
+
+== Source of the throwaway driver (kept outside the repository)
+// Throwaway driver for task 4.4 of the change bibliography-workspace: drives a real Chrome through the primary flow
+// of the workspace served by `next dev`, against live Crossref. It lives outside the repository and uses no package:
+// Chrome is started with a throwaway profile and driven over the DevTools protocol with Node's own WebSocket.
+// It clicks and types through real input events. Every observation printed is read back from the page, the
+// clipboard or the network; nothing is asserted that was not observed.
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+
+const APP = process.env.APP_URL ?? "http://localhost:3100";
+const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+const PORT = 9333;
+const OUT = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
+const PROFILE = path.join(OUT, "chrome-profile");
+const SHOTS = path.join(OUT, "shots");
+const HEADED = process.env.HEADED === "1";
+
+const TE = "\u0422", ES = "\u0421", NUMERO = "\u2116", EM = "\u2014";
+const DOI1 = "10.1038/nature12373";
+const DOI2 = "10.1371/journal.pone.0000308";
+// Written by hand from the Crossref records of these DOIs as recorded in the repository on 2026-10-05.
+const REF1 = `Nanometre-scale thermometry in a living cell / G. Kucsko, P. C. Maurer, N. Y. Yao, M. Kubo, H. J. Noh, P. K. Lo, H. Park, M. D. Lukin // Nature. 2013. ${TE}. 500, ${NUMERO} 7460. ${ES}. 54${EM}58. DOI: 10.1038/nature12373.`;
+const REF2 = `Piwowar, Heather A.; Day, Roger S.; Fridsma, Douglas B. Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. ${TE}. 2, ${NUMERO} 3. ${ES}. e308. DOI: 10.1371/journal.pone.0000308.`;
+
+const UI = {
+  add: "Додати",
+  doiLabel: "DOI статті",
+  duplicate: "Ця публікація вже є в переліку.",
+  invalidInput: "Це не схоже на DOI. Введіть один DOI у вигляді 10.xxxx/\u2026, doi:10.xxxx/\u2026 або https://doi.org/10.xxxx/\u2026",
+  sessionNotice: "Перелік зберігається лише до перезавантаження сторінки.",
+  emptyList: "Перелік порожній. Додайте першу статтю за DOI.",
+  copyAll: "Копіювати весь перелік",
+  copied: "Скопійовано.",
+  copyFailed: "Не вдалося скопіювати. Виділіть текст і скопіюйте його вручну.",
+  blocked: (n) => `Щоб скопіювати весь перелік, виправте або вилучіть записи, для яких не сформовано посилання: ${n}.`,
+  cannot: (f) => `Не вдалося сформувати посилання. Бракує: ${f}.`,
+  gaps: (f) => `Не вказано в метаданих: ${f}.`,
+  invalidYear: "Рік має складатися з чотирьох цифр, від 1000 до 9999.",
+  subtitleWarning: "Підзаголовок починається з великої літери. Програма не змінює регістр \u2014 перевірте його.",
+  copyOne: (n) => `Копіювати: запис ${n}`,
+  correct: (n) => `Редагувати: запис ${n}`,
+  remove: (n) => `Вилучити: запис ${n}`,
+  up: (n) => `Вище: запис ${n}`,
+  down: (n) => `Нижче: запис ${n}`,
+  removeAuthor: (n) => `Вилучити: автор ${n}`,
+  save: "Зберегти",
+  cancel: "Скасувати",
+};
+
+// ---------------------------------------------------------------- output
+let failures = 0;
+let checks = 0;
+const say = (line = "") => console.log(line);
+const step = (title) => say(`\n== ${title}`);
+const seen = (what, value) => say(`   observed ${what}: ${typeof value === "string" ? value : JSON.stringify(value)}`);
+const check = (what, ok, detail = "") => {
+  checks += 1;
+  if (!ok) failures += 1;
+  say(`   ${ok ? "ok        " : "UNEXPECTED"} ${what}${detail ? ` -- ${detail}` : ""}`);
+  return ok;
+};
+const same = (what, actual, expected) =>
+  check(what, actual === expected, actual === expected ? "" : `expected ${JSON.stringify(expected)}, observed ${JSON.stringify(actual)}`);
+
+// ---------------------------------------------------------------- DevTools protocol
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function connect(url) {
+  const socket = new WebSocket(url);
+  await new Promise((resolve, reject) => {
+    socket.addEventListener("open", resolve, { once: true });
+    socket.addEventListener("error", () => reject(new Error(`cannot connect to ${url}`)), { once: true });
+  });
+  let next = 0;
+  const waiting = new Map();
+  const listeners = [];
+  socket.addEventListener("message", (event) => {
+    const message = JSON.parse(event.data);
+    if (message.id !== undefined) {
+      const entry = waiting.get(message.id);
+      waiting.delete(message.id);
+      if (message.error) entry.reject(new Error(`${entry.method}: ${message.error.message}`));
+      else entry.resolve(message.result);
+    } else for (const listener of listeners) listener(message);
+  });
+  return {
+    send: (method, params = {}) =>
+      new Promise((resolve, reject) => {
+        const id = ++next;
+        waiting.set(id, { resolve, reject, method });
+        socket.send(JSON.stringify({ id, method, params }));
+      }),
+    on: (listener) => listeners.push(listener),
+    close: () => socket.close(),
+  };
+}
+
+fs.rmSync(PROFILE, { recursive: true, force: true });
+fs.mkdirSync(SHOTS, { recursive: true });
+const chrome = spawn(
+  CHROME,
+  [
+    ...(HEADED ? [] : ["--headless=new"]),
+    `--remote-debugging-port=${PORT}`,
+    `--user-data-dir=${PROFILE}`,
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--window-size=1280,1600",
+    "about:blank",
+  ],
+  { stdio: "ignore" },
+);
+
+let version;
+for (let attempt = 0; attempt < 100 && !version; attempt += 1) {
+  try {
+    version = await (await fetch(`http://127.0.0.1:${PORT}/json/version`)).json();
+  } catch {
+    await sleep(100);
+  }
+}
+process.on("exit", () => chrome.kill());
+if (!version) throw new Error("Chrome did not start");
+
+const browser = await connect(version.webSocketDebuggerUrl);
+const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+const page = await connect(targets.find((target) => target.type === "page").webSocketDebuggerUrl);
+
+// ---------------------------------------------------------------- what the browser does on the network
+const requests = new Map(); // requestId -> { method, url, type, nextAction, status }
+const consoleProblems = [];
+page.on((message) => {
+  const p = message.params;
+  if (message.method === "Network.requestWillBeSent") {
+    const headers = Object.fromEntries(Object.entries(p.request.headers).map(([k, v]) => [k.toLowerCase(), v]));
+    requests.set(p.requestId, {
+      method: p.request.method,
+      url: p.request.url,
+      type: p.type,
+      nextAction: headers["next-action"] !== undefined,
+      postData: p.request.postData,
+    });
+  } else if (message.method === "Network.responseReceived") {
+    const request = requests.get(p.requestId);
+    if (request) request.status = p.response.status;
+  } else if (message.method === "Network.loadingFinished") {
+    const request = requests.get(p.requestId);
+    if (request) request.finished = true;
+  } else if (message.method === "Runtime.exceptionThrown") {
+    consoleProblems.push(`exception: ${p.exceptionDetails.text} ${p.exceptionDetails.exception?.description ?? ""}`);
+  } else if (message.method === "Runtime.consoleAPICalled" && p.type === "error") {
+    consoleProblems.push(`console.error: ${p.args.map((a) => a.value ?? a.description ?? "").join(" ")}`);
+  }
+});
+
+await page.send("Page.enable");
+await page.send("Runtime.enable");
+await page.send("Network.enable", { maxPostDataSize: 65536 });
+await page.send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 1600, deviceScaleFactor: 1, mobile: false });
+await page.send("Emulation.setFocusEmulationEnabled", { enabled: true });
+await browser.send("Browser.grantPermissions", {
+  origin: APP,
+  permissions: ["clipboardReadWrite", "clipboardSanitizedWrite"],
+});
+
+// Helpers that live in the page: they only find and read; every action goes through real input events.
+await page.send("Page.addScriptToEvaluateOnNewDocument", {
+  source: `window.__t = {
+    text: (el) => (el.textContent || "").replace(/\\s+/g, " ").trim(),
+    button(name) {
+      return [...document.querySelectorAll("button")].find(
+        (b) => (b.getAttribute("aria-label") || this.text(b)) === name,
+      );
+    },
+    field(label) {
+      const scope = document.querySelector("form[aria-labelledby]") || document;
+      const found = [...scope.querySelectorAll("label")].find((l) => this.text(l) === label)
+        || [...document.querySelectorAll("label")].find((l) => this.text(l) === label);
+      return found ? document.getElementById(found.htmlFor) : null;
+    },
+    entries() {
+      const list = document.querySelector('ul[role="list"]');
+      if (!list) return [];
+      return [...list.children].map((li) => {
+        const form = li.querySelector("form");
+        const own = (el) => !form || !form.contains(el);
+        return {
+          lines: [...li.querySelectorAll("p")].filter(own).map((p) => this.text(p)),
+          buttons: [...li.querySelectorAll("button")].filter(own).map((b) => ({
+            name: b.getAttribute("aria-label") || this.text(b), disabled: b.disabled,
+          })),
+          correcting: Boolean(form),
+        };
+      });
+    },
+    page() {
+      const copyAll = this.button("${UI.copyAll}");
+      return {
+        lang: document.documentElement.lang,
+        title: document.title,
+        h1: this.text(document.querySelector("h1") || document.body),
+        h2: [...document.querySelectorAll("h2")].map((h) => this.text(h)),
+        alerts: [...document.querySelectorAll('[role="alert"]')].map((a) => this.text(a)),
+        statuses: [...document.querySelectorAll('[role="status"]')].map((a) => this.text(a)),
+        doiField: (this.field("${UI.doiLabel}") || {}).value,
+        addDisabled: (this.button("${UI.add}") || {}).disabled,
+        copyAllShown: Boolean(copyAll),
+        copyAllDisabled: copyAll ? copyAll.disabled : null,
+        body: this.text(document.body),
+      };
+    },
+    form() {
+      const form = document.querySelector("form[aria-labelledby]");
+      if (!form) return null;
+      const fields = {};
+      for (const label of form.querySelectorAll("label")) {
+        const input = document.getElementById(label.htmlFor);
+        if (input && input.tagName === "INPUT" && !input.closest("fieldset fieldset")) {
+          fields[this.text(label)] = { value: input.value, readOnly: input.readOnly };
+        }
+      }
+      const authors = [...form.querySelectorAll("fieldset fieldset")].map((row) => ({
+        legend: this.text(row.querySelector("legend")),
+        kind: this.text(row.querySelector("select").selectedOptions[0]),
+        values: [...row.querySelectorAll("input")].map((i) => i.value),
+      }));
+      return { fields, authors, alerts: [...form.querySelectorAll('[role="alert"]')].map((a) => this.text(a)) };
+    },
+  };`,
+});
+
+const evaluate = async (expression) => {
+  const { result, exceptionDetails } = await page.send("Runtime.evaluate", {
+    expression,
+    returnByValue: true,
+    awaitPromise: true,
+  });
+  if (exceptionDetails) throw new Error(`page: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`);
+  return result.value;
+};
+
+const entries = () => evaluate("window.__t.entries()");
+const pageState = () => evaluate("window.__t.page()");
+const formState = () => evaluate("window.__t.form()");
+const clipboard = () => evaluate("navigator.clipboard.readText().catch((e) => 'CLIPBOARD READ FAILED: ' + e.name)");
+
+async function until(what, read, accept, timeout = 20000) {
+  const started = Date.now();
+  let last;
+  while (Date.now() - started < timeout) {
+    last = await read();
+    if (accept(last)) return last;
+    await sleep(100);
+  }
+  check(`waited for ${what}`, false, `not seen within ${timeout} ms; last: ${JSON.stringify(last)?.slice(0, 300)}`);
+  return last;
+}
+
+// The centre of an element after it is scrolled into view, or null when there is none.
+const locate = (finder) =>
+  evaluate(`(() => { const el = ${finder}; if (!el) return null; el.scrollIntoView({ block: "center" });
+    const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, disabled: Boolean(el.disabled) }; })()`);
+
+async function clickAt(point) {
+  await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: point.x, y: point.y });
+  await page.send("Input.dispatchMouseEvent", { type: "mousePressed", x: point.x, y: point.y, button: "left", clickCount: 1 });
+  await page.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: point.x, y: point.y, button: "left", clickCount: 1 });
+}
+
+async function press(name) {
+  const point = await locate(`window.__t.button(${JSON.stringify(name)})`);
+  if (!point) return check(`control «${name}» exists`, false);
+  await clickAt(point);
+  return true;
+}
+
+const key = async (keyName, code, virtualKey, extra = {}) => {
+  await page.send("Input.dispatchKeyEvent", { type: "keyDown", key: keyName, code, windowsVirtualKeyCode: virtualKey, ...extra });
+  await page.send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code, windowsVirtualKeyCode: virtualKey, ...extra });
+};
+
+// Clicks into a field, selects what it holds and types over it; an empty text empties the field.
+async function type(label, text) {
+  const point = await locate(`window.__t.field(${JSON.stringify(label)})`);
+  if (!point) return check(`field «${label}» exists`, false);
+  await clickAt(point);
+  await key("a", "KeyA", 65, { modifiers: 2, commands: ["selectAll"] });
+  if (text === "") await key("Backspace", "Backspace", 8);
+  else await page.send("Input.insertText", { text });
+  return true;
+}
+
+let shot = 0;
+// A screenshot is a convenience for the person running the check and is kept outside the repository; a failure to
+// take one is reported and does not end the check.
+async function screenshot(name) {
+  try {
+    const { data } = await page.send("Page.captureScreenshot", { format: "png" });
+    const file = path.join(SHOTS, `${String(++shot).padStart(2, "0")}-${name}.png`);
+    fs.writeFileSync(file, Buffer.from(data, "base64"));
+  } catch (error) {
+    say(`   (screenshot «${name}» was not taken: ${error.message})`);
+  }
+}
+
+const actionPosts = () => [...requests.values()].filter((r) => r.method === "POST" && r.nextAction);
+
+async function submitDoi(text) {
+  await type(UI.doiLabel, text);
+  await press(UI.add);
+}
+
+async function addAndWait(text, count) {
+  const before = actionPosts().length;
+  await submitDoi(text);
+  const pending = await pageState();
+  seen("just after submitting", { statuses: pending.statuses, addDisabled: pending.addDisabled });
+  await until(`entry ${count}`, entries, (list) => list.length === count, 30000);
+  same("one request to the Server Function for this DOI", actionPosts().length, before + 1);
+}
+
+const openCorrection = async (position) => {
+  await press(UI.correct(position));
+  return until("the correction form", formState, (form) => form !== null);
+};
+const save = async () => {
+  await press(UI.save);
+  await sleep(150);
+};
+const reference = async (position) => (await entries())[position - 1]?.lines[0];
+const hasButton = (entry, name) => entry.buttons.some((b) => b.name === name);
+const isDisabled = (entry, name) => entry.buttons.find((b) => b.name === name)?.disabled;
+
+// ---------------------------------------------------------------- the check
+say(`manual browser check of the bibliography workspace`);
+say(`browser: ${version.Browser} (${HEADED ? "headed" : "headless=new"}), driven over the DevTools protocol`);
+say(`application: ${APP} (next dev)   started: ${new Date().toISOString()}`);
+
+step("0. The page as it opens");
+await page.send("Page.navigate", { url: APP });
+await until("the page", pageState, (state) => state && state.h1.length > 0);
+let state = await pageState();
+seen("document", { lang: state.lang, title: state.title, h1: state.h1, h2: state.h2 });
+same("document language", state.lang, "uk");
+same("list heading", state.h2[0], "Перелік посилань");
+check("session-only notice is visible", state.body.includes(UI.sessionNotice));
+check("empty list message is visible", state.body.includes(UI.emptyList));
+same("copy-all control is shown", state.copyAllShown, true);
+same("copy-all control is disabled for an empty list", state.copyAllDisabled, true);
+check("no message about entries to correct for an empty list", !state.body.includes("Щоб скопіювати весь перелік"));
+await screenshot("empty");
+
+step(`1. Add ${DOI1} through the page, resolved by live Crossref`);
+await addAndWait(DOI1, 1);
+let list = await entries();
+seen("entry 1", list[0].lines);
+same("entry 1 shows the formatted reference", list[0].lines[0], REF1);
+same("entry 1 shows no other line (no warning, no gap indication)", list[0].lines.length, 1);
+state = await pageState();
+same("DOI field is cleared after the success", state.doiField, "");
+same("no alert is shown", state.alerts.length, 0);
+let form = await openCorrection(1);
+seen("resolved metadata in the correction", form);
+same("stored pages are shown as stored", form.fields["Сторінки"]?.value, "54-58");
+same("year shown", form.fields["Рік"]?.value, "2013");
+same("DOI is shown read-only", JSON.stringify(form.fields["DOI"]), JSON.stringify({ value: DOI1, readOnly: true }));
+same("eight author rows", form.authors.length, 8);
+same("subtitle field is empty", form.fields["Підзаголовок"]?.value, "");
+await press(UI.cancel);
+await screenshot("one-entry");
+
+step("2. Duplicate prevention with other accepted spellings of the same DOI");
+for (const spelling of [`https://doi.org/10.1038/NATURE12373`, `doi: ${DOI1}`, `  ${DOI1.toUpperCase()}  `]) {
+  const before = actionPosts().length;
+  await submitDoi(spelling);
+  await sleep(300);
+  state = await pageState();
+  list = await entries();
+  seen(`after submitting ${JSON.stringify(spelling)}`, { alerts: state.alerts, entries: list.length });
+  same("approved duplicate message", state.alerts[0], UI.duplicate);
+  same("still one entry", list.length, 1);
+  same("the entry is unchanged", list[0].lines[0], REF1);
+  same("no request to the Server Function", actionPosts().length, before);
+}
+
+step("2b. Input that is not a DOI is refused in the browser");
+{
+  const before = actionPosts().length;
+  await submitDoi("nature thermometry 2013");
+  await sleep(300);
+  state = await pageState();
+  same("approved invalid-input message", state.alerts[0], UI.invalidInput);
+  same("typed text stays in the field", state.doiField, "nature thermometry 2013");
+  same("no request to the Server Function", actionPosts().length, before);
+}
+
+step(`5a. Add a second article, ${DOI2}, typed with the doi: prefix`);
+await addAndWait(`doi:${DOI2}`, 2);
+list = await entries();
+seen("entry 2", list[1].lines);
+same("entry 1 is still first", list[0].lines[0], REF1);
+same("entry 2 is the new one, at the end", list[1].lines[0], REF2);
+state = await pageState();
+same("the earlier message is gone", state.alerts.length, 0);
+same("copy-all is enabled with two formatted entries", state.copyAllDisabled, false);
+
+step("3. Manual correction of entry 1");
+await openCorrection(1);
+await type("Номер випуску", "7461");
+await save();
+seen("after changing the issue to 7461", await reference(1));
+check("ordinary scalar field: the reference shows the corrected issue", (await reference(1)).includes(`. ${TE}. 500, ${NUMERO} 7461. `));
+
+await openCorrection(1);
+await type("Рік", "2014");
+await save();
+seen("after changing the year to 2014", await reference(1));
+check("year: the reference is recomputed with 2014", (await reference(1)).includes(" // Nature. 2014. "));
+form = await openCorrection(1);
+same("the year shown afterwards", form.fields["Рік"]?.value, "2014");
+
+await type("Рік", "21");
+await save();
+form = await formState();
+seen("after saving the year 21", form && { year: form.fields["Рік"]?.value, alerts: form.alerts });
+check("a rejected year keeps the correction open with the approved message", form !== null && form.alerts[0] === UI.invalidYear);
+check("the reference is unchanged by the rejected year", (await reference(1)).includes(" // Nature. 2014. "));
+await type("Рік", "2013");
+await type("Номер випуску", "7460");
+await save();
+same("entry 1 is back to its resolved reference", await reference(1), REF1);
+
+step("3b / 4a / 6c. A blocking field is emptied");
+await openCorrection(1);
+await type("Назва журналу", "");
+await save();
+list = await entries();
+state = await pageState();
+seen("entry 1", list[0]);
+same("entry 1 shows its DOI", list[0].lines[0], `DOI: ${DOI1}`);
+same("entry 1 names the blocking field", list[0].lines[1], UI.cannot("назва журналу"));
+check("entry 1 shows no partial reference", !list[0].lines.join(" ").includes("Nanometre") && !list[0].lines.join(" ").includes(" // "));
+check("entry 1 offers no copy of its own", !hasButton(list[0], UI.copyOne(1)));
+check("entry 1 can still be corrected, moved and removed", hasButton(list[0], UI.correct(1)) && hasButton(list[0], UI.remove(1)) && isDisabled(list[0], UI.down(1)) === false);
+same("copy-all stays shown", state.copyAllShown, true);
+same("copy-all is disabled", state.copyAllDisabled, true);
+check("approved copy-all message with the count 1", state.body.includes(UI.blocked(1)));
+check("entry 2 can still be copied", hasButton(list[1], UI.copyOne(2)));
+await screenshot("blocked");
+
+await openCorrection(1);
+await type("Назва журналу", "Nature");
+await save();
+state = await pageState();
+same("restored: entry 1 has its reference again", await reference(1), REF1);
+same("restored: copy-all is enabled", state.copyAllDisabled, false);
+check("restored: the copy-all message is gone", !state.body.includes("Щоб скопіювати весь перелік"));
+
+step("4b. Gaps in optional metadata, on entry 2 (the approved four-gap policy)");
+list = await entries();
+same("a record with authors, volume, issue and pages shows no indication, although it has no subtitle and no article number", list[1].lines.length, 1);
+await openCorrection(2);
+await type("Номер випуску", "");
+await save();
+same("issue emptied", (await entries())[1].lines[1], UI.gaps("номер випуску"));
+await openCorrection(2);
+await type("Том", "");
+await save();
+same("volume emptied too", (await entries())[1].lines[1], UI.gaps("том, номер випуску"));
+await openCorrection(2);
+await type("Сторінки", "");
+await save();
+same("pages emptied, no article number", (await entries())[1].lines[1], UI.gaps("том, номер випуску, сторінки або номер статті"));
+await openCorrection(2);
+await type("Номер статті", "e308");
+await save();
+list = await entries();
+seen("with an article number and no pages", list[1].lines);
+same("an article number without pages is no gap", list[1].lines[1], UI.gaps("том, номер випуску"));
+check("the article number is printed bare as the locator", list[1].lines[0].includes(" // PLoS ONE. 2007. e308. DOI: "));
+await openCorrection(2);
+await type("Номер статті", "");
+for (let guard = 0; guard < 10 && (await locate(`window.__t.button(${JSON.stringify(UI.removeAuthor(1))})`)); guard += 1) {
+  await press(UI.removeAuthor(1));
+}
+form = await formState();
+same("all author rows removed in the correction", form.authors.length, 0);
+await save();
+list = await entries();
+seen("entry 2 with all four gaps", list[1].lines);
+same("all four gaps, in the approved order", list[1].lines[1], UI.gaps("автори, том, номер випуску, сторінки або номер статті"));
+same("the reference begins with the title and omits what is missing", list[1].lines[0], `Sharing Detailed Research Data Is Associated with Increased Citation Rate // PLoS ONE. 2007. DOI: ${DOI2}.`);
+check("the subtitle is never named", !list.flatMap((e) => e.lines).join(" ").toLowerCase().includes("підзаголовок"));
+check("gaps do not block copy-all", (await pageState()).copyAllDisabled === false);
+await screenshot("gaps");
+
+step("7a. Removal, and adding the removed DOI again");
+await press(UI.remove(2));
+list = await entries();
+same("entry 2 is gone at once", list.length, 1);
+same("the remaining entry is entry 1, unchanged", list[0].lines[0], REF1);
+await addAndWait(DOI2, 2);
+same("the DOI is resolved again and stands at the end with its resolved metadata", await reference(2), REF2);
+
+step("6a. Copy one reference");
+await press(UI.copyOne(1));
+state = await until("the copy confirmation", pageState, (s) => s.statuses.includes(UI.copied) || s.alerts.includes(UI.copyFailed));
+seen("page after copy-one", { statuses: state.statuses, alerts: state.alerts });
+check("the page confirms the copy", state.statuses.includes(UI.copied));
+let clip = await clipboard();
+seen("clipboard", clip);
+same("clipboard holds exactly the reference of entry 1", clip, REF1);
+
+step("6b / 5b. Copy all, reorder, copy all again");
+await press(UI.copyAll);
+await until("the copy confirmation", pageState, (s) => s.statuses.includes(UI.copied));
+clip = await clipboard();
+seen("clipboard", clip);
+// Observation only: which control characters separate the lines (10 = line feed, 13 = carriage return).
+seen("control characters in the clipboard", [...clip].map((c) => c.charCodeAt(0)).filter((n) => n < 32));
+same("clipboard: the two references in list order, once CR LF is read as LF", clip.replace(/\r\n/g, "\n"), `${REF1}\n${REF2}`);
+same("clipboard: reference 1, one line feed, reference 2", clip, `${REF1}\n${REF2}`);
+await press(UI.up(2));
+list = await entries();
+seen("visible order after moving entry 2 up", list.map((e) => e.lines[0].slice(0, 40)));
+same("the visible order changed: former entry 2 is first", list[0].lines[0], REF2);
+same("former entry 1 is second", list[1].lines[0], REF1);
+same("move up is disabled for the first entry", isDisabled(list[0], UI.up(1)), true);
+same("move down is disabled for the last entry", isDisabled(list[1], UI.down(2)), true);
+await press(UI.copyAll);
+await until("the copy confirmation", pageState, (s) => s.statuses.includes(UI.copied));
+clip = await clipboard();
+same("copy-all follows the new order", clip, `${REF2}\n${REF1}`);
+
+step("6d. A warning does not block copying");
+await openCorrection(1);
+await type("Підзаголовок", "A Study");
+await save();
+list = await entries();
+state = await pageState();
+seen("entry 1 with a capitalised subtitle", list[0].lines);
+same("the subtitle-capitalisation warning is shown at the entry", list[0].lines[1], UI.subtitleWarning);
+check("the subtitle is printed as typed", list[0].lines[0].includes("Increased Citation Rate : A Study // PLoS ONE."));
+same("copy-all is enabled", state.copyAllDisabled, false);
+await press(UI.copyAll);
+await until("the copy confirmation", pageState, (s) => s.statuses.includes(UI.copied));
+clip = await clipboard();
+same("clipboard holds both references, the first with its subtitle, and no warning text", clip, `${list[0].lines[0]}\n${REF1}`);
+await screenshot("two-entries-reordered");
+
+step("7b. Removal");
+await press(UI.remove(1));
+list = await entries();
+state = await pageState();
+seen("after removing entry 1", list.map((e) => ({ line: e.lines[0].slice(0, 40), buttons: e.buttons.map((b) => b.name) })));
+same("one entry is left, at once and without a confirmation", list.length, 1);
+same("it is the Nature article, unchanged", list[0].lines[0], REF1);
+check("its controls are renumbered to запис 1", hasButton(list[0], UI.remove(1)) && hasButton(list[0], UI.copyOne(1)));
+same("copy-all is enabled", state.copyAllDisabled, false);
+
+step("8. Session behaviour");
+check("session-only notice is visible with an entry in the list", state.body.includes(UI.sessionNotice));
+await page.send("Page.reload");
+await sleep(500);
+await until("the reloaded page", pageState, (s) => s && s.h1.length > 0);
+list = await entries();
+state = await pageState();
+same("after one reload the list is empty, as the notice says", list.length, 0);
+check("the empty list message is shown again", state.body.includes(UI.emptyList));
+
+step("9. Server boundary and what reached the browser");
+const all = [...requests.values()];
+const hosts = [...new Set(all.map((r) => { try { return new URL(r.url).host; } catch { return r.url.slice(0, 30); } }))];
+seen("hosts the browser sent requests to", hosts);
+same("the browser talked to the application only", JSON.stringify(hosts.filter((h) => h !== new URL(APP).host && h !== "")), "[]");
+const posts = actionPosts();
+seen("requests to the Server Function", posts.map((r) => ({ method: r.method, url: r.url, status: r.status, body: r.postData })));
+same("three lookups were requested: two DOIs and one DOI again after its removal", posts.length, 3);
+check("every one was answered 200", posts.every((r) => r.status === 200));
+check("each carried one canonical DOI as its argument, in the order submitted", posts.length === 3 && [DOI1, DOI2, DOI2].every((doi, i) => posts[i].postData === JSON.stringify([doi])));
+
+let scanned = 0;
+const hits = [];
+for (const [requestId, request] of requests) {
+  if (!request.finished) continue;
+  try {
+    const { body, base64Encoded } = await page.send("Network.getResponseBody", { requestId });
+    const text = base64Encoded ? Buffer.from(body, "base64").toString("latin1") : body;
+    scanned += 1;
+    for (const needle of ["CROSSREF_CONTACT_EMAIL", "mailto:", "api.crossref.org"]) {
+      if (text.includes(needle)) hits.push(`${needle} in ${request.url}`);
+    }
+  } catch {
+    // The body of this response is no longer kept by the browser.
+  }
+}
+seen("response bodies scanned", { scanned, of: all.length });
+seen("mentions of the contact variable, a mailto address or the Crossref address", hits);
+check("nothing sent to the browser names the contact variable or a contact address", !hits.some((h) => h.startsWith("CROSSREF_CONTACT_EMAIL") || h.startsWith("mailto:")));
+check("nothing sent to the browser holds the Crossref address: the lookup code is not in client code", !hits.some((h) => h.startsWith("api.crossref.org")));
+seen("console errors and exceptions in the page", consoleProblems);
+same("no console error or exception", consoleProblems.length, 0);
+
+say(`\n== Result`);
+say(`   finished: ${new Date().toISOString()}`);
+say(`   checks: ${checks}, unexpected: ${failures}`);
+say(`   ${failures === 0 ? "PASS" : "FAIL"}`);
+
+page.close();
+browser.close();
+chrome.kill();
+await sleep(300);
+
+if (process.env.PRINT_SOURCE === "1") {
+  say(`\n== Source of the throwaway driver (kept outside the repository)`);
+  say(fs.readFileSync(new URL(import.meta.url), "utf8"));
+}
+process.exit(failures === 0 ? 0 : 1);
+
+
+== Probe: what this browser does with a line feed written through the Clipboard API, and what the application passes
+browser: Chrome/151.0.7922.75 on win32
+1. The browser alone: writeText('a\nb') and readText()
+   control characters read back: [13,10]
+   writeText('a\r\nb') reads back as: [13,10]
+2. The application: the argument it passes to writeText for copy-all, observed by wrapping the function
+   control characters in the argument the application passed: [10] (10 = line feed)
+   control characters in what the clipboard holds afterwards:  [13,10] (13 = carriage return)
+   the two texts are equal once CR LF is read as LF: true
+   lines in the argument: 2 | argument ends with a line break: false
+
+== What the dev server (next dev, port 3100) logged during this run
+ GET / 200 in 22ms (next.js: 2ms, application-code: 20ms)
+ POST / 200 in 456ms (next.js: 2ms, application-code: 454ms)
+  └─ ƒ resolveDoiAction("10.1038/nature12373") in 449ms app/actions.ts
+ POST / 200 in 240ms (next.js: 3ms, application-code: 237ms)
+  └─ ƒ resolveDoiAction("10.1371/journal.pone.0000308") in 230ms app/actions.ts
+ POST / 200 in 156ms (next.js: 3ms, application-code: 153ms)
+  └─ ƒ resolveDoiAction("10.1371/journal.pone.0000308") in 145ms app/actions.ts
+ GET / 200 in 25ms (next.js: 1.9ms, application-code: 24ms)
+ GET / 200 in 21ms (next.js: 1.8ms, application-code: 19ms)
+ POST / 200 in 374ms (next.js: 3ms, application-code: 370ms)
+  └─ ƒ resolveDoiAction("10.1038/nature12373") in 362ms app/actions.ts
+ POST / 200 in 138ms (next.js: 1.7ms, application-code: 137ms)
+  └─ ƒ resolveDoiAction("10.1371/journal.pone.0000308") in 130ms app/actions.ts
+
+== Source of the throwaway probe (kept outside the repository)
+// Throwaway probe: what does this Chrome on this Windows do with a line feed written through the Clipboard API?
+// It does not touch the application's code. It loads the page only to have a secure origin with clipboard permission,
+// then (1) writes a known two-line text itself and reads it back, and (2) observes the argument the application
+// passes to navigator.clipboard.writeText for copy-all, and what the clipboard holds afterwards.
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const APP = "http://localhost:3100";
+const PORT = 9334;
+const OUT = path.dirname(fileURLToPath(import.meta.url));
+const PROFILE = path.join(OUT, "chrome-profile-probe");
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+fs.rmSync(PROFILE, { recursive: true, force: true });
+const chrome = spawn("C:/Program Files/Google/Chrome/Application/chrome.exe", [
+  "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${PROFILE}`, "--no-first-run", "about:blank",
+], { stdio: "ignore" });
+process.on("exit", () => chrome.kill());
+
+let version;
+for (let i = 0; i < 100 && !version; i += 1) {
+  try { version = await (await fetch(`http://127.0.0.1:${PORT}/json/version`)).json(); } catch { await sleep(100); }
+}
+const connect = async (url) => {
+  const ws = new WebSocket(url);
+  await new Promise((r) => ws.addEventListener("open", r, { once: true }));
+  let id = 0; const waiting = new Map();
+  ws.addEventListener("message", (e) => { const m = JSON.parse(e.data); if (m.id) { waiting.get(m.id)(m); waiting.delete(m.id); } });
+  return { send: (method, params = {}) => new Promise((r) => { waiting.set(++id, r); ws.send(JSON.stringify({ id, method, params })); }), close: () => ws.close() };
+};
+const browser = await connect(version.webSocketDebuggerUrl);
+const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+const page = await connect(targets.find((t) => t.type === "page").webSocketDebuggerUrl);
+await page.send("Page.enable");
+await page.send("Runtime.enable");
+await page.send("Emulation.setFocusEmulationEnabled", { enabled: true });
+await browser.send("Browser.grantPermissions", { origin: APP, permissions: ["clipboardReadWrite", "clipboardSanitizedWrite"] });
+const evaluate = async (expression) => (await page.send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result.result.value;
+
+await page.send("Page.navigate", { url: APP });
+await sleep(2500);
+
+const codes = `(t) => [...t].map((c) => c.charCodeAt(0)).filter((n) => n < 32)`;
+console.log(`browser: ${version.Browser} on ${process.platform}`);
+console.log("1. The browser alone: writeText('a\\nb') and readText()");
+console.log("   control characters read back:", JSON.stringify(await evaluate(`(async () => { await navigator.clipboard.writeText("a\\nb"); return (${codes})(await navigator.clipboard.readText()); })()`)));
+console.log("   writeText('a\\r\\nb') reads back as:", JSON.stringify(await evaluate(`(async () => { await navigator.clipboard.writeText("a\\r\\nb"); return (${codes})(await navigator.clipboard.readText()); })()`)));
+
+console.log("2. The application: the argument it passes to writeText for copy-all, observed by wrapping the function");
+await evaluate(`(() => { const real = navigator.clipboard.writeText.bind(navigator.clipboard); window.__args = [];
+  navigator.clipboard.writeText = (text) => { window.__args.push(text); return real(text); }; })()`);
+const add = async (doi, count) => {
+  await evaluate(`(() => { const input = document.querySelector('input[type="text"]');
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set; setter.call(input, ${JSON.stringify(doi)});
+    input.dispatchEvent(new Event("input", { bubbles: true })); input.form.requestSubmit(); })()`);
+  for (let i = 0; i < 300; i += 1) { if ((await evaluate(`document.querySelectorAll('ul[role="list"] > li').length`)) === count) return; await sleep(100); }
+  throw new Error("entry did not appear");
+};
+await add("10.1038/nature12373", 1);
+await add("10.1371/journal.pone.0000308", 2);
+await evaluate(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Копіювати весь перелік").click()`);
+await sleep(500);
+const passed = await evaluate(`window.__args[0]`);
+const held = await evaluate(`navigator.clipboard.readText()`);
+const control = (t) => [...t].map((c) => c.charCodeAt(0)).filter((n) => n < 32);
+console.log("   control characters in the argument the application passed:", JSON.stringify(control(passed)), "(10 = line feed)");
+console.log("   control characters in what the clipboard holds afterwards: ", JSON.stringify(control(held)), "(13 = carriage return)");
+console.log("   the two texts are equal once CR LF is read as LF:", held.replace(/\r\n/g, "\n") === passed);
+console.log("   lines in the argument:", passed.split("\n").length, "| argument ends with a line break:", /[\r\n]$/.test(passed));
+
+page.close(); browser.close(); chrome.kill();
+await sleep(200);
+process.exit(0);
+----
+# finished: 2026-10-06T10:55:34Z
+# duration_s: 12
+# exit: 1
+# result: RED

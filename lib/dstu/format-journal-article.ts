@@ -28,7 +28,7 @@ const MAX_HEADING_AUTHORS = 3;
 // D11: the year comes from the first date present in this order; month and day are not used.
 const YEAR_SOURCES = ["print", "issued", "published", "online"] as const satisfies readonly (keyof PublicationDates)[];
 
-const selectYear = (dates: PublicationDates): number | null => {
+export const selectYear = (dates: PublicationDates): number | null => {
   for (const source of YEAR_SOURCES) {
     const date = dates[source];
     if (date !== null) return date.year;

@@ -3,7 +3,9 @@
 ## Purpose
 
 Places references on the system clipboard as plain text, one reference or the
-whole list, so that the user can paste them into a document. Fixtures GF01 to
+whole list, so that the user can paste them into a document. The contract
+governs the text the application passes to the clipboard of the browser; how a
+platform then stores that text is outside the product. Fixtures GF01 to
 GF08 named in scenarios are those of the human-approved golden oracle
 `tests/golden/dstu-journal.ts`; HD… and AS… name decisions and assumptions
 recorded in the design of the change that introduced this capability.
@@ -12,17 +14,18 @@ recorded in the design of the change that introduced this capability.
 
 ### Requirement: Copying one reference
 For an entry that has a reference, the user SHALL be able to copy it. The text
-written to the clipboard SHALL be the reference text exactly, character for
-character, as plain text, with no number, no line break and no warning text
-added. An entry that cannot be formatted SHALL offer no copy. [AS-11]
+the application passes to the clipboard SHALL be the reference text exactly,
+character for character, as plain text, with no number, no line break and no
+warning text added. An entry that cannot be formatted SHALL offer no copy.
+[AS-11]
 
 #### Scenario: Reference without warnings
 - **WHEN** the reference of the entry of fixture GF01 is copied
-- **THEN** the clipboard holds `Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. Т. 12, № 3. С. 45—67. DOI: 10.0000/golden.gf01.` and nothing else
+- **THEN** the text passed to the clipboard is `Коваленко, Олена. Цифрові архіви в університетських бібліотеках // Умовний науковий вісник. 2021. Т. 12, № 3. С. 45—67. DOI: 10.0000/golden.gf01.` and nothing else
 
 #### Scenario: Reference with a warning
 - **WHEN** the reference of the entry of fixture GF08 is copied
-- **THEN** the clipboard holds the approved reference text of GF08, with both full stops after `Stud`
+- **THEN** the text passed to the clipboard is the approved reference text of GF08, with both full stops after `Stud`
 - **AND** it holds no warning text
 
 #### Scenario: Entry without a reference
@@ -30,31 +33,47 @@ added. An entry that cannot be formatted SHALL offer no copy. [AS-11]
 - **THEN** that entry offers no copy
 
 ### Requirement: Copying the whole list
-The user SHALL be able to copy the whole list. The text written to the
-clipboard SHALL hold the reference of every entry in the order of the list,
-each on its own line, separated by exactly one line feed (U+000A), with no
-numbers, no blank lines and no line feed after the last reference. [HD-2,
-HD-8, AS-12]
+The user SHALL be able to copy the whole list. The text the application
+passes to the clipboard SHALL hold the reference of every entry in the order
+of the list, joined by exactly one line feed (U+000A) between two references,
+with no numbers, no blank lines, no carriage return and no line break after
+the last reference. The value passed to the clipboard is the normative output
+of this requirement. [HD-2, HD-8, AS-12]
 
 #### Scenario: Two entries
 - **WHEN** the list holds the entries of GF01 and GF05 in this order and the whole list is copied
-- **THEN** the clipboard holds the approved reference text of GF01, one line feed, and the approved reference text of GF05
+- **THEN** the text passed to the clipboard is the approved reference text of GF01, one line feed, and the approved reference text of GF05
 
 #### Scenario: Order follows the list
 - **WHEN** the entry of GF05 is moved above the entry of GF01 and the whole list is copied
-- **THEN** the clipboard holds the reference of GF05, one line feed, and the reference of GF01
+- **THEN** the text passed to the clipboard is the reference of GF05, one line feed, and the reference of GF01
 
 #### Scenario: Single entry
 - **WHEN** the list holds only the entry of GF01 and the whole list is copied
-- **THEN** the clipboard holds the reference of GF01 with no line feed
+- **THEN** the text passed to the clipboard is the reference of GF01 with no line feed
+
+#### Scenario: No trailing line break
+- **WHEN** the whole list of two or more entries is copied
+- **THEN** the text passed to the clipboard ends with the last character of the last reference
 
 #### Scenario: No numbers
 - **WHEN** the whole list is copied
-- **THEN** no line begins with a position number added by the system
+- **THEN** no line of the text passed to the clipboard begins with a position number added by the system
 
 #### Scenario: Corrected entry
 - **WHEN** an entry has been corrected and the whole list is copied
-- **THEN** the clipboard holds the reference of the corrected Publication
+- **THEN** the text passed to the clipboard holds the reference of the corrected Publication
+
+### Requirement: Platform representation of the line break
+After the text has been passed to the clipboard, the operating system or the
+clipboard implementation MAY represent the line feed between references with
+its platform-native line ending. Such normalization by the platform SHALL NOT
+be treated as a defect of the product. [AS-12]
+
+#### Scenario: Clipboard of a platform with another line ending
+- **WHEN** the whole list of two entries is copied in a browser on Windows
+- **THEN** the text passed to the clipboard has exactly one line feed between the two references
+- **AND** the system clipboard may hold a carriage return and a line feed in its place, which is not a defect
 
 ### Requirement: Copying the whole list is blocked by an unformatted entry
 While at least one entry cannot be formatted, the control for copying the

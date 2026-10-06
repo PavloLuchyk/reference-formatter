@@ -178,6 +178,31 @@ not reported at the entry. The human replaced it with the text now in the
 HD-9 row. The behaviour approved with RD-1 did not change, and no requirement
 or scenario changed with this correction.
 
+### Human disposition of the manual browser check (2026-10-06)
+
+The first manual browser check of task 4.4 ended RED: after copying the whole
+list, the Windows system clipboard held the references separated by a
+carriage return and a line feed, where the spec said "exactly one line feed"
+and its scenarios said what "the clipboard holds". The application had passed
+exactly one line feed; Chrome on Windows stores it as CR LF. The human's
+disposition:
+
+- **Accepted as a specification clarification, not an implementation
+  defect.** The `bibliography-copy` contract governs the text produced by the
+  application and passed to the clipboard API.
+- For copy-all the application joins references with exactly one LF character
+  (U+000A) and adds no trailing line break.
+- The value passed to `navigator.clipboard.writeText()` is the normative
+  product output for this requirement.
+- The operating system or clipboard implementation may represent that line
+  break using its platform-native line ending after the write. Such platform
+  normalization is not a product defect.
+- AS-12 and the `bibliography-copy` requirement and scenarios are revised
+  accordingly. The copy implementation is not changed.
+- The failed manual-browser-check record is preserved as historical evidence
+  and is neither deleted nor rewritten.
+- Task 4.4 is repeated with the clarified acceptance criterion.
+
 ### Assumptions kept
 
 Reviewed by the human on 2026-10-06 and kept as assumptions. The numbers of
@@ -190,7 +215,7 @@ the promoted assumptions (AS-1, AS-2, AS-3, AS-5, AS-9, AS-10) are not reused.
 | AS-7 | A duplicate is refused before any lookup. The existing entry is not moved, replaced or refreshed | Offering to replace the existing entry with freshly resolved metadata |
 | AS-8 | After a failed attempt the typed text stays in the DOI field; after a success the field is cleared | Clearing the field in both cases |
 | AS-11 | An entry that cannot be formatted offers no copy of its own | Copying an error text |
-| AS-12 | The line break between references is one line feed, U+000A, and none follows the last reference | CRLF; a trailing line break |
+| AS-12 | The text the application passes to `navigator.clipboard.writeText()` joins references with exactly one line feed, U+000A, and has no trailing line break. That value is the normative product output. The operating system or the clipboard implementation may represent the line break with its platform-native line ending after the write; such normalization is not a product defect (clarified by the human on 2026-10-06 after the manual browser check; see below) | CRLF passed by the application; a trailing line break |
 | AS-13 | A request for resolution that fails before any outcome arrives gets its own generic message, «Не вдалося виконати запит. Спробуйте ще раз.», which blames neither Crossref, nor the DOI, nor the user's connection (wording set by the human on 2026-10-06) | Reporting it as `provider-unavailable` |
 | AS-14 | A corrected entry cannot be reset to its resolved metadata. The user removes the entry and adds the DOI again | A reset control; keeping the resolved `Publication` beside the corrected one |
 | AS-15 | Setting an author as the other kind does not carry names over: the user types the organisation name or the personal names | Copying the family name into the organisation name |
@@ -317,10 +342,17 @@ component calls the existing `normalizeDoi`, which is pure:
 The Server Function still validates its own argument (TD-6); the local check
 is not its replacement.
 
-**TD-8 Client state.** One `useReducer` in `workspace.tsx` over the pure
-operations of TD-2, plus local state for the DOI field, the in-progress flag,
-the message and which entry is being corrected. Only the files in
-`app/_components/` that need state or events are client components.
+**TD-8 Client state.** One `useReducer` in `workspace.tsx` holds all state
+of the page: the list, the text of the DOI field, the in-progress flag, the
+message of the last submission, the result of the last copy and which entry
+is being corrected. Its transitions call the pure operations of TD-2 and
+decide nothing about DOIs, duplicates or order themselves. The correction
+form keeps its own draft in local state. `workspace.tsx` is the only file
+with the `'use client'` directive; `entry-card.tsx` and `correction-form.tsx`
+are imported only from it. (As first written, this decision kept the DOI
+field, the flag and the messages in separate local state; they were put into
+the reducer during implementation so that every transition is one pure
+function. No behaviour of the specs depends on the difference.)
 
 **TD-9 Clipboard.** The component calls `navigator.clipboard.writeText`. A
 missing clipboard or a rejected promise gives the failure message. Tests
@@ -514,6 +546,106 @@ its own.
   table, so a later change of wording changes tests] → The table is
   human-approved; a change of wording is a new approval, and the tests then
   change with it on purpose.
+
+## Verification history
+
+What the recorded evidence does and does not prove, stated plainly. Written
+by the maker session on 2026-10-06; every record named is in `evidence/runs/`.
+The reference commit is `9c30af7`, a clean tree (`…102231Z_workspace-baseline.log`,
+GREEN, 355 tests).
+
+- **Neither RED state is a commit.** Nothing was committed between the
+  baseline and the end of implementation, so the stubs exist in no commit and
+  were overwritten by the implementation. What is durable instead: each RED
+  run and the SHA-256 hashes of the test files at that moment, recorded with
+  `scripts/record-run.sh`, and the same hashes recorded again at GREEN.
+- **Domain RED** (`…102700Z_workspace-domain-red.log`): 126 failed, 380
+  passed, every failure an AssertionError in one of the four new test files.
+  25 new tests passed against the stubs because the fixed value a stub
+  returns happens to be the expected one; they are listed at task 2.6. Those
+  25 tests were therefore not seen to fail.
+- **Domain GREEN** (`…102806Z_workspace-domain-green.log`): `pnpm check`,
+  exit 0, 506 tests, tree not committed. The five hashes equal those of RED.
+- **UI RED** (`…103643Z_workspace-ui-red.log`): 165 failed, 508 passed,
+  failures only in the five new test files. Most are Testing Library query
+  failures against stub components that render only a heading; two tests of
+  `app/actions.test.ts` failed with a TypeError raised inside the test, when
+  it read the first request and the stub had made none. Two tests of that
+  file passed against the stub and were not seen to fail.
+- **UI GREEN** (`…103936Z_workspace-check.log`): `pnpm check`, exit 0, 16
+  files, 673 tests, build compiled, tree not committed. The eight UI hashes
+  and the five domain hashes equal those of their RED runs
+  (`…103948Z_workspace-ui-green-hashes.log`).
+- **The stub checks were recorded late.** `…102656Z_workspace-domain-stubs.log`
+  and `…103639Z_workspace-ui-stubs.log` show the type check and lint passing
+  with the stubs, but each was taken after the tests of its group had been
+  written, as the git status inside the record shows.
+- **Checks that are searches** (`…104021Z_workspace-boundaries.log`,
+  `…104032Z_workspace-oracles-untouched.log`,
+  `…104034Z_workspace-tooling-untouched.log`,
+  `…103926Z_workspace-copy-table-check.log`) record their commands and
+  output. The commands were composed in the session; they are in the records
+  and in no script of the repository.
+- **Manual browser check of task 4.4, first run: RED.** Made on 2026-10-06
+  by the maker session with the human's go-ahead, at `9c30af7` with the
+  uncommitted slice, against `next dev` on port 3100 and live Crossref, with
+  the DOIs `10.1038/nature12373` and `10.1371/journal.pone.0000308`.
+  `…105522Z_workspace-manual-browser-check.log`: 97 checks, 3 unexpected, all
+  three the same: after copying the whole list the Windows system clipboard
+  held CR LF between the references, where the spec then said "exactly one
+  line feed" of what "the clipboard holds". A probe in the same record shows
+  that the application passed one LF and that this Chrome on Windows stores
+  LF as CR LF by itself. The record is kept as it is. An earlier record,
+  `…105455Z_workspace-manual-browser-check.log`, is a run in which the
+  throwaway driver crashed on a screenshot before the first step; it shows a
+  fault of the driver, not of the application, and is kept as history.
+- **The RED run exposed an ambiguity at the boundary between the spec and
+  the platform, not a defect.** The human accepted it as a specification
+  clarification on 2026-10-06 (see Human disposition of the manual browser
+  check): the contract governs the text passed to the clipboard API. AS-12
+  and the `bibliography-copy` requirement and scenarios were revised; no
+  product code and no test changed.
+- **Manual browser check, repeat: PASS.**
+  `…110108Z_workspace-manual-browser-check-repeat.log`, 2026-10-06, same
+  commit, tree, server, browser and DOIs: 112 checks, none unexpected, exit 0.
+  It observed the argument the application passes to
+  `navigator.clipboard.writeText` (one U+000A between references, no
+  carriage return, no trailing line break, four calls in all) and recorded
+  separately that the system clipboard then held CR LF. It repeated the whole
+  flow: adding by DOI through the real Server Function, duplicate prevention
+  with three other spellings, correction of a scalar field and of the year, a
+  rejected year, a blocking field emptied and restored, the four gaps one by
+  one, reordering, copy-one, copy-all, a warning that does not block copying,
+  removal, and an empty list after one reload.
+- **What that check is, and is not.** It is a manual check in the sense of
+  task 4.4: one pass through the flow in a real browser, not a test of the
+  repository. A throwaway script outside the repository drove headless
+  Chrome 151 over the DevTools protocol with real mouse and keyboard events;
+  no person clicked. Its source is printed in the record. It is not
+  deterministic E2E evidence: it depends on live Crossref, and the expected
+  references were written by hand from the records of those DOIs as they
+  were on 2026-10-05. Clipboard permission was granted through DevTools and
+  focus was emulated, so the browser's own permission prompt was not
+  exercised. `CROSSREF_CONTACT_EMAIL` was not set, so the check shows that
+  nothing the browser received names the variable, a `mailto:` or the
+  Crossref address (in the 18 of 49 response bodies the browser still held),
+  and does not show what happens to a real value; `app/actions.test.ts`
+  covers that with a stubbed one. Before the recorded runs there were two
+  unrecorded trial runs of the driver and one of the probe. The two dev
+  servers logged 17 calls of the Server Function that day, each one request
+  to Crossref without a contact address. The runs named here account for 15
+  of them; two calls for `10.1038/nature12373` early in the first server's
+  log are not explained by the output of any of those runs. The server logs
+  were kept outside the repository and are not evidence.
+- **What no record proves.** Every component test runs in jsdom with a fake
+  resolver and a stubbed clipboard. The manual check above is the only
+  evidence of the page in a real browser, of the real Server Function called
+  from the page, of a real clipboard and of a live answer of Crossref, and it
+  is one unrepeatable pass in one browser on one platform. The document
+  language and title were read from the built page and from that browser.
+  Deterministic browser E2E is the later change of HD-4.
+- **No independent review yet.** Everything above was written and run by the
+  session that wrote the code and the tests. Task 4.6 is open.
 
 ## Open Questions
 
