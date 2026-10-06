@@ -1,0 +1,53 @@
+# run: e2e-review01-final-check
+# started: 2026-10-06T16:37:24Z
+# commit: a268ad48e2ee78813c710d3892c500c3dda97d4d (master)
+# tree: clean (excluding .agent-log/ and evidence/)
+# git status:
+#    M .agent-log/actions.jsonl
+#   ?? evidence/runs/20261006T163716Z_e2e-review01-final-green.log
+# node: v24.20.0  pnpm: 11.25.0
+# command: pnpm check
+----
+$ pnpm typecheck && pnpm lint && pnpm test && pnpm build
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+$ eslint
+$ vitest run
+
+ RUN  v5.0.3 D:/Study/AI engineering/capstone/capstone/reference-formatter
+
+
+ Test Files  18 passed (18)
+      Tests  688 passed (688)
+   Start at  19:37:29
+   Duration  3.12s (tests 50%, environment 32%, transform 9%, import 8%, worker 1%)
+
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 22ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 316ms
+  Running TypeScript ...
+  Finished TypeScript in 1005ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 345ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+----
+# finished: 2026-10-06T16:37:36Z
+# duration_s: 12
+# exit: 0
+# result: GREEN
