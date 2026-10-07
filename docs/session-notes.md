@@ -1,33 +1,31 @@
 # Session notes — handoff
 
-Updated 2026-10-06 after the README and documentation pass that followed the
-archive of `browser-e2e`. Every statement was checked against the repository
-at that time; nothing is reconstructed from memory. Read `AGENTS.md` and
-`docs/intent.md` first; `README.md` is the entry point for setup and
-verification.
+Updated 2026-10-07 after the final independent acceptance review and the
+human's final product acceptance. Every statement was checked against the
+repository at that time; nothing is reconstructed from memory. Read
+`AGENTS.md` and `docs/intent.md` first; `README.md` is the entry point for
+setup and verification.
+
+**The MVP is HUMAN-ACCEPTED / COMPLETE (2026-10-07).** The next and only
+remaining step is the final audit of the rubric and of the evidence.
 
 ## Repository state
 
-- Branch `master`, HEAD `6465ef4` (`docs(spec): archive deterministic browser
-  verification`). That commit holds the archive of `browser-e2e`, the main
-  spec `browser-flow-verification` and the records of the archive. No git
-  remote is configured.
-- Uncommitted when this file was written, all of it the documentation pass:
-  - rewritten: `README.md`, in Ukrainian by the human's decision, in place of
-    the `create-next-app` text;
-  - modified: this file;
-  - new: the twelve run records of the pass. The last three, on the README
-    as the human approved it, are `docs-final-check`, `e2e-docs-final` and
-    `docs-final-spec-check`. The nine before them: three of the first text
-    (`readme-check`, `e2e-readme`, `readme-spec-check`), three of the
-    320-line text (`readme-final-check`, `e2e-readme-final`,
-    `readme-final-spec-check`) and three of the short README that stands
-    now (`readme-short-check`, `e2e-readme-short`,
-    `readme-short-spec-check`). See "README and documentation pass" below;
-  - modified: `.agent-log/actions.jsonl` (written by the logging hook; it is
-    committed on purpose, see `.agent-log/README.md`).
-- No source, test, harness, dependency, CI, spec or oracle file is modified,
-  and no archived change.
+- Branch `master`. No git remote is configured.
+- **The documentation pass is complete and committed in `f60574e`**
+  (`docs: add project README`): `README.md`, the handoff as it then stood,
+  the twelve run records of the pass and the agent log, and nothing else.
+  Before it, `6465ef4` holds the archive of `browser-e2e` and the main spec
+  `browser-flow-verification`.
+- **This version of the file was written on top of `f60574e`, for the
+  final-acceptance commit that follows it.** That commit holds
+  `evidence/reviews/final-product-acceptance-review.md` (the checker's report
+  with the human disposition appended below it), this file and the agent
+  log, and nothing else. A file cannot name the commit that contains it: if
+  `git log` shows a commit after `f60574e` that touches this file, that is
+  the one.
+- Since `6465ef4` no source, test, harness, dependency, CI, spec or oracle
+  file was modified, and no archived change.
 - **No OpenSpec change is active**: `openspec/changes/` holds only
   `archive/`, with four archived changes. `openspec/specs/` holds **eight
   main specs**.
@@ -46,9 +44,54 @@ findings, known limitations and Verification history. They still hold.
 
 All three feature slices of `docs/intent.md` and the browser E2E
 verification are implemented, independently reviewed and archived. **The MVP
-is not yet complete by the Definition of Done of `docs/intent.md`:** the
-implementation is complete, the final product acceptance is not given. See
-"What is left before the MVP is done" below.
+is complete by the Definition of Done of `docs/intent.md`:** the human gave
+the final product acceptance on 2026-10-07. See "Final product acceptance"
+and "Definition of Done: closed" below.
+
+## Final product acceptance (2026-10-07)
+
+- **Final independent acceptance review: completed.**
+  `evidence/reviews/final-product-acceptance-review.md`, a fresh
+  `feature-reviewer` session (`97159718`) at `f60574e`, read-only apart from
+  its report; it ran no command. **Blocking findings: none.** No major or
+  minor finding; two notes, FA-1 and FA-2. Verdict: **READY FOR FINAL HUMAN
+  ACCEPTANCE**. In its checklist of the Definition of Done no item is
+  blocked: four are SATISFIED and five SATISFIED WITH DOCUMENTED LIMITATION.
+- **FA-1: ACCEPT AS DOCUMENTATION CORRECTION** (the human, 2026-10-07). The
+  handoff committed in `f60574e` still named `6465ef4` as HEAD and called
+  the README and the records of the documentation pass uncommitted, and it
+  named the three final records by label only. This version corrects that.
+  It is a correction of documentation and process, not a product defect, and
+  it invalidates no verification evidence. No historical record is changed.
+- **FA-2: ACKNOWLEDGE AS EVIDENCE LIMITATION** (the human, 2026-10-07). An
+  earlier run of the final review (session `9de95341`, 2026-10-06) left no
+  report: the agent log holds the proposal of its `Write` at 21:38:17Z and
+  no line that it ran. The missing artifact is accepted as a historical
+  evidence limitation. Nothing is reconstructed, recreated or attributed to
+  that session after the fact. The report in the repository is from a new
+  fresh session run afterwards, which says that it did not see the text or
+  the findings of the first; it is the authoritative final independent
+  acceptance review. FA-2 is not a product defect, does not invalidate the
+  persisted review, does not block the final product acceptance, and needs
+  no repair beyond keeping this limitation written down.
+- **Final product acceptance: HUMAN-ACCEPTED / COMPLETE** (2026-10-07). In
+  the human's words: "I ACCEPT the Reference Formatter MVP as complete. The
+  accepted implementation, verification, documentation and documented
+  limitations satisfy the project's Definition of Done." The disposition and
+  the acceptance are appended below the reviewer's report, whose body was
+  not changed.
+- **Accepted by the human as documented limitations, not blockers:** journal
+  articles only; Crossref only; the list kept only until the page is
+  reloaded; the documented source limitations of the DSTU profile; the
+  deterministic browser verification bounded to the pinned Next.js 16.3.8
+  and the verified `next start` process model; no proof of an offline build;
+  no remote CI run; the deferred post-MVP functionality.
+- **No verification command was rerun for the acceptance**, by the human's
+  decision. No record names `f60574e`: the last GREEN records ran at
+  `6465ef4` on the tree that `f60574e` then committed, and that commit holds
+  only `README.md`, the handoff, the agent log and twelve run records
+  (`git show --stat f60574e`). The reviewer accepted that baseline.
+- No completed or archived change was reopened.
 
 ## README and documentation pass (2026-10-06)
 
@@ -58,10 +101,10 @@ implementation is complete, the final product acceptance is not given. See
   capabilities of the MVP, how to run, verification, and a short note of
   limitations. It ends with a pointer to `docs/intent.md` and
   `docs/dstu/rules.md`; by the human's decision it does not link this file.
-- **The README is complete and HUMAN-APPROVED as written** (2026-10-06).
-  It is not to be rewritten further. This approves the documentation text.
-  It is not the final product acceptance, which is the next human decision
-  and is not given.
+- **The README is complete and HUMAN-APPROVED as written** (2026-10-06),
+  and committed in `f60574e`. It is not to be rewritten further. That
+  approval was of the documentation text; the final product acceptance was
+  given separately on 2026-10-07 (above).
 - **What it still says:** the formatting follows the DSTU 8302:2015 profile
   of this project, which has documented source limitations and is not a
   certification of conformity; only journal articles are supported and
@@ -93,15 +136,17 @@ implementation is complete, the final product acceptance is not given. See
   committed. Neither a clone URL, a licence, a deployment nor an
   `.env.example` was ever named or added.
 - **Final verification of the documentation state**, run on the human's
-  instruction after the approval, at `6465ef4` with the approved README and
-  this file uncommitted; every record names the commit and the tree:
+  instruction after the approval. The three runs were made at `6465ef4` with
+  the approved README and the handoff not yet in a commit, and every record
+  names that commit and that tree; the files were committed afterwards in
+  `f60574e`:
   - `pnpm check`: GREEN, 18 test files, 688 tests, typecheck, lint and the
-    production build (`evidence/runs/…_docs-final-check.log`);
+    production build (`evidence/runs/20261006T200405Z_docs-final-check.log`);
   - `pnpm e2e`: GREEN, 3 Playwright tests
-    (`evidence/runs/…_e2e-docs-final.log`);
+    (`evidence/runs/20261006T200418Z_e2e-docs-final.log`);
   - `pnpm spec:check`: GREEN, eight main specs, no active change, with the
     one informational hint on `dstu-journal-formatting`
-    (`evidence/runs/…_docs-final-spec-check.log`).
+    (`evidence/runs/20261006T200425Z_docs-final-spec-check.log`).
   All three passed on their first run.
 - **The nine earlier records of the pass are kept**, all at `6465ef4`, all
   GREEN on their first run. The rewrites changed `README.md` and this file
@@ -117,7 +162,8 @@ implementation is complete, the final product acceptance is not given. See
     `…191219Z_readme-final-spec-check.log` (`pnpm spec:check`: eight main
     specs, no active change, one informational hint).
   No RED was produced for the record.
-- `evidence/runs/` holds 109 records with these twelve.
+- `evidence/runs/` holds 109 records with these twelve, all twelve committed
+  in `f60574e`. `evidence/reviews/` holds nine reports with the final one.
 - **No CI run exists.** `.github/workflows/ci.yml` runs `pnpm check` on
   `ubuntu-latest` with Node 24, but no git remote is configured.
 
@@ -455,32 +501,26 @@ matter most:
   `e2e/primary-flow.e2e.ts` speaks of "the design of the change
   browser-e2e", which is now in the archive.
 
-## What is left before the MVP is done
+## Definition of Done: closed
 
 No feature slice and no OpenSpec change is in progress, and nothing is
-half-built. Against the Definition of Done of `docs/intent.md`:
+half-built. Every item of the Definition of Done of `docs/intent.md` is
+closed; the human's final acceptance of 2026-10-07 says that the Definition
+of Done is satisfied:
 
 | Item of the Definition of Done | State |
 |---|---|
 | All three feature slices implemented | done |
-| Project verification GREEN | done: 688 tests, typecheck, lint, build |
+| Project verification GREEN | done: 688 tests, typecheck, lint, build; the last records are at `6465ef4`, on the tree that `f60574e` committed |
 | DSTU expected values have source or human-decision provenance | done: the approved profile and golden oracle |
-| Completed slices independently reviewed, findings disposed by the human | done for all three slices and for the browser E2E change |
+| Completed slices independently reviewed, findings disposed by the human | done for all three slices, for the browser E2E change and for the final acceptance review, whose two notes are disposed: FA-1 accepted as a documentation correction, FA-2 acknowledged as an evidence limitation |
 | Evidence points to real repository states and runs | done; its limits are written down |
 | Primary browser flow has deterministic E2E verification | done: **HUMAN-ACCEPTED and CLOSED** on 2026-10-06; 3 Playwright tests GREEN, independently reviewed (READY twice), archived |
 | Known limitations documented; repository can be set up and verified from its README | done: the short README holds the setup, the three verification commands and a short note of limitations, and its text is **HUMAN-APPROVED** on 2026-10-06; the limitations in full are documented in this file, in `docs/dstu/rules.md` and in the main specs |
-| **Final product acceptance** | **open**: the human's |
+| **Final product acceptance** | **HUMAN-ACCEPTED / COMPLETE** on 2026-10-07, after the final independent acceptance review found no blocking finding |
 
-Next actions, in the order that seems natural; each needs the human's
-decision first:
-
-1. The human's final acceptance of the product. It is the next human
-   decision and is not given.
-2. The final audit of the rubric and of the evidence, after the product
-   acceptance.
-
-The README, this handoff and the twelve records of the documentation pass are
-uncommitted when this is written; the human gives the commit.
+**The next and only remaining step: the final audit of the rubric and of the
+evidence.** It needs the human's decision first.
 
 Explicitly after the MVP, not built: batch paste of several DOIs, partial
 failures inside a batch, a clipboard fallback, persistence across a reload,
